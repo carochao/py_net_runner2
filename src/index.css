@@ -1,0 +1,445 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=JetBrains+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
+@import "tailwindcss";
+
+:root {
+  --primary: #06b6d4;
+  --primary-glow: rgba(6, 182, 212, 0.6);
+  --primary-alpha: rgba(6, 182, 212, 0.3);
+  --secondary: #ec4899;
+  --secondary-glow: rgba(236, 72, 153, 0.6);
+  --secondary-alpha: rgba(236, 72, 153, 0.3);
+  --grid-color: rgba(30, 41, 59, 0.2);
+  --surface-tint: transparent;
+  --bg-color: #05060a;
+  --panel-bg: rgba(10, 11, 15, 0.95);
+  --grid-opacity: 0.1;
+  --text-main: #e2e8f0;
+  --text-dim: #94a3b8;
+  --accent: #06b6d4;
+  --header-glow: 0 0 20px rgba(6, 182, 212, 0.4);
+}
+
+[data-theme='cyan'] {
+  --primary: #06b6d4;
+  --primary-glow: rgba(6, 182, 212, 0.9);
+  --primary-alpha: rgba(6, 182, 212, 0.4);
+  --secondary: #ec4899;
+  --secondary-glow: rgba(236, 72, 153, 0.9);
+  --secondary-alpha: rgba(236, 72, 153, 0.4);
+  --grid-color: rgba(6, 182, 212, 0.3);
+  --surface-tint: rgba(6, 182, 212, 0.1);
+  --bg-color: #05060f;
+  --panel-bg: rgba(10, 15, 25, 0.9);
+  --grid-opacity: 0.6;
+  --text-main: #e2e8f0;
+  --text-dim: #94a3b8;
+  --accent: #06b6d4;
+  --header-glow: 0 0 40px rgba(6, 182, 212, 0.5);
+}
+
+[data-theme='pink'] {
+  --primary: #ff007f;
+  --primary-glow: rgba(255, 0, 127, 0.9);
+  --primary-alpha: rgba(255, 0, 127, 0.5);
+  --secondary: #00f2ff;
+  --secondary-glow: rgba(0, 242, 255, 0.9);
+  --secondary-alpha: rgba(0, 242, 255, 0.5);
+  --grid-color: rgba(255, 0, 127, 0.7);
+  --surface-tint: rgba(255, 0, 127, 0.2);
+  --bg-color: #1a000e;
+  --panel-bg: rgba(45, 0, 25, 0.9);
+  --grid-opacity: 0.9;
+  --text-main: #fff0f9;
+  --text-dim: #ff7eb9;
+  --accent: #ff007f;
+  --header-glow: 0 0 50px rgba(255, 0, 127, 0.8);
+}
+
+[data-theme='green'] {
+  --primary: #00ff41;
+  --primary-glow: rgba(0, 255, 65, 0.9);
+  --primary-alpha: rgba(0, 255, 65, 0.5);
+  --secondary: #d4ff00;
+  --secondary-glow: rgba(212, 255, 0, 0.9);
+  --secondary-alpha: rgba(212, 255, 0, 0.5);
+  --grid-color: rgba(0, 255, 65, 0.7);
+  --surface-tint: rgba(0, 255, 65, 0.2);
+  --bg-color: #001a05;
+  --panel-bg: rgba(0, 40, 10, 0.9);
+  --grid-opacity: 0.9;
+  --text-main: #f0fff4;
+  --text-dim: #00ff41;
+  --accent: #00ff41;
+  --header-glow: 0 0 50px rgba(0, 255, 65, 0.8);
+}
+
+[data-theme='amber'] {
+  --primary: #ffaa00;
+  --primary-glow: rgba(255, 170, 0, 0.9);
+  --primary-alpha: rgba(255, 170, 0, 0.5);
+  --secondary: #ff4d00;
+  --secondary-glow: rgba(255, 77, 0, 0.9);
+  --secondary-alpha: rgba(255, 77, 0, 0.5);
+  --grid-color: rgba(255, 170, 0, 0.7);
+  --surface-tint: rgba(255, 170, 0, 0.2);
+  --bg-color: #1a0f00;
+  --panel-bg: rgba(40, 25, 0, 0.9);
+  --grid-opacity: 0.9;
+  --text-main: #fffcf0;
+  --text-dim: #ffaa00;
+  --accent: #ffaa00;
+  --header-glow: 0 0 50px rgba(255, 170, 0, 0.8);
+}
+
+[data-theme='marvel'] {
+  --primary: #ed1d24;
+  --primary-glow: rgba(237, 29, 36, 0.9);
+  --primary-alpha: rgba(237, 29, 36, 0.3);
+  --secondary: #ffca00;
+  --secondary-glow: rgba(255, 202, 0, 0.9);
+  --secondary-alpha: rgba(255, 202, 0, 0.3);
+  --grid-color: rgba(237, 29, 36, 0.4);
+  --surface-tint: rgba(237, 29, 36, 0.1);
+  --bg-color: #0b0d17;
+  --panel-bg: rgba(15, 18, 30, 0.9);
+  --grid-opacity: 0.8;
+  --text-main: #ffffff;
+  --text-dim: #94a3b8;
+  --accent: #ed1d24;
+}
+
+[data-theme='cyberpunk'] {
+  --primary: #fcee0a;
+  --primary-glow: rgba(252, 238, 10, 0.9);
+  --primary-alpha: rgba(252, 238, 10, 0.3);
+  --secondary: #00f2ff;
+  --secondary-glow: rgba(0, 242, 255, 0.9);
+  --secondary-alpha: rgba(0, 242, 255, 0.3);
+  --grid-color: rgba(252, 238, 10, 0.5);
+  --surface-tint: rgba(252, 238, 10, 0.1);
+  --bg-color: #050505;
+  --panel-bg: rgba(20, 20, 20, 0.9);
+  --grid-opacity: 0.6;
+  --text-main: #fcee0a;
+  --text-dim: #00f2ff;
+  --accent: #fcee0a;
+}
+
+[data-theme='space'] {
+  --primary: #00d2ff;
+  --primary-glow: rgba(0, 210, 255, 0.9);
+  --primary-alpha: rgba(0, 210, 255, 0.3);
+  --secondary: #ffffff;
+  --secondary-glow: rgba(255, 255, 255, 0.9);
+  --secondary-alpha: rgba(255, 255, 255, 0.3);
+  --grid-color: rgba(0, 210, 255, 0.3);
+  --surface-tint: rgba(0, 210, 255, 0.1);
+  --bg-color: #00040a;
+  --panel-bg: rgba(2, 8, 20, 0.9);
+  --grid-opacity: 0.7;
+  --text-main: #e0f2fe;
+  --text-dim: #7dd3fc;
+  --accent: #00d2ff;
+}
+
+[data-theme='football'] {
+  --primary: #22c55e;
+  --primary-glow: rgba(34, 197, 94, 0.9);
+  --primary-alpha: rgba(34, 197, 94, 0.3);
+  --secondary: #ffffff;
+  --secondary-glow: rgba(255, 255, 255, 0.9);
+  --secondary-alpha: rgba(255, 255, 255, 0.3);
+  --grid-color: rgba(34, 197, 94, 0.4);
+  --surface-tint: rgba(34, 197, 94, 0.1);
+  --bg-color: #052e16;
+  --panel-bg: rgba(5, 46, 22, 0.9);
+  --grid-opacity: 0.5;
+  --text-main: #f0fdf4;
+  --text-dim: #4ade80;
+  --accent: #22c55e;
+}
+
+[data-theme='roblox'] {
+  --primary: #ef4444;
+  --primary-glow: rgba(239, 68, 68, 0.9);
+  --primary-alpha: rgba(239, 68, 68, 0.3);
+  --secondary: #3b82f6;
+  --secondary-glow: rgba(59, 130, 246, 0.9);
+  --secondary-alpha: rgba(59, 130, 246, 0.3);
+  --grid-color: rgba(239, 68, 68, 0.3);
+  --surface-tint: rgba(239, 68, 68, 0.1);
+  --bg-color: #111827;
+  --panel-bg: rgba(17, 24, 39, 0.9);
+  --grid-opacity: 0.4;
+  --text-main: #f3f4f6;
+  --text-dim: #9ca3af;
+  --accent: #ef4444;
+}
+
+[data-theme='fantasy'] {
+  --primary: #9333ea;
+  --primary-glow: rgba(147, 51, 234, 0.9);
+  --primary-alpha: rgba(147, 51, 234, 0.3);
+  --secondary: #fbbf24;
+  --secondary-glow: rgba(251, 191, 36, 0.9);
+  --secondary-alpha: rgba(251, 191, 36, 0.3);
+  --grid-color: rgba(147, 51, 234, 0.3);
+  --surface-tint: rgba(147, 51, 234, 0.1);
+  --bg-color: #1e1b4b;
+  --panel-bg: rgba(30, 27, 75, 0.9);
+  --grid-opacity: 0.3;
+  --text-main: #f3e8ff;
+  --text-dim: #a855f7;
+  --accent: #9333ea;
+}
+
+[data-theme='gaming'] {
+  --primary: #d946ef;
+  --primary-glow: rgba(217, 70, 239, 0.9);
+  --primary-alpha: rgba(217, 70, 239, 0.3);
+  --secondary: #22c55e;
+  --secondary-glow: rgba(34, 197, 94, 0.9);
+  --secondary-alpha: rgba(34, 197, 94, 0.3);
+  --grid-color: rgba(217, 70, 239, 0.4);
+  --surface-tint: rgba(217, 70, 239, 0.1);
+  --bg-color: #0c0a09;
+  --panel-bg: rgba(28, 25, 23, 0.9);
+  --grid-opacity: 0.6;
+  --text-main: #fafaf9;
+  --text-dim: #d946ef;
+  --accent: #d946ef;
+}
+
+[data-theme='simpsons'] {
+  --primary: #ffd90f;
+  --primary-glow: rgba(255, 217, 15, 0.9);
+  --primary-alpha: rgba(255, 217, 15, 0.3);
+  --secondary: #6ec4f8;
+  --secondary-glow: rgba(110, 196, 248, 0.9);
+  --secondary-alpha: rgba(110, 196, 248, 0.3);
+  --grid-color: rgba(255, 217, 15, 0.5);
+  --surface-tint: rgba(255, 217, 15, 0.1);
+  --bg-color: #1e1b4b;
+  --panel-bg: rgba(30, 41, 59, 0.9);
+  --grid-opacity: 0.4;
+  --text-main: #ffffff;
+  --text-dim: #ffd90f;
+  --accent: #ffd90f;
+}
+
+[data-theme='star-wars'],
+[data-theme='starwars'] {
+  --primary: #00ff00;
+  --primary-glow: rgba(0, 255, 0, 0.9);
+  --primary-alpha: rgba(0, 255, 0, 0.3);
+  --secondary: #ff0000;
+  --secondary-glow: rgba(255, 0, 0, 0.9);
+  --secondary-alpha: rgba(255, 0, 0, 0.3);
+  --grid-color: rgba(0, 255, 0, 0.3);
+  --surface-tint: rgba(0, 255, 0, 0.1);
+  --bg-color: #020617;
+  --panel-bg: rgba(15, 23, 42, 0.9);
+  --grid-opacity: 0.8;
+  --text-main: #f8fafc;
+  --text-dim: #94a3b8;
+  --accent: #00ff00;
+}
+
+[data-theme='music'] {
+  --primary: #f97316;
+  --primary-glow: rgba(249, 115, 22, 0.9);
+  --primary-alpha: rgba(249, 115, 22, 0.3);
+  --secondary: #0ea5e9;
+  --secondary-glow: rgba(14, 165, 233, 0.9);
+  --secondary-alpha: rgba(14, 165, 233, 0.3);
+  --grid-color: rgba(249, 115, 22, 0.4);
+  --surface-tint: rgba(249, 115, 22, 0.1);
+  --bg-color: #0c0a09;
+  --panel-bg: rgba(28, 25, 23, 0.9);
+  --grid-opacity: 0.5;
+  --text-main: #fff7ed;
+  --text-dim: #f97316;
+  --accent: #f97316;
+}
+
+[data-theme='dc'] {
+  --primary: #60a5fa;
+  --primary-glow: rgba(96, 165, 250, 0.9);
+  --primary-alpha: rgba(96, 165, 250, 0.3);
+  --secondary: #94a3b8;
+  --secondary-glow: rgba(148, 163, 184, 0.9);
+  --secondary-alpha: rgba(148, 163, 184, 0.3);
+  --grid-color: rgba(148, 163, 184, 0.2);
+  --surface-tint: rgba(30, 27, 75, 0.1);
+  --bg-color: #020617;
+  --panel-bg: rgba(15, 23, 42, 0.9);
+  --grid-opacity: 0.4;
+  --text-main: #f8fafc;
+  --text-dim: #94a3b8;
+  --accent: #60a5fa;
+}
+
+@theme {
+  --color-cyber-cyan: var(--primary);
+  --color-cyber-magenta: var(--secondary);
+  --color-cyber-pink: var(--secondary);
+  --color-cyber-yellow: #fcee0a;
+  --color-cyber-dark: var(--bg-color);
+  --color-cyber-surface: #0f172a;
+  
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-cyber-dark);
+    color: #e0e7ff;
+    font-family: var(--font-sans);
+    transition: background-color 1s ease;
+  }
+}
+
+.scanline {
+  width: 100%;
+  height: 100px;
+  background: linear-gradient(to bottom, transparent, var(--primary-alpha), transparent);
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
+  animation: scan 8s linear infinite;
+}
+
+@keyframes scan {
+  from { top: -100px; }
+  to { top: 100%; }
+}
+
+@keyframes glow {
+  0%, 100% { filter: drop-shadow(0 0 10px var(--primary-glow)); }
+  50% { filter: drop-shadow(0 0 20px var(--primary-glow)); }
+}
+
+.animate-glow {
+  animation: glow 3s ease-in-out infinite;
+}
+
+.bg-grid {
+  background-image: linear-gradient(var(--grid-color) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.glow-text {
+  text-shadow: 0 0 10px var(--primary-glow);
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--primary-alpha);
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary) transparent;
+}
+
+.cyber-panel {
+  background: var(--panel-bg);
+  border: 1px solid var(--primary-alpha);
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.5), inset 0 0 20px var(--surface-tint);
+  position: relative;
+  backdrop-filter: blur(16px);
+}
+
+.cyber-button {
+  @apply relative px-6 py-2 font-mono font-bold uppercase tracking-widest transition-all rounded-sm;
+  background: var(--primary);
+  color: black;
+  box-shadow: 0 0 15px var(--primary-alpha);
+}
+
+.cyber-button:hover {
+  @apply brightness-110 scale-105;
+  box-shadow: 0 0 25px var(--primary-alpha);
+}
+
+.cyber-button-outline {
+  @apply px-6 py-2 border border-slate-700 text-slate-400 text-xs font-bold uppercase tracking-wider rounded transition-colors;
+}
+
+.cyber-button-outline:hover {
+  @apply border-slate-500 text-slate-200;
+}
+
+.code-editor {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-cyber-cyan) var(--color-cyber-dark);
+  background: #0d1117;
+}
+
+.markdown-body h1 { @apply text-2xl font-black italic tracking-tighter text-white underline decoration-cyber-cyan underline-offset-4 mb-4 uppercase; }
+.markdown-body h3 { @apply text-lg font-bold text-cyber-cyan mt-6 mb-2 uppercase; }
+.markdown-body p { @apply text-slate-300 mb-4 leading-relaxed text-sm; }
+.markdown-body code { @apply bg-slate-800 px-1 rounded text-cyber-cyan font-mono; }
+.markdown-body pre { @apply bg-slate-900 p-4 rounded-lg border border-slate-800 my-4 overflow-x-auto; font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important; }
+.markdown-body pre code { @apply bg-transparent p-0 text-slate-200; font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important; }
+.markdown-body ul { @apply space-y-4 my-6 text-slate-300 text-sm pb-12; }
+.markdown-body li { @apply flex items-start gap-3; }
+.markdown-body li::before { content: "[#]"; @apply text-cyber-cyan font-mono shrink-0 mt-0.5; }
+.markdown-body strong { @apply text-white font-bold; }
+
+/* Expanded Task Box styles (30% larger for better visual chunking) */
+.task-box .markdown-body h3 {
+  @apply text-xl font-extrabold text-cyber-cyan mb-3 mt-4 uppercase;
+}
+.task-box .markdown-body p {
+  @apply text-slate-200 mb-4 leading-relaxed text-base sm:text-[16.5px];
+}
+.task-box .markdown-body ul {
+  @apply space-y-4 my-5 text-slate-200 text-base sm:text-[16.5px] pb-4;
+}
+.task-box .markdown-body li {
+  @apply flex items-start gap-3;
+}
+.task-box .markdown-body li::before {
+  @apply text-cyber-cyan font-mono shrink-0 mt-0.5 text-base sm:text-[16.5px];
+}
+.task-box .markdown-body code {
+  @apply bg-slate-800/80 px-1.5 py-0.5 rounded text-cyber-cyan font-mono text-base sm:text-[16.5px];
+}
+.task-box .markdown-body strong {
+  @apply text-white font-black text-base sm:text-[16.5px];
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Comic Sans MS font application scoped only to the Simpsons theme */
+[data-theme='simpsons'] * {
+  font-family: "Comic Sans MS", "Comic Sans", "Comic Neue", cursive, sans-serif !important;
+}
+
+/* Ensure monospace ASCII blocks and pre/code formatting are preserved under Simpsons */
+[data-theme='simpsons'] .markdown-body pre,
+[data-theme='simpsons'] .markdown-body pre *,
+[data-theme='simpsons'] .markdown-body pre code,
+[data-theme='simpsons'] pre,
+[data-theme='simpsons'] pre *,
+[data-theme='simpsons'] code {
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+}
+

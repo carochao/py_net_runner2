@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PY-QUEST</title>
+  </head>
+  <body>
+    <div id="root">
+      <div style="background: #05060a; color: #06b6d4; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: monospace; gap: 10px; padding: 20px; text-align: center;">
+        <div id="boot-status" style="font-weight: bold; letter-spacing: 1px;">INITIALIZING NEURAL LINK...</div>
+        <div id="boot-log" style="color: #475569; font-size: 11px; max-w: 600px; word-break: break-all;">[STAGING_MODULES_PENDING]</div>
+        
+        <div id="retry-btn-container" style="display: none; margin-top: 20px;">
+          <button 
+            onclick="console.log('RETRY_TRIGGERED'); try { sessionStorage.removeItem('boot_retries'); } catch(e){} location.reload();"
+            style="background: #06b6d4; border: none; color: #000; padding: 8px 18px; font-family: monospace; font-size: 11px; font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);"
+          >
+            [ RETRY CONNECTION ]
+          </button>
+        </div>
+
+        <button 
+          onclick="console.log('RESET_TRIGGERED'); if(confirm('Emergency reset will clear cached application state/progress. Proceed?')) { try { localStorage.clear(); } catch(e){} try { sessionStorage.clear(); } catch(e){} location.reload(); }"
+          style="margin-top: 30px; background: transparent; border: 1px solid #1e293b; color: #334155; padding: 5px 12px; font-family: monospace; font-size: 9px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px;"
+        >
+          [ EMERGENCY_RESET ]
+        </button>
+      </div>
+    </div>
+    <script>
+      console.log("HTML: Main entry point loading...");
+      
+      function reportBootError(title, detail) {
+        const log = document.getElementById('boot-log');
+        if (log) {
+          log.innerHTML = `<span style="color: #ef4444; font-weight: bold;">[${title}]:</span> <span style="color: #f87171;">${detail}</span>`;
+        }
+        console.warn("[Boot Alert]:", title, detail);
+      }
+
+      window.addEventListener('error', (e) => {
+        if (e.error) {
+          reportBootError('BOOT_CRASH', e.error.stack || e.error.message || e.message);
+          const retryBtn = document.getElementById('retry-btn-container');
+          if (retryBtn) retryBtn.style.display = 'block';
+          const status = document.getElementById('boot-status');
+          if (status) status.innerText = 'CONNECTION HALTED';
+        } else if (e.message) {
+          reportBootError('JS_ERROR', e.message + " at " + e.filename + ":" + e.lineno);
+          const retryBtn = document.getElementById('retry-btn-container');
+          if (retryBtn) retryBtn.style.display = 'block';
+          const status = document.getElementById('boot-status');
+          if (status) status.innerText = 'CONNECTION HALTED';
+        } else if (e.target && (e.target.src || e.target.href)) {
+          const resUrl = e.target.src || e.target.href;
+          
+          // Check if this is a critical loading script/style resource
+          const isMainScript = resUrl.includes('main.tsx');
+          const isCoreModule = resUrl.includes('/assets/') && (resUrl.endsWith('.js') || resUrl.endsWith('.css'));
+          const isCritical = isMainScript || isCoreModule;
+
+          if (isCritical) {
+            reportBootError('RESOURCE_ERROR', 'Failed to load critical resource: ' + resUrl.split('/').pop() + ' (URL: ' + resUrl + ', Tag: ' + (e.target.tagName || 'unknown') + ')');
+            const retryBtn = document.getElementById('retry-btn-container');
+            if (retryBtn) retryBtn.style.display = 'block';
+            const status = document.getElementById('boot-status');
+            if (status) status.innerText = 'CONNECTION HALTED';
+          } else {
+            console.warn("Non-critical resource failed to load:", resUrl, "Tag:", e.target.tagName);
+          }
+        } else {
+          reportBootError('UNKNOWN_ERROR', String(e));
+        }
+      }, true);
+
+      window.addEventListener('unhandledrejection', (e) => {
+        e.preventDefault();
+        const reason = e.reason;
+        const detail = reason ? (reason.stack || reason.message || String(reason)) : 'No reason';
+        console.warn("GLOBAL UNHANDLED REJECTION PREVENTED:", detail);
+      });
+
+      setTimeout(() => {
+        const log = document.getElementById('boot-log');
+        if (log && log.innerText === '[STAGING_MODULES_PENDING]') {
+          log.innerText = '[LINK_TIMEOUT_WARNING]: Modules are taking unusually long to load. Press EMERGENCY_RESET below to clear corrupt storage.';
+        }
+      }, 5000); // reduced timeout slightly to alert user faster
+    </script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+

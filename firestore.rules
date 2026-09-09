@@ -1,0 +1,73 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global Safety Net: default deny everything
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isValidId(id) { 
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); 
+    }
+    
+    function incoming() { 
+      return request.resource.data; 
+    }
+    
+    function existing() { 
+      return resource.data; 
+    }
+    
+    function isSignedIn() { 
+      return request.auth != null; 
+    }
+
+    function isValidUserProgress(data) {
+      return data.userId == request.auth.uid
+        && (data.get('email', '') is string && data.get('email', '').size() <= 256)
+        && (data.get('view', '') is string && (data.get('view', '') == 'landing' || data.get('view', '') == 'app' || data.get('view', '') == 'hack-arena' || data.get('view', '') == 'creative-challenges' || data.get('view', '') == 'flowchart-lab'))
+        && (data.get('userInterest', '') is string && data.get('userInterest', '').size() <= 100)
+        && (data.get('currentLevel', '') is string && data.get('currentLevel', '').size() <= 50)
+        && (data.get('currentLessonIndex', 0) is int || data.get('currentLessonIndex', 0) is float)
+        && (data.get('completedLessons', []) is list && data.get('completedLessons', []).size() <= 500)
+        && (data.get('unlockedIds', []) is list && data.get('unlockedIds', []).size() <= 500)
+        && (data.get('activeThemeId', '') is string && data.get('activeThemeId', '').size() <= 100)
+        && (data.get('activeBannerId', '') is string && data.get('activeBannerId', '').size() <= 100)
+        && (data.get('activeWallpaperId', null) == null || (data.get('activeWallpaperId', '') is string && data.get('activeWallpaperId', '').size() <= 200))
+        && ((data.get('bonusCredits', 0) is int || data.get('bonusCredits', 0) is float) && data.get('bonusCredits', 0) >= 0 && data.get('bonusCredits', 0) <= 1000000)
+        && (data.get('cheatsUsed', []) is list && data.get('cheatsUsed', []).size() <= 100)
+        && (data.get('unlockedBadges', []) is list && data.get('unlockedBadges', []).size() <= 100)
+        && (data.get('isSonicUnlocked', false) is bool)
+        && (data.get('activeSoundpackId', null) == null || (data.get('activeSoundpackId', '') is string && data.get('activeSoundpackId', '').size() <= 100))
+        && ((data.get('soundVolume', 0.0) is int || data.get('soundVolume', 0.0) is float) && data.get('soundVolume', 0.0) >= 0.0 && data.get('soundVolume', 0.0) <= 1.0)
+        && (data.get('lessonErrors', {}) is map)
+        && (data.get('hintsUsed', {}) is map)
+        && (data.get('isAnonymous', false) is bool)
+        && (data.get('displayName', '') is string && data.get('displayName', '').size() <= 200)
+        && (data.get('restoreCode', '') is string && data.get('restoreCode', '').size() <= 200);
+    }
+
+    // Match statement for user progress
+    match /users/{userId} {
+      allow get: if isSignedIn() && (userId == request.auth.uid || (resource != null && resource.data.get('isAnonymous', false) == true));
+      
+      allow list: if isSignedIn() && (
+        userId == request.auth.uid 
+        || (resource != null && resource.data.get('isAnonymous', false) == true && request.query.limit <= 5)
+      );
+      
+      allow create: if isSignedIn() && userId == request.auth.uid 
+                    && isValidId(userId)
+                    && incoming().userId == userId
+                    && isValidUserProgress(incoming());
+
+      allow update: if isSignedIn() && userId == request.auth.uid
+                    && isValidId(userId)
+                    && incoming().userId == userId
+                    && isValidUserProgress(incoming());
+
+      allow delete: if false; // No deletion from the client SDK is allowed
+    }
+  }
+}

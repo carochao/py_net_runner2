@@ -1,0 +1,100 @@
+{
+  "entities": {
+    "UserProgress": {
+      "title": "UserProgress",
+      "description": "Tracks all progress, settings, and custom sound/theme configurations for a student learning Python on the gamified runner platform.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "Unique Firebase Authentication UID."
+        },
+        "email": {
+          "type": "string",
+          "description": "User email address."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "view": {
+          "type": "string",
+          "enum": ["landing", "app", "hack-arena", "creative-challenges", "flowchart-lab"]
+        },
+        "userInterest": {
+          "type": "string"
+        },
+        "currentLevel": {
+          "type": "string"
+        },
+        "currentLessonIndex": {
+          "type": "number"
+        },
+        "completedLessons": {
+          "type": "array"
+        },
+        "unlockedIds": {
+          "type": "array"
+        },
+        "activeThemeId": {
+          "type": "string"
+        },
+        "activeBannerId": {
+          "type": "string"
+        },
+        "activeWallpaperId": {
+          "type": "string"
+        },
+        "bonusCredits": {
+          "type": "number"
+        },
+        "cheatsUsed": {
+          "type": "array"
+        },
+        "unlockedBadges": {
+          "type": "array"
+        },
+        "isSonicUnlocked": {
+          "type": "boolean"
+        },
+        "activeSoundpackId": {
+          "type": "string"
+        },
+        "soundVolume": {
+          "type": "number"
+        },
+        "lessonErrors": {
+          "type": "object",
+          "description": "Counts of editor errors per lesson"
+        },
+        "hintsUsed": {
+          "type": "object",
+          "description": "Keys of lessons and their boolean values representing if a hint was consumed"
+        },
+        "isAnonymous": {
+          "type": "boolean",
+          "description": "True if student logged in without PII (Option 1 guest)."
+        },
+        "displayName": {
+          "type": "string",
+          "description": "A random or chosen pseudonym."
+        },
+        "restoreCode": {
+          "type": "string",
+          "description": "A clean, unguessable cyber-themed recovery token."
+        }
+      },
+      "required": ["userId"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProgress",
+      "description": "The user's progress profile document."
+    }
+  }
+}

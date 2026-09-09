@@ -1,0 +1,6 @@
+{
+  "name": "PY-QUEST",
+  "description": "Unlock the secrets of the mainframe. A high-immersion cyberpunk interactive Python learning platform.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
