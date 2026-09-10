@@ -1343,7 +1343,7 @@ export default function App() {
   const activeTheme = REWARDS.find(r => r.id === activeThemeId) || REWARDS[0];
   const previewTheme = findThemeByInterest(userInterest) || activeTheme;
   const activeBanner = REWARDS.find(r => r.id === activeBannerId) || REWARDS.find(r => r.id === 'banner-default') || REWARDS[0];
-  const activeWallpaper = REWARDS.find(r => r.id === activeWallpaperId) || null;
+  const activeWallpaper = REWARDS.find(r => r.id === activeWallpaperId || (r.id === 'wallpaper-mrs-birds' && activeWallpaperId === 'wallpaper-mr-singer-funko')) || null;
 
   const [currentLevel, setCurrentLevel] = useState<Level>(() => {
     try {
@@ -4140,12 +4140,12 @@ export default function App() {
              
              <div className="space-y-4 pr-2">
                 {REWARDS.filter(item => isSonicUnlocked || item.type !== 'soundpack').map(item => {
-                  const isUnlocked = unlockedIds.includes(item.id);
+                  const isUnlocked = unlockedIds.includes(item.id) || (item.id === 'wallpaper-mrs-birds' && unlockedIds.includes('wallpaper-mr-singer-funko'));
                   const isActive = 
                     item.type === 'theme' ? activeThemeId === item.id : 
                     item.type === 'banner' ? activeBannerId === item.id : 
                     item.type === 'soundpack' ? activeSoundpackId === item.id : 
-                    activeWallpaperId === item.id;
+                    (activeWallpaperId === item.id || (item.id === 'wallpaper-mrs-birds' && activeWallpaperId === 'wallpaper-mr-singer-funko'));
                   const canAfford = currentCredits >= item.cost;
                   const itemColors = item.colors;
                   

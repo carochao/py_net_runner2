@@ -1,11 +1,10 @@
 import cyberTerminalHaven from './assets/images/cyber_terminal_haven_1780580084826.png';
 import codeMatrixGoddess from './assets/images/code_matrix_goddess_1780580101597.png';
 import retroHackerBase from './assets/images/retro_hacker_base_1780580118899.png';
-import mrResendeFunko from './assets/images/Mr Resende.png';
-import mrWardFunko from './assets/images/Mr_Ward_Funko.png';
-import mrSingerFunko from './assets/images/Mr_Singer_Funko.png';
+import resendeImage from './assets/images/Resende.jpeg';
+import mrsBirdsImage from './assets/images/Birds.jpeg';
 import retroVersionImage from './assets/images/sixteen_bit_retro_1780652712392.png';
-import sixteenBitVersionImage from './assets/images/16_bit.png';
+import bandrImage from './assets/images/bandr.jpeg';
 import pythonRewardImage from './assets/images/python.png';
 import heroRewardImage from './assets/images/hero.png';
 import summerTaskImage from './assets/images/summer.png';
@@ -231,23 +230,15 @@ export const REWARDS: RewardItem[] = [
     description: "Special Edition Computer Science Teacher custom collectible vinyl figure.",
     cost: 150,
     type: "wallpaper",
-    value: mrResendeFunko
+    value: resendeImage
   },
   {
-    id: "wallpaper-mr-ward-funko",
-    name: "[ART] MR Ward Funko Pop",
-    description: "Special Edition Science & Tech custom collectible vinyl figure.",
+    id: "wallpaper-mrs-birds",
+    name: "[ART] Mrs Birds",
+    description: "Special Edition custom collectible visual.",
     cost: 150,
     type: "wallpaper",
-    value: mrWardFunko
-  },
-  {
-    id: "wallpaper-mr-singer-funko",
-    name: "[ART] MR Singer Funko Pop",
-    description: "Special Edition Logic Specialist custom collectible vinyl figure.",
-    cost: 150,
-    type: "wallpaper",
-    value: mrSingerFunko
+    value: mrsBirdsImage
   },
   {
     id: "wallpaper-retro-version",
@@ -263,7 +254,7 @@ export const REWARDS: RewardItem[] = [
     description: "Classic retro style visual. Built from the custom uploaded memory grid.",
     cost: 350,
     type: "wallpaper",
-    value: sixteenBitVersionImage
+    value: bandrImage
   },
   {
     id: "wallpaper-python-genesis",
