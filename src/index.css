@@ -279,6 +279,91 @@
   --accent: #60a5fa;
 }
 
+[data-theme='pokemon'] {
+  --primary: #ffcb05;
+  --primary-glow: rgba(255, 203, 5, 0.9);
+  --primary-alpha: rgba(255, 203, 5, 0.3);
+  --secondary: #ee1515;
+  --secondary-glow: rgba(238, 21, 21, 0.9);
+  --secondary-alpha: rgba(238, 21, 21, 0.3);
+  --grid-color: rgba(255, 203, 5, 0.35);
+  --surface-tint: rgba(238, 21, 21, 0.1);
+  --bg-color: #0e0d14;
+  --panel-bg: rgba(20, 18, 30, 0.9);
+  --grid-opacity: 0.5;
+  --text-main: #ffffff;
+  --text-dim: #ffd23f;
+  --accent: #ffcb05;
+}
+
+[data-theme='minecraft'] {
+  --primary: #5b8c32;
+  --primary-glow: rgba(91, 140, 50, 0.9);
+  --primary-alpha: rgba(91, 140, 50, 0.3);
+  --secondary: #40c6db;
+  --secondary-glow: rgba(64, 198, 219, 0.9);
+  --secondary-alpha: rgba(64, 198, 219, 0.3);
+  --grid-color: rgba(91, 140, 50, 0.35);
+  --surface-tint: rgba(64, 198, 219, 0.1);
+  --bg-color: #0d140e;
+  --panel-bg: rgba(18, 28, 20, 0.9);
+  --grid-opacity: 0.55;
+  --text-main: #f0fdf4;
+  --text-dim: #86efac;
+  --accent: #5b8c32;
+}
+
+[data-theme='mario'] {
+  --primary: #e52521;
+  --primary-glow: rgba(229, 37, 33, 0.9);
+  --primary-alpha: rgba(229, 37, 33, 0.3);
+  --secondary: #fbd000;
+  --secondary-glow: rgba(251, 208, 0, 0.9);
+  --secondary-alpha: rgba(251, 208, 0, 0.3);
+  --grid-color: rgba(229, 37, 33, 0.35);
+  --surface-tint: rgba(251, 208, 0, 0.1);
+  --bg-color: #130909;
+  --panel-bg: rgba(28, 14, 14, 0.9);
+  --grid-opacity: 0.5;
+  --text-main: #fff1f1;
+  --text-dim: #fca5a5;
+  --accent: #e52521;
+}
+
+[data-theme='anime'] {
+  --primary: #ff5e18;
+  --primary-glow: rgba(255, 94, 24, 0.9);
+  --primary-alpha: rgba(255, 94, 24, 0.3);
+  --secondary: #f59e0b;
+  --secondary-glow: rgba(245, 158, 11, 0.9);
+  --secondary-alpha: rgba(245, 158, 11, 0.3);
+  --grid-color: rgba(255, 94, 24, 0.35);
+  --surface-tint: rgba(245, 158, 11, 0.1);
+  --bg-color: #120909;
+  --panel-bg: rgba(26, 14, 14, 0.92);
+  --grid-opacity: 0.5;
+  --text-main: #fff7ed;
+  --text-dim: #fdba74;
+  --accent: #ff5e18;
+}
+
+[data-theme='mecha'] {
+  --primary: #00f0ff;
+  --primary-glow: rgba(0, 240, 255, 0.9);
+  --primary-alpha: rgba(0, 240, 255, 0.3);
+  --secondary: #ef4444;
+  --secondary-glow: rgba(239, 68, 68, 0.9);
+  --secondary-alpha: rgba(239, 68, 68, 0.3);
+  --grid-color: rgba(0, 240, 255, 0.35);
+  --surface-tint: rgba(239, 68, 68, 0.12);
+  --bg-color: #070c18;
+  --panel-bg: rgba(11, 18, 34, 0.92);
+  --grid-opacity: 0.55;
+  --text-main: #f0f9ff;
+  --text-dim: #7dd3fc;
+  --accent: #00f0ff;
+}
+
 @theme {
   --color-cyber-cyan: var(--primary);
   --color-cyber-magenta: var(--secondary);
@@ -433,7 +518,7 @@
   font-family: "Comic Sans MS", "Comic Sans", "Comic Neue", cursive, sans-serif !important;
 }
 
-/* Ensure monospace ASCII blocks and pre/code formatting are preserved under Simpsons */
+/* Monospace ASCII and pre/code formatting preserved under Simpsons */
 [data-theme='simpsons'] .markdown-body pre,
 [data-theme='simpsons'] .markdown-body pre *,
 [data-theme='simpsons'] .markdown-body pre code,
@@ -442,4 +527,21 @@
 [data-theme='simpsons'] code {
   font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
 }
+
+/* Custom sleek scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.4);
+  border-radius: 9999px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.4);
+  border-radius: 9999px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(6, 182, 212, 0.6);
+}
+
 

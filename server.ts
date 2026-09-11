@@ -41,13 +41,41 @@ async function startServer() {
     return aiInstance;
   }
 
+  // Helper for resilient Gemini calls with model failover on temporary demand spikes / 503 / 429
+  async function generateWithModelFallback(ai: GoogleGenAI, params: any) {
+    const candidateModels = ["gemini-3.8-flash", "gemini-3.1-flash-lite"];
+    let lastError: any = null;
+
+    for (let i = 0; i < candidateModels.length; i++) {
+      const model = candidateModels[i];
+      try {
+        return await ai.models.generateContent({
+          ...params,
+          model,
+        });
+      } catch (err: any) {
+        lastError = err;
+        const msg = String(err?.message || err);
+        const status = err?.status || err?.code;
+        const isTemporary = status === 503 || status === 429 || msg.includes("503") || msg.includes("high demand") || msg.includes("UNAVAILABLE") || msg.includes("RESOURCE_EXHAUSTED");
+
+        if (isTemporary && i < candidateModels.length - 1) {
+          console.warn(`Gemini model ${model} unavailable (high demand / rate limit). Retrying with resilient fallback ${candidateModels[i + 1]}...`);
+          await new Promise(resolve => setTimeout(resolve, 500));
+          continue;
+        }
+        throw err;
+      }
+    }
+    throw lastError;
+  }
+
   // API Route for AI Hinting
   app.post("/api/gemini/hint", async (req, res) => {
     try {
       const { lessonTitle, userCode, taskDescription } = req.body;
       const ai = getAI();
-      const response = await ai.models.generateContent({
-        model: "gemini-3.8-flash",
+      const response = await generateWithModelFallback(ai, {
         contents: `You are a cyberpunk hacker mentor named 'Synapse'. The user is stuck on the lesson "${lessonTitle}": ${taskDescription}\nUser code:\n${userCode}\nProvide a supportive remark, a brief conceptual explanation, and a small code snippet to help them move forward.`,
         config: { 
           responseMimeType: "application/json",
@@ -64,8 +92,13 @@ async function startServer() {
       });
       res.json(JSON.parse(response.text || "{}"));
     } catch (error: any) {
-      console.error("Server API key or request error in getAIHint proxy:", error);
-      res.status(500).json({ error: error.message });
+      console.warn("AI hint temporarily unavailable:", error.message || error);
+      res.status(200).json({
+        fallback: true,
+        remark: "Neural mentor link experiencing high sector traffic. Reference local manual directives.",
+        concept: "Review the mission parameters and example code pattern.",
+        snippet: "# Review syntax and run check again"
+      });
     }
   });
 
@@ -75,8 +108,7 @@ async function startServer() {
       const { userCode, lessonTitle, taskDescription, solutionRegex, inputs } = req.body;
       const inputContext = inputs?.length ? `\nInputs provided during execution: ${inputs.join(', ')}` : "";
       const ai = getAI();
-      const response = await ai.models.generateContent({
-        model: "gemini-3.8-flash",
+      const response = await generateWithModelFallback(ai, {
         contents: `Evaluate the following Python code for correctness based on the mission requirements.\nLesson: ${lessonTitle}\nTask: ${taskDescription}\nRequired Patterns (Regex): ${solutionRegex.join(' AND ')}\nUser Code:\n${userCode}${inputContext}\nDetermine if they succeeded, provide thematic feedback, and list any syntax or logic errors.`,
         config: { 
           responseMimeType: "application/json",
@@ -105,8 +137,8 @@ async function startServer() {
       });
       res.json(JSON.parse(response.text || "{}"));
     } catch (error: any) {
-      console.error("Server API key or request error in checkCodeWithAI proxy:", error);
-      res.status(500).json({ error: error.message });
+      console.warn("AI code evaluation proxy temporarily busy (falling back to client local checker):", error.message || error);
+      res.status(200).json({ fallback: true, error: error.message });
     }
   });
 
@@ -115,9 +147,9 @@ async function startServer() {
     try {
       const { interest, currentLessons } = req.body;
       const ai = getAI();
-      const response = await ai.models.generateContent({
-        model: "gemini-3.8-flash",
-        contents: `You are a theme generator. Re-theme the following Python programming curriculum to match a user's interest in: "${interest}". \nPreserve the underlying programming logic but change the story, variables, and context.\n\nCurrent Lessons:\n${JSON.stringify(currentLessons.slice(0, 15))}\n\nReturn an array of themed lesson objects.`,
+      const sampleLessons = Array.isArray(currentLessons) ? currentLessons.slice(0, 5) : [];
+      const response = await generateWithModelFallback(ai, {
+        contents: `You are a theme generator. Re-theme the following Python programming curriculum to match a user's interest in: "${interest}". \nPreserve the underlying programming logic but change the story, variables, and context.\n\nCurrent Lessons:\n${JSON.stringify(sampleLessons)}\n\nReturn an array of themed lesson objects.`,
         config: { 
           responseMimeType: "application/json",
           responseSchema: {
@@ -146,8 +178,8 @@ async function startServer() {
       });
       res.json(JSON.parse(response.text || "[]"));
     } catch (error: any) {
-      console.error("Server API key or request error in rethemeLessons proxy:", error);
-      res.status(500).json({ error: error.message });
+      console.warn("AI retheme proxy temporarily unavailable (falling back to local generator):", error.message || error);
+      res.status(200).json({ fallback: true, lessons: [] });
     }
   });
 

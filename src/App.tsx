@@ -54,7 +54,9 @@ import {
   ShieldAlert,
   Sparkles,
   Wrench,
-  ShieldCheck
+  ShieldCheck,
+  Sword,
+  Bot
 } from 'lucide-react';
 import heroImage from './assets/images/python.png';
 import { LESSONS } from './content';
@@ -203,6 +205,235 @@ export const BADGES_LIST: Badge[] = [
     emoji: '🏆',
     hint: 'Complete every task in a Level with 0 hints utilized.',
     bonus: 500
+  }
+];
+
+// ==================== THEME CONFIGURATION FOR LANDING ====================
+
+const THEME_OPTIONS = [
+  {
+    id: 'theme-pokemon',
+    name: 'Pokémon',
+    symbol: '⚡',
+    badge: 'OS',
+    tagline: 'Pokédex & Gym Battles',
+    borderColor: 'border-amber-500/30 hover:border-amber-400',
+    bgBase: 'bg-[#14101e]/85 hover:bg-[#1c162b]',
+    bgActive: 'bg-amber-500/20 border-amber-400 ring-2 ring-amber-400/50 shadow-[0_0_20px_rgba(251,191,36,0.3)]',
+    iconBg: 'bg-amber-400/15 border-amber-400/30 text-amber-300',
+    badgeColor: 'bg-red-500/20 text-red-300 border-red-500/30',
+    titleColor: 'text-amber-300',
+    glowColor: 'group-hover:text-amber-400',
+  },
+  {
+    id: 'theme-minecraft',
+    name: 'Minecraft',
+    symbol: '⛏️',
+    badge: 'GRID',
+    tagline: 'Voxel Mining & Crafting',
+    borderColor: 'border-emerald-500/30 hover:border-emerald-400',
+    bgBase: 'bg-[#0f1712]/85 hover:bg-[#142219]',
+    bgActive: 'bg-emerald-500/20 border-emerald-400 ring-2 ring-emerald-400/50 shadow-[0_0_20px_rgba(52,211,153,0.3)]',
+    iconBg: 'bg-emerald-400/15 border-emerald-400/30 text-emerald-300',
+    badgeColor: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
+    titleColor: 'text-emerald-300',
+    glowColor: 'group-hover:text-emerald-400',
+  },
+  {
+    id: 'theme-mario',
+    name: 'Super Mario',
+    symbol: '🍄',
+    badge: 'STAR',
+    tagline: 'Warp Pipes & Castles',
+    borderColor: 'border-rose-500/30 hover:border-rose-400',
+    bgBase: 'bg-[#180e0e]/85 hover:bg-[#241313]',
+    bgActive: 'bg-rose-500/20 border-rose-400 ring-2 ring-rose-400/50 shadow-[0_0_20px_rgba(244,63,94,0.3)]',
+    iconBg: 'bg-rose-400/15 border-rose-400/30 text-rose-300',
+    badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+    titleColor: 'text-rose-300',
+    glowColor: 'group-hover:text-rose-400',
+  },
+  {
+    id: 'theme-anime',
+    name: 'Anime Heroes',
+    symbol: '⚔️',
+    badge: 'SHONEN',
+    tagline: 'Breathing Forms & Pirate Crews',
+    borderColor: 'border-orange-500/30 hover:border-orange-400',
+    bgBase: 'bg-[#1a0f0b]/85 hover:bg-[#28150f]',
+    bgActive: 'bg-orange-500/20 border-orange-400 ring-2 ring-orange-400/50 shadow-[0_0_20px_rgba(249,115,22,0.35)]',
+    iconBg: 'bg-orange-400/15 border-orange-400/30 text-orange-300',
+    badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+    titleColor: 'text-orange-300',
+    glowColor: 'group-hover:text-orange-400',
+  },
+  {
+    id: 'theme-mecha',
+    name: 'Mecha & Kaiju',
+    symbol: '🤖',
+    badge: 'DEFENSE',
+    tagline: 'Gundam Telemetry & Radar Scans',
+    borderColor: 'border-cyan-500/30 hover:border-cyan-400',
+    bgBase: 'bg-[#0a121e]/85 hover:bg-[#101c2e]',
+    bgActive: 'bg-cyan-500/20 border-cyan-400 ring-2 ring-cyan-400/50 shadow-[0_0_20px_rgba(6,182,212,0.35)]',
+    iconBg: 'bg-cyan-400/15 border-cyan-400/30 text-cyan-300',
+    badgeColor: 'bg-red-500/20 text-red-300 border-red-500/30',
+    titleColor: 'text-cyan-300',
+    glowColor: 'group-hover:text-cyan-400',
+  },
+  {
+    id: 'theme-cyberpunk',
+    name: 'Cyberpunk',
+    symbol: '💾',
+    badge: 'NET',
+    tagline: 'Night City ICE Breakers',
+    borderColor: 'border-cyan-500/30 hover:border-cyan-400',
+    bgBase: 'bg-[#0b1418]/85 hover:bg-[#101f25]',
+    bgActive: 'bg-cyan-500/20 border-cyan-400 ring-2 ring-cyan-400/50 shadow-[0_0_20px_rgba(6,182,212,0.3)]',
+    iconBg: 'bg-cyan-400/15 border-cyan-400/30 text-cyan-300',
+    badgeColor: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
+    titleColor: 'text-cyan-300',
+    glowColor: 'group-hover:text-cyan-400',
+  },
+  {
+    id: 'theme-marvel',
+    name: 'Marvel',
+    symbol: '🦸',
+    badge: 'STARK',
+    tagline: 'Avengers Tech & Arc Reactors',
+    borderColor: 'border-red-500/30 hover:border-red-400',
+    bgBase: 'bg-[#180e0e]/85 hover:bg-[#241313]',
+    bgActive: 'bg-red-500/20 border-red-400 ring-2 ring-red-400/50 shadow-[0_0_20px_rgba(239,68,68,0.3)]',
+    iconBg: 'bg-red-400/15 border-red-400/30 text-red-300',
+    badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+    titleColor: 'text-red-300',
+    glowColor: 'group-hover:text-red-400',
+  },
+  {
+    id: 'theme-star-wars',
+    name: 'Star Wars',
+    symbol: '🌌',
+    badge: 'JEDI',
+    tagline: 'The Force & Galactic Holocron',
+    borderColor: 'border-blue-500/30 hover:border-blue-400',
+    bgBase: 'bg-[#0d131f]/85 hover:bg-[#131c2d]',
+    bgActive: 'bg-blue-500/20 border-blue-400 ring-2 ring-blue-400/50 shadow-[0_0_20px_rgba(59,130,246,0.3)]',
+    iconBg: 'bg-blue-400/15 border-blue-400/30 text-blue-300',
+    badgeColor: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
+    titleColor: 'text-blue-300',
+    glowColor: 'group-hover:text-blue-400',
+  },
+  {
+    id: 'theme-dc',
+    name: 'DC Universe',
+    symbol: '🦇',
+    badge: 'WAYNE',
+    tagline: 'Gotham Batcomputer & Justice',
+    borderColor: 'border-purple-500/30 hover:border-purple-400',
+    bgBase: 'bg-[#140e1b]/85 hover:bg-[#1e1428]',
+    bgActive: 'bg-purple-500/20 border-purple-400 ring-2 ring-purple-400/50 shadow-[0_0_20px_rgba(168,85,247,0.3)]',
+    iconBg: 'bg-purple-400/15 border-purple-400/30 text-purple-300',
+    badgeColor: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
+    titleColor: 'text-purple-300',
+    glowColor: 'group-hover:text-purple-400',
+  },
+  {
+    id: 'theme-space',
+    name: 'Space',
+    symbol: '🚀',
+    badge: 'COSMOS',
+    tagline: 'NASA Orbital Flight Telemetry',
+    borderColor: 'border-indigo-500/30 hover:border-indigo-400',
+    bgBase: 'bg-[#0f111f]/85 hover:bg-[#16182c]',
+    bgActive: 'bg-indigo-500/20 border-indigo-400 ring-2 ring-indigo-400/50 shadow-[0_0_20px_rgba(99,102,241,0.3)]',
+    iconBg: 'bg-indigo-400/15 border-indigo-400/30 text-indigo-300',
+    badgeColor: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30',
+    titleColor: 'text-indigo-300',
+    glowColor: 'group-hover:text-indigo-400',
+  },
+  {
+    id: 'theme-football',
+    name: 'Football',
+    symbol: '⚽',
+    badge: 'TACTICS',
+    tagline: 'Premier League & Matchday Radar',
+    borderColor: 'border-teal-500/30 hover:border-teal-400',
+    bgBase: 'bg-[#0c1715]/85 hover:bg-[#122320]',
+    bgActive: 'bg-teal-500/20 border-teal-400 ring-2 ring-teal-400/50 shadow-[0_0_20px_rgba(20,184,166,0.3)]',
+    iconBg: 'bg-teal-400/15 border-teal-400/30 text-teal-300',
+    badgeColor: 'bg-teal-500/20 text-teal-300 border-teal-500/30',
+    titleColor: 'text-teal-300',
+    glowColor: 'group-hover:text-teal-400',
+  },
+  {
+    id: 'theme-simpsons',
+    name: 'Simpsons',
+    symbol: '🍩',
+    badge: 'HOMER',
+    tagline: 'Nuclear Power & Donuts',
+    borderColor: 'border-yellow-500/30 hover:border-yellow-400',
+    bgBase: 'bg-[#18160b]/85 hover:bg-[#242111]',
+    bgActive: 'bg-yellow-500/20 border-yellow-400 ring-2 ring-yellow-400/50 shadow-[0_0_20px_rgba(234,179,8,0.3)]',
+    iconBg: 'bg-yellow-400/15 border-yellow-400/30 text-yellow-300',
+    badgeColor: 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30',
+    titleColor: 'text-yellow-300',
+    glowColor: 'group-hover:text-yellow-400',
+  },
+  {
+    id: 'theme-music',
+    name: 'Music',
+    symbol: '🎵',
+    badge: 'SYNTH',
+    tagline: 'Audio DAW & Beat Synthesizer',
+    borderColor: 'border-pink-500/30 hover:border-pink-400',
+    bgBase: 'bg-[#190d16]/85 hover:bg-[#251421]',
+    bgActive: 'bg-pink-500/20 border-pink-400 ring-2 ring-pink-400/50 shadow-[0_0_20px_rgba(236,72,153,0.3)]',
+    iconBg: 'bg-pink-400/15 border-pink-400/30 text-pink-300',
+    badgeColor: 'bg-pink-500/20 text-pink-300 border-pink-500/30',
+    titleColor: 'text-pink-300',
+    glowColor: 'group-hover:text-pink-400',
+  },
+  {
+    id: 'theme-gaming',
+    name: 'Gaming',
+    symbol: '🎮',
+    badge: 'RPG',
+    tagline: 'Retro Arcade & Boss Battles',
+    borderColor: 'border-violet-500/30 hover:border-violet-400',
+    bgBase: 'bg-[#130d1d]/85 hover:bg-[#1c132a]',
+    bgActive: 'bg-violet-500/20 border-violet-400 ring-2 ring-violet-400/50 shadow-[0_0_20px_rgba(139,92,246,0.3)]',
+    iconBg: 'bg-violet-400/15 border-violet-400/30 text-violet-300',
+    badgeColor: 'bg-violet-500/20 text-violet-300 border-violet-500/30',
+    titleColor: 'text-violet-300',
+    glowColor: 'group-hover:text-violet-400',
+  },
+  {
+    id: 'theme-fantasy',
+    name: 'Fantasy',
+    symbol: '🔮',
+    badge: 'MAGE',
+    tagline: 'Arcane Grimoires & Dragons',
+    borderColor: 'border-amber-500/30 hover:border-amber-400',
+    bgBase: 'bg-[#17130b]/85 hover:bg-[#231d10]',
+    bgActive: 'bg-amber-500/20 border-amber-400 ring-2 ring-amber-400/50 shadow-[0_0_20px_rgba(245,158,11,0.3)]',
+    iconBg: 'bg-amber-400/15 border-amber-400/30 text-amber-300',
+    badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+    titleColor: 'text-amber-300',
+    glowColor: 'group-hover:text-amber-400',
+  },
+  {
+    id: 'theme-roblox',
+    name: 'Roblox',
+    symbol: '🧱',
+    badge: 'BLOX',
+    tagline: 'Obby Obstacles & Lua Code',
+    borderColor: 'border-orange-500/30 hover:border-orange-400',
+    bgBase: 'bg-[#18100c]/85 hover:bg-[#231711]',
+    bgActive: 'bg-orange-500/20 border-orange-400 ring-2 ring-orange-400/50 shadow-[0_0_20px_rgba(249,115,22,0.3)]',
+    iconBg: 'bg-orange-400/15 border-orange-400/30 text-orange-300',
+    badgeColor: 'bg-orange-500/20 text-orange-300 border-orange-500/30',
+    titleColor: 'text-orange-300',
+    glowColor: 'group-hover:text-orange-400',
   }
 ];
 
@@ -544,6 +775,21 @@ function findThemeByInterest(interest: string): RewardItem | undefined {
   if (stripped.includes('simpson') || stripped.includes('homer') || stripped.includes('springfield')) {
     return REWARDS.find(r => r.id === 'theme-simpsons');
   }
+  if (stripped.includes('pokemon') || stripped.includes('pokmon') || stripped.includes('pikachu') || stripped.includes('pokedex') || stripped.includes('pokeball')) {
+    return REWARDS.find(r => r.id === 'theme-pokemon');
+  }
+  if (stripped.includes('minecraft') || stripped.includes('steve') || stripped.includes('craft') || stripped.includes('creeper') || stripped.includes('redstone')) {
+    return REWARDS.find(r => r.id === 'theme-minecraft');
+  }
+  if (stripped.includes('mario') || stripped.includes('luigi') || stripped.includes('nintendo') || stripped.includes('bowser') || stripped.includes('mushroomkingdom')) {
+    return REWARDS.find(r => r.id === 'theme-mario');
+  }
+  if (stripped.includes('anime') || stripped.includes('shonen') || stripped.includes('shounen') || stripped.includes('demonslayer') || stripped.includes('tanjiro') || stripped.includes('onepiece') || stripped.includes('luffy') || stripped.includes('myhero') || stripped.includes('mha') || stripped.includes('deku') || stripped.includes('manga') || stripped.includes('naruto')) {
+    return REWARDS.find(r => r.id === 'theme-anime');
+  }
+  if (stripped.includes('mecha') || stripped.includes('kaiju') || stripped.includes('godzilla') || stripped.includes('gundam') || stripped.includes('robot') || stripped.includes('evangelion') || stripped.includes('eva') || stripped.includes('pacificrim') || stripped.includes('jaeger')) {
+    return REWARDS.find(r => r.id === 'theme-mecha');
+  }
 
   // 3. Substring matching in reward name or value
   match = REWARDS.find(r => 
@@ -681,6 +927,46 @@ function getInitialSectionTheme(themeValue: string): ThemedSectionData {
         badge: "DARK_KNIGHT",
         badgeClass: "text-slate-200 bg-slate-800/40 border-slate-700 shadow-[0_0_12px_rgba(255,255,255,0.05)]",
         glowClass: "text-slate-100 hover:scale-[1.02] transition-transform duration-300 drop-shadow-[0_0_10px_rgba(255,255,255,0.1)]",
+      };
+    case 'pokemon':
+      return {
+        title: "POKÉDEX_LINK",
+        subtitle: "Professor Oak's research terminal is active. Registering pocket monsters, battle stats, and elemental types.",
+        badge: "POKÉMON_TRAINER",
+        badgeClass: "text-amber-400 bg-amber-400/10 border-amber-400/20 shadow-[0_0_12px_rgba(251,191,36,0.15)]",
+        glowClass: "text-amber-400 hover:scale-[1.02] transition-transform duration-300 drop-shadow-[0_0_10px_rgba(251,191,36,0.4)]",
+      };
+    case 'minecraft':
+      return {
+        title: "CRAFT_OS",
+        subtitle: "Overworld voxel terminal online. Managing redstone circuits, furnace smelters, and inventory chests.",
+        badge: "MASTER_MINER",
+        badgeClass: "text-emerald-400 bg-emerald-400/10 border-emerald-400/20 shadow-[0_0_12px_rgba(52,211,153,0.15)]",
+        glowClass: "text-emerald-400 hover:scale-[1.02] transition-transform duration-300 drop-shadow-[0_0_10px_rgba(52,211,153,0.4)]",
+      };
+    case 'mario':
+      return {
+        title: "MUSHROOM_KINGDOM",
+        subtitle: "Jump into warp pipes, rescue Princess Peach, and clear Bowser's keeps across the 8 worlds.",
+        badge: "SUPER_STAR",
+        badgeClass: "text-rose-400 bg-rose-400/10 border-rose-400/20 shadow-[0_0_12px_rgba(251,113,133,0.15)]",
+        glowClass: "text-rose-400 hover:scale-[1.02] transition-transform duration-300 drop-shadow-[0_0_10px_rgba(251,113,133,0.4)]",
+      };
+    case 'anime':
+      return {
+        title: "SHONEN_HERO",
+        subtitle: "Unleash your quirk, master the breathing forms, and assemble the ultimate guild roster.",
+        badge: "PLUS_ULTRA",
+        badgeClass: "text-orange-400 bg-orange-400/10 border-orange-400/20 shadow-[0_0_12px_rgba(249,115,22,0.15)]",
+        glowClass: "text-orange-400 hover:scale-[1.02] transition-transform duration-300 drop-shadow-[0_0_10px_rgba(249,115,22,0.4)]",
+      };
+    case 'mecha':
+      return {
+        title: "MECHA_DEFENSE",
+        subtitle: "Pilot your mobile suit, calibrate reactor telemetry, and scan sector radar for incoming Kaiju.",
+        badge: "KAIJU_ALERT",
+        badgeClass: "text-cyan-400 bg-cyan-400/10 border-cyan-400/20 shadow-[0_0_12px_rgba(6,182,212,0.15)]",
+        glowClass: "text-cyan-400 hover:scale-[1.02] transition-transform duration-300 drop-shadow-[0_0_10px_rgba(6,182,212,0.4)]",
       };
     default:
       return {
@@ -883,6 +1169,96 @@ function getLessonThemeHeader(themeValue: string): LessonThemeHeaderData {
           <div className="w-3.5 h-3.5 rounded-full border border-slate-400 animate-ping" />
         )
       };
+    case 'pokemon':
+      return {
+        badge: "POKÉDEX // PALLET_TOWN_NET",
+        titleClass: "text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-400 to-red-500 font-sans font-black tracking-tight uppercase drop-shadow-[0_2px_8px_rgba(251,191,36,0.3)]",
+        cardClass: "border-amber-500/30 bg-amber-950/20 shadow-[0_0_20px_rgba(251,191,36,0.05)]",
+        blinkerClass: "bg-amber-400",
+        icon: <Zap className="w-5 h-5 text-amber-400 animate-bounce" />,
+        btnLabel: "THROW POKÉBALL ⚡",
+        btnClass: "bg-amber-500/10 border-amber-500/30 text-amber-300 hover:bg-amber-500/20 active:scale-95",
+        onClickMsg: "Gotcha! Wild Python code was caught! Pokédex entry registered with 100% accuracy. Pika-pika! ⚡🔴",
+        hudStat: "POKÉBALLS: 99x ULTRA",
+        renderAnimation: () => (
+          <div className="flex gap-1 items-center justify-center">
+            <span className="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
+            <span className="text-[9px] font-mono text-amber-300 font-bold">⚡100k VOLT</span>
+          </div>
+        )
+      };
+    case 'minecraft':
+      return {
+        badge: "OVERWORLD // VOXEL_ENGINE_v1.20",
+        titleClass: "text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-green-500 to-cyan-400 font-sans font-black tracking-tight uppercase drop-shadow-[0_2px_8px_rgba(52,211,153,0.3)]",
+        cardClass: "border-emerald-500/30 bg-emerald-950/20 shadow-[0_0_20px_rgba(52,211,153,0.05)]",
+        blinkerClass: "bg-emerald-400",
+        icon: <Box className="w-5 h-5 text-emerald-400 animate-pulse" />,
+        btnLabel: "MINE DIAMONDS 💎",
+        btnClass: "bg-emerald-500/10 border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/20 active:scale-95",
+        onClickMsg: "Clang! Netherite pickaxe struck deep diamond vein at Y=-58! Diamond Ore extracted. Sss... no creepers nearby! 💎⛏️",
+        hudStat: "ORE_Y_LEVEL: -58 (DIAMONDS)",
+        renderAnimation: () => (
+          <div className="flex gap-1 items-center justify-center">
+            <span className="text-[10px] animate-spin">💎</span>
+            <span className="text-[9px] font-mono text-emerald-300 font-bold">64x STACK</span>
+          </div>
+        )
+      };
+    case 'mario':
+      return {
+        badge: "WORLD 1-1 // MUSHROOM_KINGDOM",
+        titleClass: "text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-rose-400 to-yellow-400 font-sans font-black tracking-tight uppercase drop-shadow-[0_2px_8px_rgba(239,68,68,0.3)]",
+        cardClass: "border-red-500/30 bg-red-950/20 shadow-[0_0_20px_rgba(239,68,68,0.05)]",
+        blinkerClass: "bg-red-500",
+        icon: <Flame className="w-5 h-5 text-yellow-400 animate-bounce" />,
+        btnLabel: "GRAB SUPER STAR 🌟",
+        btnClass: "bg-red-500/10 border-red-500/30 text-red-300 hover:bg-red-500/20 active:scale-95",
+        onClickMsg: "Yahoo! Super Star grabbed! Mario is invincible with rainbow sparkles! Running down Bowser's bridge! 🌟🍄",
+        hudStat: "LIVES: 1-UP x99",
+        renderAnimation: () => (
+          <div className="flex gap-1 items-center justify-center">
+            <span className="text-[10px] animate-bounce">🍄</span>
+            <span className="text-[9px] font-mono text-yellow-300 font-bold">COINS: 100</span>
+          </div>
+        )
+      };
+    case 'anime':
+      return {
+        badge: "SHONEN HERO // DEMON_CORPS_V9",
+        titleClass: "text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-amber-400 to-red-500 font-sans font-black tracking-tight uppercase drop-shadow-[0_2px_8px_rgba(249,115,22,0.35)]",
+        cardClass: "border-orange-500/30 bg-orange-950/20 shadow-[0_0_20px_rgba(249,115,22,0.08)]",
+        blinkerClass: "bg-orange-400",
+        icon: <Sword className="w-5 h-5 text-orange-400 animate-bounce" />,
+        btnLabel: "BREATHE: FIRST FORM ⚔️",
+        btnClass: "bg-orange-500/10 border-orange-500/30 text-orange-300 hover:bg-orange-500/20 active:scale-95",
+        onClickMsg: "Total Concentration Breathing engaged! Stamina restored to 100%! Nichirin blade ignited with Sun Breathing! Plus Ultra! ⚔️🔥",
+        hudStat: "BREATHING: SUN_STYLE 100%",
+        renderAnimation: () => (
+          <div className="flex gap-1 items-center justify-center">
+            <span className="text-[10px] animate-bounce">⚔️</span>
+            <span className="text-[9px] font-mono text-orange-300 font-bold">PLUS ULTRA</span>
+          </div>
+        )
+      };
+    case 'mecha':
+      return {
+        badge: "SECTOR 4 // MECHA_DEFENSE_SYS",
+        titleClass: "text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-sky-400 to-red-400 font-sans font-black tracking-tight uppercase drop-shadow-[0_2px_8px_rgba(6,182,212,0.35)]",
+        cardClass: "border-cyan-500/30 bg-cyan-950/20 shadow-[0_0_20px_rgba(6,182,212,0.08)]",
+        blinkerClass: "bg-cyan-400",
+        icon: <Bot className="w-5 h-5 text-cyan-400 animate-pulse" />,
+        btnLabel: "FIRE BEAM CANNON 🤖",
+        btnClass: "bg-cyan-500/10 border-cyan-500/30 text-cyan-300 hover:bg-cyan-500/20 active:scale-95",
+        onClickMsg: "All 24 payload bays armed! Reactor output at 100%! Hyper Mega Particle Cannon fired! Kaiju radar lock engaged! 🚀🦖",
+        hudStat: "REACTOR_CORE: 100.0%",
+        renderAnimation: () => (
+          <div className="flex gap-1 items-center justify-center">
+            <span className="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
+            <span className="text-[9px] font-mono text-cyan-300 font-bold">KAIJU CAT-4</span>
+          </div>
+        )
+      };
     case 'gaming':
       return {
         badge: "PERFORMANCE HUD // PLAYER_1_READY",
@@ -1029,6 +1405,8 @@ export default function App() {
     }
   });
   
+  const [showCustomThemeInput, setShowCustomThemeInput] = useState(false);
+
   useEffect(() => {
     try {
       localStorage.setItem('py-runner-interest', userInterest);
@@ -1048,41 +1426,35 @@ export default function App() {
         setDemoActiveTheme(null);
         setIsDemoCompiling(false);
         
-        // Select 'Space' theme
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        // Select 'Pokémon' theme
+        await new Promise(resolve => setTimeout(resolve, 800));
         if (!active) return;
-        setDemoActiveTheme('Space');
-        setUserInterest('Space');
+        setDemoActiveTheme('Pokémon');
+        setUserInterest('Pokémon');
         if (soundService.playMenuSelect) soundService.playMenuSelect();
 
-        // Select 'Marvel' theme
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        // Select 'Minecraft' theme
+        await new Promise(resolve => setTimeout(resolve, 800));
         if (!active) return;
-        setDemoActiveTheme('Marvel');
-        setUserInterest('Marvel');
+        setDemoActiveTheme('Minecraft');
+        setUserInterest('Minecraft');
         if (soundService.playMenuSelect) soundService.playMenuSelect();
 
-        // Select 'Cyberpunk' theme
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        // Select 'Super Mario' theme
+        await new Promise(resolve => setTimeout(resolve, 800));
         if (!active) return;
-        setDemoActiveTheme('Cyberpunk');
-        setUserInterest('Cyberpunk');
-        if (soundService.playMenuSelect) soundService.playMenuSelect();
-
-        // Highlight "Initialize Connection"
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        if (!active) return;
-        setDemoActiveTheme('InitializeConnection');
+        setDemoActiveTheme('Super Mario');
+        setUserInterest('Super Mario');
         if (soundService.playMenuSelect) soundService.playMenuSelect();
 
         // Start compiling
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await new Promise(resolve => setTimeout(resolve, 400));
         if (!active) return;
         setIsDemoCompiling(true);
         if (soundService.playSuccess) soundService.playSuccess(activeSoundpackId || 'retro');
 
         // Complete compile and go to Step 3
-        await new Promise(resolve => setTimeout(resolve, 1800));
+        await new Promise(resolve => setTimeout(resolve, 1400));
         if (!active) return;
         setIsDemoCompiling(false);
         setDemoActiveTheme(null);
@@ -1101,6 +1473,7 @@ export default function App() {
   }, [activeTutorialStep, hasCompletedTutorial]);
 
   const [isRetheming, setIsRetheming] = useState(false);
+  const [directLaunchingTheme, setDirectLaunchingTheme] = useState<string | null>(null);
   const [lessons, setLessons] = useState<Lesson[]>(() => [...LESSONS]);
   const [currentLessonIndex, setCurrentLessonIndex] = useState(() => {
     try {
@@ -1220,6 +1593,27 @@ export default function App() {
         if (key === 'executing') return "Rendering Frames at 360FPS...";
         if (key === 'awaiting_input') return "AWAITING GAME INPUT...";
         if (key === 'placeholder_input') return "Enter cheat input buffer...";
+        break;
+      case 'pokemon':
+        if (key === 'assistance_protocol') return "POKÉDEX RESEARCH HINTS";
+        if (key === 'terminal_output') return "POKÉMON BATTLE TERMINAL";
+        if (key === 'executing') return "Executing Trainer Command...";
+        if (key === 'awaiting_input') return "AWAITING TRAINER COMMAND...";
+        if (key === 'placeholder_input') return "Choose your Pokémon move...";
+        break;
+      case 'minecraft':
+        if (key === 'assistance_protocol') return "CRAFTING RECIPE GUIDE";
+        if (key === 'terminal_output') return "REDSTONE CONDUIT CONSOLE";
+        if (key === 'executing') return "Smelting & Crafting Blocks...";
+        if (key === 'awaiting_input') return "AWAITING MINER INPUT...";
+        if (key === 'placeholder_input') return "Enter block or coordinates...";
+        break;
+      case 'mario':
+        if (key === 'assistance_protocol') return "TOAD'S HINT HOUSE";
+        if (key === 'terminal_output') return "PIPE TELEMETRY CONSOLE";
+        if (key === 'executing') return "Warping Through Pipe...";
+        if (key === 'awaiting_input') return "AWAITING CONTROLLER INPUT...";
+        if (key === 'placeholder_input') return "Enter jump or warp command...";
         break;
       default:
         break;
@@ -2868,6 +3262,32 @@ export default function App() {
     }
   };
 
+  const launchDirectTheme = async (interestName: string, themeId: string) => {
+    setDirectLaunchingTheme(themeId);
+    if (soundService.playMenuSelect) soundService.playMenuSelect();
+    setUserInterest(interestName);
+    setActiveThemeId(themeId);
+    setHasCompletedTutorial(true);
+    try {
+      localStorage.setItem('py-runner-tutorial-completed', 'true');
+      localStorage.setItem('py-runner-interest', interestName);
+      localStorage.setItem('py-runner-active-theme', themeId);
+    } catch (e) {}
+
+    setIsRetheming(true);
+    try {
+      const themed = await rethemeLessons(interestName, LESSONS);
+      setLessons(themed);
+      setView('app');
+    } catch (e) {
+      console.warn("Direct theme launch fallback", e);
+      setView('app');
+    } finally {
+      setIsRetheming(false);
+      setDirectLaunchingTheme(null);
+    }
+  };
+
   // RESIZE HANDLERS
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -3221,132 +3641,139 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Column 2: Neural Profile Sync Card */}
-              <div className="w-full flex relative group/sync">
-                <div className={`bg-black/40 p-6 md:p-8 border border-slate-800 rounded-3xl shadow-2xl relative overflow-hidden backdrop-blur-md w-full flex flex-col justify-between transition-all duration-700 ${
-                  !hasCompletedTutorial 
-                    ? (activeTutorialStep === 2 
-                        ? 'border-cyber-cyan/50 shadow-[0_0_20px_rgba(6,182,212,0.15)] pointer-events-none select-none' 
-                        : 'blur-[5px] opacity-30 pointer-events-none select-none') 
-                    : ''
-                }`}>
-                   <div className="absolute top-0 right-0 p-2 opacity-10">
-                     <Radio className="w-16 h-16 text-cyber-cyan" />
-                   </div>
-                   
-                   {!hasCompletedTutorial && activeTutorialStep === 2 && (
-                     <div className="absolute top-3 left-1/2 -translate-x-1/2 bg-cyber-cyan/10 text-cyber-cyan border border-cyber-cyan/30 px-3 py-1 rounded-full text-[8.5px] font-mono font-black tracking-widest uppercase animate-pulse flex items-center gap-1.5 z-30">
-                       <span className="relative flex h-1.5 w-1.5">
-                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyber-cyan opacity-75"></span>
-                         <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-cyber-cyan"></span>
-                       </span>
-                       DEMO: COMPILER RUNNING
-                     </div>
-                   )}
-                   
-                   <div className="relative z-10 space-y-4 my-auto w-full">
-                     <div className="text-center lg:text-left space-y-0.5">
-                       <h2 className="text-xl font-bold text-white tracking-tight">Learn Python</h2>
-                       <p className="text-[10px] text-cyber-cyan/50 uppercase tracking-[0.2em] font-mono">Customize your training environment</p>
-                     </div>
-    
-                     <div className="space-y-4">
-                       <div className="relative">
-                         <label className="text-[9px] text-slate-500 uppercase tracking-widest font-bold mb-1.5 block text-left">Define Primary Interest Domain</label>
-                         <input 
-                           type="text"
-                           value={userInterest}
-                           onChange={(e) => setUserInterest(e.target.value)}
-                           placeholder="e.g. Marvel, Space, Medieval, Stock Market"
-                           className="w-full bg-black/50 border border-slate-800 rounded-xl px-4 py-3 focus:ring-1 focus:ring-cyber-cyan focus:border-transparent outline-none text-white transition-all placeholder:text-slate-700 font-mono text-xs"
-                         />
-                         <div className="mt-2.5 flex flex-wrap gap-1.5 overflow-x-auto pb-1 no-scrollbar scrollbar-hide">
-                             {[
-                               { name: 'Space', symbol: '🚀' },
-                               { name: 'Simpsons', symbol: '🍩' },
-                               { name: 'Football', symbol: '⚽' },
-                               { name: 'Music', symbol: '🎵' },
-                               { name: 'Marvel', symbol: '🦸' },
-                               { name: 'Fantasy', symbol: '🔮' },
-                               { name: 'Star Wars', symbol: '🌌' },
-                               { name: 'Roblox', symbol: '🎮' },
-                               { name: 'Cyberpunk', symbol: '💾' }
-                             ].map(item => (
-                               <button 
-                                 key={item.name}
-                                 onClick={() => setUserInterest(item.name)}
-                                 className={`whitespace-nowrap px-2.5 py-1 rounded-full transition-all border font-black text-[9px] uppercase tracking-tighter cursor-pointer relative ${
-                                   userInterest === item.name 
-                                     ? 'bg-amber-500/25 text-amber-400 border-amber-500/55 shadow-[0_0_15px_rgba(245,158,11,0.25)]' 
-                                     : 'bg-slate-900 border-slate-800 text-amber-500/60 hover:text-amber-400 hover:bg-amber-500/10 hover:border-amber-500/30'
-                                 } ${demoActiveTheme === item.name ? 'ring-2 ring-cyber-cyan scale-110 shadow-[0_0_15px_rgba(6,182,212,0.6)]' : ''}`}
-                               >
-                                 {item.symbol} {item.name.toUpperCase()}
-                                 {demoActiveTheme === item.name && (
-                                   <span className="absolute -top-1 -right-1 flex h-2 w-2">
-                                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyber-cyan opacity-75"></span>
-                                     <span className="relative inline-flex rounded-full h-2 w-2 bg-cyber-cyan"></span>
-                                   </span>
-                                 )}
-                               </button>
-                             ))}
-                             <button 
-                                 onClick={() => setUserInterest('DC')}
-                                 className={`whitespace-nowrap px-2.5 py-1 rounded-full transition-all border font-black text-[9px] uppercase tracking-tighter cursor-pointer relative ${
-                                   userInterest === 'DC' 
-                                     ? 'bg-amber-500/25 text-amber-400 border-amber-500/55 shadow-[0_0_15px_rgba(245,158,11,0.25)]' 
-                                     : 'bg-slate-900 border-slate-800 text-amber-500/60 hover:text-amber-400 hover:bg-amber-500/10 hover:border-amber-500/30'
-                                 } ${demoActiveTheme === 'DC' ? 'ring-2 ring-cyber-cyan scale-110 shadow-[0_0_15px_rgba(6,182,212,0.6)]' : ''}`}
-                             >
-                               🦇 DC UNIVERSE
-                               {demoActiveTheme === 'DC' && (
-                                 <span className="absolute -top-1 -right-1 flex h-2 w-2">
-                                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyber-cyan opacity-75"></span>
-                                   <span className="relative inline-flex rounded-full h-2 w-2 bg-cyber-cyan"></span>
-                                 </span>
-                               )}
-                             </button>
-                          </div>
-                       </div>
-     
-                       <button 
-                        onClick={initializeNeuralLink}
-                        disabled={isRetheming || isDemoCompiling}
-                        className={`w-full bg-cyber-cyan hover:brightness-125 text-black font-black py-4 rounded-xl transition-all flex items-center justify-center gap-3 group relative overflow-hidden disabled:opacity-50 disabled:cursor-wait border-2 border-white/20 ${
-                          demoActiveTheme === 'InitializeConnection' 
-                            ? 'ring-4 ring-cyber-cyan brightness-125 scale-[1.02] shadow-[0_0_30px_rgba(6,182,212,0.8)]' 
-                            : 'shadow-[0_0_30px_var(--primary-glow)]'
-                        }`}
-                       >
-                         {isRetheming || isDemoCompiling ? (
-                           <>
-                            <span className="animate-spin text-lg">⌬</span>
-                            <span className="text-xs">
-                              {isDemoCompiling ? 'DEMO COMPILING NEURAL INTERACTIVE GRID...' : 'RE-THEMING NEURAL GRID...'}
-                            </span>
-                           </>
-                         ) : (
-                           <>
-                            <span className="text-xs uppercase tracking-widest">Initialize Connection</span>
-                            <ChevronRight className={`w-4 h-4 transition-transform ${demoActiveTheme === 'InitializeConnection' ? 'translate-x-1' : 'group-hover:translate-x-1'}`} />
-                           </>
-                         )}
-                       </button>
-                     </div>
-                   </div>
-                </div>
+              {/* Column 2: Learn Python & Theme Environment Selector Card */}
+              <div className="w-full flex relative group/sync animate-fade-in-up">
+                <div className="bg-black/50 p-5 md:p-6 border border-slate-800 rounded-3xl shadow-2xl relative overflow-hidden backdrop-blur-md w-full flex flex-col justify-between transition-all duration-700">
+                  <div className="absolute top-0 right-0 p-2 opacity-10 pointer-events-none">
+                    <Radio className="w-16 h-16 text-cyber-cyan" />
+                  </div>
 
-                {!hasCompletedTutorial && activeTutorialStep !== 2 && (
-                  <div className="absolute inset-0 bg-black/10 z-20 flex flex-col items-center justify-center p-4 text-center pointer-events-none">
-                    <div className="p-4 bg-slate-950/95 rounded-2xl border border-slate-800/80 shadow-[0_0_25px_rgba(0,0,0,0.8)] flex flex-col items-center gap-1.5 max-w-[210px] animate-fade-in-up">
-                      <div className="p-2.5 bg-slate-900 rounded-xl border border-slate-800 text-slate-500 shadow-[0_0_10px_rgba(0,0,0,0.5)]">
-                        <Lock className="w-4 h-4" />
+                  {/* Header */}
+                  <div className="relative z-10 mb-3 pb-3 border-b border-white/5 flex items-start justify-between gap-2">
+                    <div className="text-left space-y-0.5">
+                      <div className="flex items-center gap-2">
+                        <h2 className="text-lg md:text-xl font-bold text-white tracking-tight">Learn Python</h2>
+                        <span className="px-2 py-0.5 rounded-full text-[8px] font-mono font-black uppercase tracking-wider bg-cyber-cyan/15 text-cyber-cyan border border-cyber-cyan/30">
+                          THEMES
+                        </span>
                       </div>
-                      <span className="font-mono text-[9px] font-black tracking-widest text-slate-400 uppercase">CONNECTION LOCKED</span>
-                      <p className="text-[9px] text-slate-500 leading-normal font-sans">Initialize system via onboarding step 3 to unlock interest compiler customization.</p>
+                      <p className="text-[10px] text-cyber-cyan/60 uppercase tracking-[0.2em] font-mono">
+                        Customize your training environment
+                      </p>
+                    </div>
+
+                    {directLaunchingTheme && (
+                      <div className="flex items-center gap-1.5 text-[8.5px] font-mono font-bold text-cyber-cyan bg-cyber-cyan/10 px-2.5 py-1 rounded-full border border-cyber-cyan/30 animate-pulse shrink-0">
+                        <span className="animate-spin text-xs">⌬</span>
+                        <span className="hidden sm:inline">LAUNCHING...</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Theme Buttons List */}
+                  <div className="relative z-10 space-y-2 max-h-[380px] overflow-y-auto pr-1.5 custom-scrollbar">
+                    {THEME_OPTIONS.map((theme) => {
+                      const isLaunching = directLaunchingTheme === theme.id;
+                      const isSelected = (userInterest || '').toLowerCase() === theme.name.toLowerCase() || activeThemeId === theme.id;
+                      const isDemoTarget = demoActiveTheme === theme.name;
+
+                      return (
+                        <button
+                          key={theme.id}
+                          id={`btn-theme-${theme.name.toLowerCase().replace(/\s+/g, '-')}`}
+                          type="button"
+                          onClick={() => launchDirectTheme(theme.name, theme.id)}
+                          disabled={isRetheming || directLaunchingTheme !== null}
+                          className={`w-full group relative p-2.5 rounded-2xl border text-left transition-all duration-200 cursor-pointer overflow-hidden flex items-center justify-between active:scale-[0.98] ${
+                            isLaunching || isSelected
+                              ? theme.bgActive
+                              : `${theme.bgBase} ${theme.borderColor} hover:scale-[1.01] hover:shadow-lg`
+                          } ${isDemoTarget ? 'ring-2 ring-cyber-cyan scale-105 shadow-[0_0_20px_rgba(6,182,212,0.6)]' : ''}`}
+                        >
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <div className={`w-9 h-9 rounded-xl border flex items-center justify-center text-lg shrink-0 group-hover:scale-110 transition-transform ${theme.iconBg}`}>
+                              {theme.symbol}
+                            </div>
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-1.5">
+                                <span className={`font-black text-xs md:text-sm tracking-tight uppercase truncate ${theme.titleColor}`}>
+                                  {theme.name}
+                                </span>
+                                <span className={`text-[7.5px] font-mono px-1.5 py-0.2 rounded font-black uppercase tracking-wider border ${theme.badgeColor}`}>
+                                  {theme.badge}
+                                </span>
+                              </div>
+                              <span className="text-[9.5px] text-slate-400 font-mono block truncate">
+                                {theme.tagline}
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className={`flex items-center gap-1 text-slate-400 transition-all shrink-0 pl-2 ${theme.glowColor} group-hover:translate-x-0.5`}>
+                            {isLaunching ? (
+                              <span className="animate-spin text-sm text-cyber-cyan">⌬</span>
+                            ) : (
+                              <>
+                                <span className="font-mono text-[9px] font-black uppercase text-slate-400 group-hover:text-white hidden sm:inline">
+                                  {isSelected ? 'ACTIVE' : 'GO'}
+                                </span>
+                                <ChevronRight className="w-3.5 h-3.5" />
+                              </>
+                            )}
+                          </div>
+                        </button>
+                      );
+                    })}
+
+                    {/* Custom Theme Option expandable toggle */}
+                    <div className="pt-1.5">
+                      {!showCustomThemeInput ? (
+                        <button
+                          type="button"
+                          onClick={() => setShowCustomThemeInput(true)}
+                          className="w-full py-2 px-3 rounded-xl border border-dashed border-slate-800 hover:border-cyber-cyan/40 bg-black/30 hover:bg-cyber-cyan/5 text-slate-400 hover:text-cyber-cyan text-[10px] font-mono font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                        >
+                          <span>✨ + Custom Theme Domain</span>
+                        </button>
+                      ) : (
+                        <div className="p-2.5 rounded-xl border border-cyber-cyan/30 bg-black/60 space-y-2 animate-fade-in-up">
+                          <div className="flex items-center justify-between text-[9px] font-mono text-slate-400">
+                            <span>ENTER CUSTOM DOMAIN</span>
+                            <button
+                              type="button"
+                              onClick={() => setShowCustomThemeInput(false)}
+                              className="text-slate-500 hover:text-white cursor-pointer"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                          <div className="flex gap-1.5">
+                            <input
+                              type="text"
+                              value={userInterest}
+                              onChange={(e) => setUserInterest(e.target.value)}
+                              placeholder="e.g. Formula 1, Medieval, Anime..."
+                              className="flex-1 bg-black/70 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white placeholder:text-slate-600 font-mono outline-none focus:border-cyber-cyan"
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter' && userInterest.trim()) {
+                                  launchDirectTheme(userInterest.trim(), 'custom');
+                                }
+                              }}
+                            />
+                            <button
+                              type="button"
+                              onClick={() => userInterest.trim() && launchDirectTheme(userInterest.trim(), 'custom')}
+                              disabled={!userInterest.trim() || isRetheming}
+                              className="px-3 py-1.5 rounded-lg bg-cyber-cyan text-black font-mono font-bold text-xs hover:brightness-110 disabled:opacity-50 cursor-pointer"
+                            >
+                              GO
+                            </button>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
-                )}
+                </div>
               </div>
 
               {/* Column 3: Operator Progress Dossier Card */}
@@ -4898,7 +5325,8 @@ export default function App() {
                         'cyan', 'pink', 'green', 'amber', 
                         'marvel', 'cyberpunk', 'space', 'football', 
                         'roblox', 'fantasy', 'gaming', 'simpsons', 
-                        'star-wars', 'starwars', 'music', 'dc'
+                        'star-wars', 'starwars', 'music', 'dc',
+                        'pokemon', 'minecraft', 'mario'
                       ];
                       
                       const colors: Record<string, string> = {
@@ -4917,7 +5345,10 @@ export default function App() {
                         'star-wars': '#00ff00',
                         starwars: '#00ff00',
                         music: '#f97316',
-                        dc: '#60a5fa'
+                        dc: '#60a5fa',
+                        pokemon: '#ffcb05',
+                        minecraft: '#5b8c32',
+                        mario: '#e52521'
                       };
 
                       const backgrounds: Record<string, string> = {
@@ -4936,7 +5367,10 @@ export default function App() {
                         'star-wars': '#020617',
                         starwars: '#020617',
                         music: '#0c0a09',
-                        dc: '#020617'
+                        dc: '#020617',
+                        pokemon: '#0e0d14',
+                        minecraft: '#0d140e',
+                        mario: '#130909'
                       };
 
                       const syntaxColors: Record<string, any> = {
@@ -4955,7 +5389,10 @@ export default function App() {
                         'star-wars': { keyword: 'ff0000', string: 'f8fafc', number: '00ff00', comment: '64748b' },
                         starwars: { keyword: 'ff0000', string: 'f8fafc', number: '00ff00', comment: '64748b' },
                         music: { keyword: '0ea5e9', string: 'fff7ed', number: 'f97316', comment: '44403c' },
-                        dc: { keyword: '38bdf8', string: 'e2e8f0', number: '7dd3fc', comment: '94a3b8', function: '60a5fa', type: 'f8fafc', identifier: 'e2e8f0', operator: '93c5fd', delimiter: 'f8fafc' }
+                        dc: { keyword: '38bdf8', string: 'e2e8f0', number: '7dd3fc', comment: '94a3b8', function: '60a5fa', type: 'f8fafc', identifier: 'e2e8f0', operator: '93c5fd', delimiter: 'f8fafc' },
+                        pokemon: { keyword: 'ffcb05', string: 'ffffff', number: 'ee1515', comment: '85796a', function: 'ffcb05', type: 'ffd23f' },
+                        minecraft: { keyword: '40c6db', string: 'f0fdf4', number: '5b8c32', comment: '5c7352', function: '40c6db', type: '86efac' },
+                        mario: { keyword: 'fbd000', string: 'fff1f1', number: 'e52521', comment: '7d5656', function: 'fbd000', type: 'fca5a5' }
                       };
 
                       themes.forEach(t => {
@@ -5185,6 +5622,11 @@ export default function App() {
                   <div className="flex gap-2">
                     {[
                       { id: 'theme-default', name: 'Default', icon: 'zap' },
+                      { id: 'theme-pokemon', name: 'Pokémon' },
+                      { id: 'theme-minecraft', name: 'Minecraft' },
+                      { id: 'theme-mario', name: 'Super Mario' },
+                      { id: 'theme-anime', name: 'Anime Heroes' },
+                      { id: 'theme-mecha', name: 'Mecha & Kaiju' },
                       { id: 'theme-star-wars', name: 'Star Wars' },
                       { id: 'theme-roblox', name: 'Roblox' },
                       { id: 'theme-space', name: 'Space' },

@@ -145,6 +145,46 @@ export const REWARDS: RewardItem[] = [
     type: "theme",
     value: "dc"
   },
+  {
+    id: "theme-pokemon",
+    name: "[MONSTER] Pokédex OS",
+    description: "Pallet Town to Indigo Plateau. Electric yellow sparks and iconic Pokéball scarlet.",
+    cost: 400,
+    type: "theme",
+    value: "pokemon"
+  },
+  {
+    id: "theme-minecraft",
+    name: "[CRAFT] Overworld Grid",
+    description: "Voxel pickaxes, redstone conduits, and lush grass block emerald vibes.",
+    cost: 400,
+    type: "theme",
+    value: "minecraft"
+  },
+  {
+    id: "theme-mario",
+    name: "[KINGDOM] Super Star OS",
+    description: "Mushroom Kingdom pipes, power-up mushrooms, and golden coin glory.",
+    cost: 400,
+    type: "theme",
+    value: "mario"
+  },
+  {
+    id: "theme-anime",
+    name: "[HERO] Shonen Corps OS",
+    description: "Nichirin blade flames, Grand Line sails, and high-octane battle spirit.",
+    cost: 400,
+    type: "theme",
+    value: "anime"
+  },
+  {
+    id: "theme-mecha",
+    name: "[TITAN] Mecha Defense Grid",
+    description: "Tokyo-3 radar telemetry, hyper mega particle cannons, and Kaiju seismic alerts.",
+    cost: 400,
+    type: "theme",
+    value: "mecha"
+  },
   // BANNERS (Renamed to Ambiances in description for clarity)
   {
     id: "banner-default",

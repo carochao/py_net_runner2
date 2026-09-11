@@ -2116,12 +2116,64 @@ function applyThemedContent(originalLesson: any, themedData: any) {
 }
 
 export async function rethemeLessons(interest: string, currentLessons: any[]): Promise<any[]> {
+  if (!interest) return currentLessons;
   const normalizedInterest = interest.toLowerCase().trim();
+  const cleanInterest = interest
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim();
+  const stripped = cleanInterest.replace(/[^a-z0-9]/g, '');
   
   // 1. CHECK STATIC THEMES FIRST
-  const aliasKey = STATIC_THEME_ALIASES[normalizedInterest];
-  const targetKey = aliasKey || normalizedInterest;
-  const staticThemeKey = Object.keys(STATIC_THEMES).find(k => k === targetKey);
+  let staticThemeKey: string | undefined = undefined;
+
+  // Exact or alias match
+  if (STATIC_THEMES[normalizedInterest]) {
+    staticThemeKey = normalizedInterest;
+  } else if (STATIC_THEMES[cleanInterest]) {
+    staticThemeKey = cleanInterest;
+  } else if (STATIC_THEMES[stripped]) {
+    staticThemeKey = stripped;
+  } else if (STATIC_THEME_ALIASES[normalizedInterest]) {
+    staticThemeKey = STATIC_THEME_ALIASES[normalizedInterest];
+  } else if (STATIC_THEME_ALIASES[cleanInterest]) {
+    staticThemeKey = STATIC_THEME_ALIASES[cleanInterest];
+  } else if (STATIC_THEME_ALIASES[stripped]) {
+    staticThemeKey = STATIC_THEME_ALIASES[stripped];
+  } else if (stripped.includes('pokemon') || stripped.includes('pokedex') || stripped.includes('pikachu') || stripped.includes('pokeball') || stripped.includes('pokmon')) {
+    staticThemeKey = 'pokemon';
+  } else if (stripped.includes('minecraft') || stripped.includes('creeper') || stripped.includes('redstone') || stripped.includes('overworld') || stripped.includes('steve') || stripped === 'craft') {
+    staticThemeKey = 'minecraft';
+  } else if (stripped.includes('mario') || stripped.includes('luigi') || stripped.includes('nintendo') || stripped.includes('bowser') || stripped.includes('mushroomkingdom')) {
+    staticThemeKey = 'mario';
+  } else if (stripped.includes('starwars') || stripped.includes('force') || stripped.includes('jedi') || stripped.includes('skywalker') || stripped.includes('starwar')) {
+    staticThemeKey = 'starwars';
+  } else if (stripped === 'dc' || stripped.includes('batman') || stripped.includes('gotham') || stripped.includes('waynetech') || stripped.includes('dcuniverse')) {
+    staticThemeKey = 'dc';
+  } else if (stripped.includes('marvel') || stripped.includes('stark') || stripped.includes('ironman') || stripped.includes('avenger')) {
+    staticThemeKey = 'marvel';
+  } else if (stripped.includes('simpson') || stripped.includes('homer') || stripped.includes('springfield')) {
+    staticThemeKey = 'simpsons';
+  } else if (stripped.includes('cyberpunk') || stripped.includes('samurai') || stripped.includes('nightcity') || stripped.includes('neon')) {
+    staticThemeKey = 'cyberpunk';
+  } else if (stripped.includes('roblox') || stripped.includes('obby') || stripped.includes('blox')) {
+    staticThemeKey = 'roblox';
+  } else if (stripped.includes('football') || stripped.includes('soccer') || stripped.includes('fifa') || stripped.includes('ronaldo') || stripped.includes('messi')) {
+    staticThemeKey = 'football';
+  } else if (stripped.includes('space') || stripped.includes('nasa') || stripped.includes('cosmos') || stripped.includes('astronomy') || stripped.includes('galaxy')) {
+    staticThemeKey = 'space';
+  } else if (stripped.includes('gaming') || stripped.includes('gamer') || stripped.includes('rpg') || stripped === 'game' || stripped === 'games') {
+    staticThemeKey = 'gaming';
+  } else if (stripped.includes('music') || stripped.includes('beat') || stripped.includes('synth') || stripped.includes('studio')) {
+    staticThemeKey = 'music';
+  } else if (stripped.includes('fantasy') || stripped.includes('wizard') || stripped.includes('magic') || stripped.includes('dragon')) {
+    staticThemeKey = 'fantasy';
+  } else if (stripped.includes('anime') || stripped.includes('shonen') || stripped.includes('shounen') || stripped.includes('demonslayer') || stripped.includes('tanjiro') || stripped.includes('onepiece') || stripped.includes('luffy') || stripped.includes('myhero') || stripped.includes('mha') || stripped.includes('deku') || stripped.includes('manga') || stripped.includes('naruto')) {
+    staticThemeKey = 'anime';
+  } else if (stripped.includes('mecha') || stripped.includes('kaiju') || stripped.includes('godzilla') || stripped.includes('gundam') || stripped.includes('robot') || stripped.includes('evangelion') || stripped.includes('eva') || stripped.includes('pacificrim') || stripped.includes('jaeger')) {
+    staticThemeKey = 'mecha';
+  }
 
   if (staticThemeKey && STATIC_THEMES[staticThemeKey]) {
     const themeData = STATIC_THEMES[staticThemeKey];
@@ -2145,18 +2197,25 @@ export async function rethemeLessons(interest: string, currentLessons: any[]): P
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ interest, currentLessons }),
     });
-    if (!response.ok) throw new Error("Server response error");
+    if (!response.ok) {
+      throw new Error(`Server returned status ${response.status}`);
+    }
     const themedLessonsRaw = await response.json();
-    const themedLessons = Array.isArray(themedLessonsRaw) ? themedLessonsRaw : [];
+    if (themedLessonsRaw?.fallback) {
+      return generateRethemeLocally(interest, currentLessons);
+    }
+    const themedLessons = Array.isArray(themedLessonsRaw) ? themedLessonsRaw : (Array.isArray(themedLessonsRaw?.lessons) ? themedLessonsRaw.lessons : []);
     
-    if (themedLessons.length === 0) throw new Error("AI returned empty array");
+    if (themedLessons.length === 0) {
+      return generateRethemeLocally(interest, currentLessons);
+    }
 
     return currentLessons.map(lesson => {
       const themed = themedLessons.find((l: any) => l.id === lesson.id);
       return themed ? applyThemedContent(lesson, themed) : lesson;
     });
   } catch (error) {
-    console.warn("Retheme fallback to local generator:", error);
+    console.info("Using local theme generator:", error);
     return generateRethemeLocally(interest, currentLessons);
   }
 }
