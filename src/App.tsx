@@ -3430,7 +3430,7 @@ export default function App() {
           )}
         </header>
 
-        <main className="flex-1 flex flex-col items-center justify-center p-6 relative z-10 max-w-5xl mx-auto w-full">
+        <main className="flex-1 flex flex-col items-center justify-center p-6 relative z-10 max-w-5xl lg:max-w-6xl xl:max-w-7xl 2xl:max-w-[1440px] mx-auto w-full">
           <div
             className="text-center space-y-6 w-full"
           >
@@ -3452,7 +3452,7 @@ export default function App() {
             })()}
 
             {/* Three-Column Row on Desktop: How it works, Customizer, and Telemetry Dossier */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch justify-center w-full max-w-5xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch justify-center w-full max-w-5xl lg:max-w-6xl xl:max-w-7xl 2xl:max-w-[1440px] mx-auto">
               {/* Column 1: Interactive Stepper Card */}
               <div className="w-full flex animate-fade-in-up">
                 <div className="p-6 bg-black/40 border border-slate-850 rounded-3xl backdrop-blur-sm shadow-2xl w-full flex flex-col justify-between relative overflow-hidden group">
@@ -3643,7 +3643,7 @@ export default function App() {
 
               {/* Column 2: Learn Python & Theme Environment Selector Card */}
               <div className="w-full flex relative group/sync animate-fade-in-up">
-                <div className="bg-black/50 p-5 md:p-6 border border-slate-800 rounded-3xl shadow-2xl relative overflow-hidden backdrop-blur-md w-full flex flex-col justify-between transition-all duration-700">
+                <div className="bg-black/50 p-4 sm:p-5 md:p-6 border border-slate-800 rounded-3xl shadow-2xl relative overflow-hidden backdrop-blur-md w-full flex flex-col justify-between transition-all duration-700">
                   <div className="absolute top-0 right-0 p-2 opacity-10 pointer-events-none">
                     <Radio className="w-16 h-16 text-cyber-cyan" />
                   </div>
@@ -3684,40 +3684,41 @@ export default function App() {
                           type="button"
                           onClick={() => launchDirectTheme(theme.name, theme.id)}
                           disabled={isRetheming || directLaunchingTheme !== null}
+                          title={`${theme.name} — ${theme.tagline}`}
                           className={`w-full group relative p-2.5 rounded-2xl border text-left transition-all duration-200 cursor-pointer overflow-hidden flex items-center justify-between active:scale-[0.98] ${
                             isLaunching || isSelected
                               ? theme.bgActive
                               : `${theme.bgBase} ${theme.borderColor} hover:scale-[1.01] hover:shadow-lg`
                           } ${isDemoTarget ? 'ring-2 ring-cyber-cyan scale-105 shadow-[0_0_20px_rgba(6,182,212,0.6)]' : ''}`}
                         >
-                          <div className="flex items-center gap-2.5 min-w-0">
+                          <div className="flex items-center gap-2.5 min-w-0 flex-1 mr-2">
                             <div className={`w-9 h-9 rounded-xl border flex items-center justify-center text-lg shrink-0 group-hover:scale-110 transition-transform ${theme.iconBg}`}>
                               {theme.symbol}
                             </div>
-                            <div className="min-w-0">
-                              <div className="flex items-center gap-1.5">
-                                <span className={`font-black text-xs md:text-sm tracking-tight uppercase truncate ${theme.titleColor}`}>
+                            <div className="min-w-0 flex-1">
+                              <div className="flex items-center gap-1.5 flex-wrap sm:flex-nowrap">
+                                <span className={`font-black text-xs sm:text-[13px] tracking-tight uppercase leading-snug break-words ${theme.titleColor}`}>
                                   {theme.name}
                                 </span>
-                                <span className={`text-[7.5px] font-mono px-1.5 py-0.2 rounded font-black uppercase tracking-wider border ${theme.badgeColor}`}>
+                                <span className={`text-[7px] font-mono px-1.5 py-0.5 rounded font-black uppercase tracking-wider border shrink-0 ${theme.badgeColor}`}>
                                   {theme.badge}
                                 </span>
                               </div>
-                              <span className="text-[9.5px] text-slate-400 font-mono block truncate">
+                              <span className="text-[9.5px] text-slate-400 font-mono block truncate mt-0.5" title={theme.tagline}>
                                 {theme.tagline}
                               </span>
                             </div>
                           </div>
 
-                          <div className={`flex items-center gap-1 text-slate-400 transition-all shrink-0 pl-2 ${theme.glowColor} group-hover:translate-x-0.5`}>
+                          <div className={`flex items-center gap-1 text-slate-400 transition-all shrink-0 pl-1.5 ${theme.glowColor} group-hover:translate-x-0.5`}>
                             {isLaunching ? (
                               <span className="animate-spin text-sm text-cyber-cyan">⌬</span>
                             ) : (
                               <>
-                                <span className="font-mono text-[9px] font-black uppercase text-slate-400 group-hover:text-white hidden sm:inline">
+                                <span className="font-mono text-[9px] font-black uppercase text-slate-400 group-hover:text-white hidden sm:inline whitespace-nowrap">
                                   {isSelected ? 'ACTIVE' : 'GO'}
                                 </span>
-                                <ChevronRight className="w-3.5 h-3.5" />
+                                <ChevronRight className="w-3.5 h-3.5 shrink-0" />
                               </>
                             )}
                           </div>
@@ -3903,7 +3904,7 @@ export default function App() {
         </main>
 
         {/* CHALLENGE GATEWAYS */}
-        <div className="mb-8 max-w-5xl w-full mx-auto px-6 relative z-10 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="mb-8 max-w-5xl lg:max-w-6xl xl:max-w-7xl 2xl:max-w-[1440px] w-full mx-auto px-6 relative z-10 grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* DEBUG ARENA CARD */}
           <div className="w-full flex relative group/arena">
             <div className={`bg-amber-500/5 border border-amber-500/20 rounded-3xl p-6 relative overflow-hidden backdrop-blur-md text-left flex flex-col justify-between gap-6 hover:border-amber-500/40 hover:shadow-[0_0_24px_rgba(245,158,11,0.08)] transition-all duration-700 w-full ${!hasCompletedTutorial ? 'blur-[5px] opacity-30 pointer-events-none select-none' : ''}`}>

@@ -17,9 +17,16 @@ import {
   Undo2,
   Info,
   BookOpen,
-  Zap
+  Zap,
+  Flame,
+  Cpu,
+  Sparkles,
+  Layers,
+  Search,
+  Filter
 } from 'lucide-react';
 import { validateCodeLocally, testWithRelaxedRegex } from '../services/geminiService';
+import { ADVANCED_CREATIVE_TASKS } from '../data/advancedCreativeTasks';
 
 interface CreativeChallengesProps {
   onBackToMain: () => void;
@@ -33,7 +40,8 @@ export interface CreativeTask {
   id: string;
   title: string;
   subtitle: string;
-  difficulty: 'Easy' | 'Medium' | 'Hard';
+  difficulty: 'Easy' | 'Medium' | 'Hard' | 'Expert';
+  section?: 'standard' | 'advanced';
   creditsReward: number;
   description: string;
   initialCode: string;
@@ -1988,6 +1996,11 @@ for p in pop_ages:
   }
 ];
 
+export const ALL_CREATIVE_TASKS: CreativeTask[] = [
+  ...CREATIVE_TASKS.map(t => ({ ...t, section: 'standard' as const })),
+  ...ADVANCED_CREATIVE_TASKS.map(t => ({ ...t, section: 'advanced' as const }))
+];
+
 export default function CreativeChallenges({ onBackToMain, onRewardCredits, currentCredits, userInterest, activeTheme }: CreativeChallengesProps) {
   // Theme titles & badges
   const getThemeDetails = () => {
@@ -2093,8 +2106,33 @@ export default function CreativeChallenges({ onBackToMain, onRewardCredits, curr
 
   const themeDetails = getThemeDetails();
 
-  const [selectedTask, setSelectedTask] = useState<CreativeTask>(CREATIVE_TASKS[0]);
+  const [selectedSection, setSelectedSection] = useState<'all' | 'standard' | 'advanced'>('standard');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedTask, setSelectedTask] = useState<CreativeTask>(ALL_CREATIVE_TASKS[0]);
   const [userCode, setUserCode] = useState(selectedTask.initialCode);
+
+  const filteredTasks = ALL_CREATIVE_TASKS.filter(task => {
+    const matchesSection = selectedSection === 'all' || (task.section || 'standard') === selectedSection;
+    if (!matchesSection) return false;
+    if (!searchQuery.trim()) return true;
+    const q = searchQuery.toLowerCase();
+    return (
+      task.title.toLowerCase().includes(q) ||
+      task.subtitle.toLowerCase().includes(q) ||
+      task.difficulty.toLowerCase().includes(q) ||
+      task.description.toLowerCase().includes(q)
+    );
+  });
+
+  const handleSelectSection = (section: 'all' | 'standard' | 'advanced') => {
+    setSelectedSection(section);
+    const pool = section === 'all' 
+      ? ALL_CREATIVE_TASKS 
+      : ALL_CREATIVE_TASKS.filter(t => (t.section || 'standard') === section);
+    if (pool.length > 0 && !pool.some(t => t.id === selectedTask.id)) {
+      loadChallenge(pool[0]);
+    }
+  };
   const [compileLogs, setCompileLogs] = useState<string[]>([
     '>>> INITIALIZING CREATIVE PROGRAMMING MAIN MATRIX...',
     '>>> SELECT A CHALLENGE AND COMPILE YOUR OWN SENSE PROTOCOL.'
@@ -2394,12 +2432,12 @@ export default function CreativeChallenges({ onBackToMain, onRewardCredits, curr
   };
 
   const handleNextChallenge = () => {
-    const currentIdx = CREATIVE_TASKS.findIndex(t => t.id === selectedTask.id);
-    if (currentIdx !== -1 && currentIdx + 1 < CREATIVE_TASKS.length) {
-      loadChallenge(CREATIVE_TASKS[currentIdx + 1]);
-    } else {
-      // Loop back or reset
-      loadChallenge(CREATIVE_TASKS[0]);
+    const pool = filteredTasks.length > 0 ? filteredTasks : ALL_CREATIVE_TASKS;
+    const currentIdx = pool.findIndex(t => t.id === selectedTask.id);
+    if (currentIdx !== -1 && currentIdx + 1 < pool.length) {
+      loadChallenge(pool[currentIdx + 1]);
+    } else if (pool.length > 0) {
+      loadChallenge(pool[0]);
     }
   };
 
@@ -2494,61 +2532,209 @@ export default function CreativeChallenges({ onBackToMain, onRewardCredits, curr
       <div className="flex-1 flex overflow-hidden">
         
         {/* Left Side: Challenge Navigation and Descriptions */}
-        <aside className="w-80 border-r border-[#1a1b26] bg-[#0c0e1a]/90 backdrop-blur p-5 flex flex-col gap-4 overflow-hidden shrink-0">
+        <aside className="w-84 border-r border-[#1a1b26] bg-[#0c0e1a]/90 backdrop-blur p-4 flex flex-col gap-3.5 overflow-hidden shrink-0">
           <div>
-            <h2 className="text-white font-black text-[13px] uppercase tracking-wider mb-1.5 flex items-center gap-1.5 font-mono">
-              <BookOpen className="w-3.5 h-3.5 text-[var(--secondary)]" />
-              {themeDetails.badge}
-            </h2>
-            <p className="text-[11px] text-slate-500 leading-normal">Write your own Python files from scratch. Design full code streams to solve objectives.</p>
+            <div className="flex items-center justify-between mb-1">
+              <h2 className="text-white font-black text-[13px] uppercase tracking-wider flex items-center gap-1.5 font-mono">
+                <BookOpen className="w-3.5 h-3.5 text-[var(--secondary)]" />
+                {themeDetails.badge}
+              </h2>
+              <span className="text-[9px] font-mono text-slate-500 font-bold px-1.5 py-0.5 rounded bg-black/40 border border-slate-800">
+                {ALL_CREATIVE_TASKS.length} PROTOCOLS
+              </span>
+            </div>
+            <p className="text-[11px] text-slate-500 leading-normal">Write your own Python files from scratch. Design algorithms and solve objectives.</p>
           </div>
 
-          <div className="flex flex-col gap-1.5 flex-1 min-h-0 overflow-y-auto pr-1">
-            {CREATIVE_TASKS.map((task, idx) => {
-              const isSelected = selectedTask.id === task.id;
-              const isCompleted = completedChallengeIds.includes(task.id);
+          {/* Section Selection Tabs */}
+          <div className="flex bg-black/60 p-1 rounded-xl border border-slate-800/80 gap-1 select-none">
+            <button
+              type="button"
+              onClick={() => handleSelectSection('standard')}
+              className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg text-[10px] font-mono font-black uppercase tracking-wider transition-all cursor-pointer ${
+                selectedSection === 'standard'
+                  ? 'bg-cyber-cyan/20 border border-cyber-cyan/40 text-cyber-cyan shadow-[0_0_12px_rgba(6,182,212,0.2)]'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-900/60 border border-transparent'
+              }`}
+            >
+              <BookOpen className="w-3 h-3 shrink-0" />
+              <span>CORE</span>
+              <span className="text-[8.5px] px-1 py-0.2 rounded bg-black/50 text-slate-400 font-bold border border-slate-800">
+                {CREATIVE_TASKS.length}
+              </span>
+            </button>
 
-              let badgeColor = 'bg-slate-900 border-slate-800 text-slate-400';
-              if (isCompleted) {
-                badgeColor = 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400';
-              } else if (isSelected) {
-                badgeColor = 'bg-cyber-cyan/15 border-cyber-cyan/30 text-cyber-cyan';
+            <button
+              type="button"
+              onClick={() => handleSelectSection('advanced')}
+              className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg text-[10px] font-mono font-black uppercase tracking-wider transition-all cursor-pointer ${
+                selectedSection === 'advanced'
+                  ? 'bg-amber-500/20 border border-amber-500/40 text-amber-400 shadow-[0_0_12px_rgba(245,158,11,0.2)]'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-900/60 border border-transparent'
+              }`}
+            >
+              <Flame className="w-3 h-3 text-amber-400 shrink-0 animate-pulse" />
+              <span>ADVANCED</span>
+              <span className="text-[8.5px] px-1 py-0.2 rounded bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30">
+                {ADVANCED_CREATIVE_TASKS.length}
+              </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleSelectSection('all')}
+              className={`px-2.5 py-1.5 rounded-lg text-[10px] font-mono font-black uppercase tracking-wider transition-all cursor-pointer ${
+                selectedSection === 'all'
+                  ? 'bg-purple-500/20 border border-purple-500/40 text-purple-300 shadow-[0_0_12px_rgba(168,85,247,0.2)]'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-900/60 border border-transparent'
+              }`}
+              title="Show all challenges"
+            >
+              <span>ALL</span>
+            </button>
+          </div>
+
+          {/* Quick Search */}
+          <div className="relative">
+            <Search className="w-3.5 h-3.5 text-slate-500 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder={
+                selectedSection === 'advanced' 
+                  ? "Search advanced protocols..." 
+                  : selectedSection === 'standard' 
+                  ? "Search core challenges..." 
+                  : "Search all challenges..."
               }
-
-              return (
-                <button
-                  key={task.id}
-                  onClick={() => loadChallenge(task)}
-                  className={`w-full text-left p-3 rounded-xl border transition-all flex flex-col gap-1 cursor-pointer bg-transparent shrink-0
-                    ${isSelected 
-                      ? 'bg-gradient-to-r from-cyber-cyan/5 to-cyber-pink/5 border-cyber-cyan/40 shadow-[0_0_15px_var(--primary-glow)]' 
-                      : 'border-[#1a1b26] hover:bg-slate-900/40 hover:border-slate-800'}`}
-                >
-                  <div className="flex items-center justify-between w-full">
-                    <span className="text-[10px] font-mono text-slate-500 select-none">SEQ_0{idx + 1}</span>
-                    <span className={`text-[8px] font-mono font-black uppercase tracking-widest px-1.5 py-0.5 rounded border ${badgeColor}`}>
-                      {isCompleted ? 'VERIFIED' : task.difficulty}
-                    </span>
-                  </div>
-
-                  <h3 className={`text-xs font-black uppercase tracking-tight leading-snug truncate ${isSelected ? 'text-white' : 'text-slate-400'}`}>
-                    {task.title}
-                  </h3>
-                  <span className="text-[10px] text-slate-500 hover:text-slate-400 leading-normal truncate block">
-                    {task.subtitle}
-                  </span>
-                </button>
-              );
-            })}
+              className="w-full bg-black/40 border border-slate-800/80 rounded-xl pl-8 pr-7 py-1.5 text-[11px] font-mono text-white placeholder:text-slate-600 focus:outline-none focus:border-cyber-cyan/50 transition-colors"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-slate-500 hover:text-white"
+              >
+                ✕
+              </button>
+            )}
           </div>
 
-          <div className="mt-auto border-t border-slate-900 pt-4 flex flex-col gap-2">
+          {/* Advanced Section Notice Banner */}
+          {selectedSection === 'advanced' && (
+            <div className="p-2.5 bg-gradient-to-r from-amber-500/10 via-rose-500/5 to-transparent border border-amber-500/30 rounded-xl flex items-center gap-2.5 text-left">
+              <div className="w-7 h-7 rounded-lg bg-amber-500/20 border border-amber-500/40 flex items-center justify-center shrink-0">
+                <Cpu className="w-3.5 h-3.5 text-amber-400" />
+              </div>
+              <div className="min-w-0">
+                <div className="text-[10px] font-mono font-black text-amber-300 uppercase tracking-wide flex items-center gap-1.5">
+                  <span>Advanced Computer Science</span>
+                </div>
+                <div className="text-[9px] text-slate-400 font-mono leading-tight truncate">
+                  Algorithms, Stacks, OOP, Cryptography & Math
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Challenges List */}
+          <div className="flex flex-col gap-1.5 flex-1 min-h-0 overflow-y-auto pr-1">
+            {filteredTasks.length === 0 ? (
+              <div className="py-8 text-center flex flex-col items-center justify-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center border border-slate-800 text-slate-500">
+                  <Search className="w-4 h-4" />
+                </div>
+                <div className="text-xs font-mono text-slate-400">No matching challenges found</div>
+                <button
+                  onClick={() => { setSearchQuery(''); setSelectedSection('all'); }}
+                  className="text-[10px] font-mono text-cyber-cyan hover:underline"
+                >
+                  Reset filters & search
+                </button>
+              </div>
+            ) : (
+              filteredTasks.map((task, idx) => {
+                const isSelected = selectedTask.id === task.id;
+                const isCompleted = completedChallengeIds.includes(task.id);
+                const isAdvanced = task.section === 'advanced';
+
+                let badgeColor = 'bg-slate-900 border-slate-800 text-slate-400';
+                if (isCompleted) {
+                  badgeColor = 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400';
+                } else if (task.difficulty === 'Expert') {
+                  badgeColor = 'bg-rose-500/20 border-rose-500/40 text-rose-300';
+                } else if (task.difficulty === 'Hard') {
+                  badgeColor = 'bg-amber-500/20 border-amber-500/40 text-amber-300';
+                } else if (isSelected) {
+                  badgeColor = 'bg-cyber-cyan/15 border-cyber-cyan/30 text-cyber-cyan';
+                }
+
+                const seqLabel = isAdvanced 
+                  ? `ADV_0${idx + 1}` 
+                  : `SEQ_0${idx + 1}`;
+
+                return (
+                  <button
+                    key={task.id}
+                    onClick={() => loadChallenge(task)}
+                    className={`w-full text-left p-3 rounded-xl border transition-all flex flex-col gap-1 cursor-pointer bg-transparent shrink-0 ${
+                      isSelected 
+                        ? isAdvanced
+                          ? 'bg-gradient-to-r from-amber-500/10 to-rose-500/10 border-amber-500/50 shadow-[0_0_18px_rgba(245,158,11,0.25)]'
+                          : 'bg-gradient-to-r from-cyber-cyan/5 to-cyber-pink/5 border-cyber-cyan/40 shadow-[0_0_15px_var(--primary-glow)]' 
+                        : isAdvanced
+                          ? 'border-amber-500/20 hover:bg-amber-500/5 hover:border-amber-500/40'
+                          : 'border-[#1a1b26] hover:bg-slate-900/40 hover:border-slate-800'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between w-full">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[10px] font-mono text-slate-500 select-none">{seqLabel}</span>
+                        {isAdvanced && (
+                          <span className="text-[7.5px] font-mono px-1 py-0.2 rounded bg-amber-500/15 border border-amber-500/30 text-amber-400 font-bold uppercase tracking-wider">
+                            PRO
+                          </span>
+                        )}
+                      </div>
+                      <span className={`text-[8px] font-mono font-black uppercase tracking-widest px-1.5 py-0.5 rounded border ${badgeColor}`}>
+                        {isCompleted ? 'VERIFIED' : task.difficulty}
+                      </span>
+                    </div>
+
+                    <h3 className={`text-xs font-black uppercase tracking-tight leading-snug truncate ${
+                      isSelected ? 'text-white' : isAdvanced ? 'text-amber-100/90' : 'text-slate-400'
+                    }`}>
+                      {task.title}
+                    </h3>
+                    <span className="text-[10px] text-slate-500 hover:text-slate-400 leading-normal truncate block">
+                      {task.subtitle}
+                    </span>
+                  </button>
+                );
+              })
+            )}
+          </div>
+
+          <div className="mt-auto border-t border-slate-900 pt-3 flex flex-col gap-2">
             <div className="p-3 bg-black/40 border border-slate-900 rounded-xl">
-              <h4 className="text-[10px] text-slate-400 font-mono font-bold uppercase tracking-wider mb-1">COMPASS RULES</h4>
+              <h4 className="text-[10px] text-slate-400 font-mono font-bold uppercase tracking-wider mb-1 flex items-center justify-between">
+                <span>{selectedSection === 'advanced' ? 'ADVANCED PROTOCOLS' : 'COMPASS RULES'}</span>
+                {selectedSection === 'advanced' && <Flame className="w-3 h-3 text-amber-400" />}
+              </h4>
               <ul className="text-[9.5px] text-slate-600 leading-relaxed list-disc list-inside">
-                <li>No boilerplate layout required</li>
-                <li>Verify your print matching outputs</li>
-                <li>Interact directly via console prompt</li>
+                {selectedSection === 'advanced' ? (
+                  <>
+                    <li>Focus on algorithmic logic & efficiency</li>
+                    <li>Design functions, loops & data structures</li>
+                    <li>Test edge cases directly in the terminal</li>
+                  </>
+                ) : (
+                  <>
+                    <li>No boilerplate layout required</li>
+                    <li>Verify your print matching outputs</li>
+                    <li>Interact directly via console prompt</li>
+                  </>
+                )}
               </ul>
             </div>
           </div>
@@ -2562,22 +2748,44 @@ export default function CreativeChallenges({ onBackToMain, onRewardCredits, curr
             
             {/* Task Info Panel */}
             <div className="p-6 border-b-2 border-cyber-cyan/30 bg-cyber-cyan/[0.04] shadow-[0_4px_30px_rgba(6,182,212,0.12)] relative overflow-hidden pl-8 sm:pl-9 select-text">
-              <div className="absolute left-0 top-0 bottom-0 w-[5px] bg-cyber-cyan shadow-[0_0_15px_var(--primary-glow)]" />
+              <div className={`absolute left-0 top-0 bottom-0 w-[5px] shadow-[0_0_15px_var(--primary-glow)] ${
+                selectedTask.section === 'advanced' ? 'bg-amber-400' : 'bg-cyber-cyan'
+              }`} />
               <div className="absolute top-0 right-0 p-4 opacity-[0.04] pointer-events-none select-none">
                 <Terminal className="w-32 h-32 text-cyber-cyan" />
               </div>
 
               <div className="space-y-3 relative z-10">
-                <div className="flex items-center gap-2.5">
+                <div className="flex items-center gap-2.5 flex-wrap">
                   <span className="relative flex h-2.5 w-2.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyber-cyan opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-cyber-cyan"></span>
+                    <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${
+                      selectedTask.section === 'advanced' ? 'bg-amber-400' : 'bg-cyber-cyan'
+                    }`}></span>
+                    <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${
+                      selectedTask.section === 'advanced' ? 'bg-amber-400' : 'bg-cyber-cyan'
+                    }`}></span>
                   </span>
                   <span className="px-2.5 py-0.5 bg-cyber-cyan/15 border border-cyber-cyan/30 text-cyber-cyan text-[10px] font-mono font-black rounded uppercase tracking-widest selection:bg-white selection:text-cyber-cyan">
                     OBJECTIVE FIELD
                   </span>
+                  {selectedTask.section === 'advanced' && (
+                    <span className="px-2.5 py-0.5 bg-amber-500/20 border border-amber-500/40 text-amber-300 text-[10px] font-mono font-black rounded uppercase tracking-widest flex items-center gap-1">
+                      <Flame className="w-3 h-3 text-amber-400" />
+                      ADVANCED LAB
+                    </span>
+                  )}
                   <span className="text-slate-700">|</span>
                   <span className="text-slate-400 font-mono text-[10.5px] uppercase tracking-wider">REWARD: +{selectedTask.creditsReward} CC</span>
+                  <span className="text-slate-700">|</span>
+                  <span className={`text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded border ${
+                    selectedTask.difficulty === 'Expert'
+                      ? 'bg-rose-500/20 border-rose-500/40 text-rose-300'
+                      : selectedTask.difficulty === 'Hard'
+                      ? 'bg-amber-500/20 border-amber-500/40 text-amber-300'
+                      : 'bg-cyber-cyan/10 border-cyber-cyan/30 text-cyber-cyan'
+                  }`}>
+                    {selectedTask.difficulty}
+                  </span>
                 </div>
 
                 <h2 className="text-xl sm:text-2xl font-black text-white uppercase tracking-tight flex items-center gap-2 font-mono glow-text">
