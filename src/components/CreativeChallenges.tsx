@@ -117,7 +117,7 @@ Write a single print statement that outputs both sentences on a single line, sep
 
 `,
     solutionRegex: [
-      `print\\s*\\(\\s*["']Gregg\\s+loves\\s+big\\s+elbows\\.?["']\\s*,\\s*["']Graham\\s+hates\\s+Parma\\s+ham\\.?["']\\s*\\)`
+      `print\\s*\\(\\s*["']Gregg\\s+loves\\s+big\\s+elbows\\.?["']\\s*(?:,|\\+)\\s*["'](?:,\\s*)?Graham\\s+hates\\s+Parma\\s+ham\\.?["']\\s*\\)|print\\s*\\(\\s*["']Gregg\\s+loves\\s+big\\s+elbows,?\\s+Graham\\s+hates\\s+Parma\\s+ham\\.?["']\\s*\\)`
     ],
     solutionHint: `Put both sentences as arguments separated by a comma:
 print("Gregg loves big elbows", "Graham hates Parma ham")`,
@@ -197,7 +197,7 @@ Write a program that:
 `,
     solutionRegex: [
       `[a-zA-Z_]\\w*\\s*=\\s*input\\s*\\(`,
-      `print\\s*\\(\\s*["']So\\s+your\\s+favourite\\s+movie\\s+is:\\s*["']\\s*\\)`,
+      `print\\s*\\(\\s*["'](?:So\\s+)?your\\s+favou?rite\\s+movie\\s+is:?\\s*["']\\s*\\)`,
       `print\\s*\\(\\s*[a-zA-Z_]\\w*\\s*\\)`
     ],
     solutionHint: `Write three logical steps:
@@ -226,7 +226,7 @@ Write a program that asks for their favourite movie, and prints the message and 
 
 `,
     solutionRegex: [
-      `print\\s*\\(\\s*["']So\\s+your\\s+favourite\\s+movie\\s+is:\\s*["']\\s*,\\s*[a-zA-Z_]\\w*\\s*\\)`
+      `print\\s*\\(\\s*(?:f["'](?:So\\s+)?your\\s+favou?rite\\s+movie\\s+is:?\\s*\\{[a-zA-Z_]\\w*\\}["']|["'](?:So\\s+)?your\\s+favou?rite\\s+movie\\s+is:?\\s*["']\\s*(?:,|\\+)\\s*[a-zA-Z_]\\w*|[a-zA-Z_]\\w*\\s*,\\s*["'](?:So\\s+)?your\\s+favou?rite\\s+movie\\s+is:?\\s*["'])\\s*\\)`
     ],
     solutionHint: `Combine them into one print command separated by a comma:
 movie = input("Favorite movie: ")
@@ -497,7 +497,8 @@ print(10 + 20 + 35)`,
 
 `,
     solutionRegex: [
-      `int\\s*\\(\\s*input\\s*\\(`,
+      `int\\s*\\(`,
+      `input\\s*\\(`,
       `\\+`,
       `print\\s*\\(`
     ],
@@ -521,7 +522,8 @@ print(num1 + num2 + num3)`,
 
 `,
     solutionRegex: [
-      `int\\s*\\(\\s*input\\s*\\(`,
+      `int\\s*\\(`,
+      `input\\s*\\(`,
       `\\+`,
       `-`,
       `print\\s*\\(`
@@ -569,7 +571,8 @@ print("Area:", width * height)`,
 
 `,
     solutionRegex: [
-      `float\\s*\\(\\s*input\\s*\\(`,
+      `float\\s*\\(`,
+      `input\\s*\\(`,
       `\\/`,
       `print\\s*\\(`
     ],
@@ -593,7 +596,8 @@ print((num1 + num2 + num3) / 3)`,
 
 `,
     solutionRegex: [
-      `int\\s*\\(\\s*input\\s*\\(`,
+      `int\\s*\\(`,
+      `input\\s*\\(`,
       `%`,
       `print\\s*\\(`
     ],
@@ -616,7 +620,8 @@ print(a % b)`,
 
 `,
     solutionRegex: [
-      `int\\s*\\(\\s*input\\s*\\(`,
+      `int\\s*\\(`,
+      `input\\s*\\(`,
       `\\/\\/`,
       `print\\s*\\(`
     ],
@@ -639,7 +644,7 @@ print(a // b)`,
 
 `,
     solutionRegex: [
-      `int\\s*\\(\\s*input\\s*\\(`,
+      `input\\s*\\(`,
       `%\\s*2`,
       `if\\s+`,
       `print\\s*\\(`
@@ -667,10 +672,10 @@ else:
 
 `,
     solutionRegex: [
-      `int\\s*\\(\\s*input\\s*\\(`,
-      `if\\s+.*<\\s*10`,
-      `print\\s*\\(.*your\\s+number\\s+is\\s+less\\s+than\\s+10`,
-      `print\\s*\\(.*your\\s+number\\s+is\\s+either\\s+equal\\s+to,\\s+or\\s+bigger\\s+than\\s+10`
+      `input\\s*\\(`,
+      `if\\s+.*(?:<|<=|>|>=)\\s*10`,
+      `print\\s*\\(.*less\\s+than\\s+10`,
+      `print\\s*\\(.*(?:equal|bigger|greater)`
     ],
     solutionHint: `Input an integer and compare it:
 num = int(input("Enter number: "))
@@ -730,8 +735,8 @@ else:
 `,
     solutionRegex: [
       `input\\s*\\(`,
-      `if\\s+[^\\n]*(!=\\s*["']Beans["']|==\\s*["']Beans["']|not\\s+[^\\n]*[Bb]eans)`,
-      `print\\s*\\(.*[Yy]ou\\s+are\\s+a\\s+BEAN`,
+      `if\\s+.*[Bb]eans`,
+      `print\\s*\\(.*[Yy]ou\\s+are\\s+a\\s+[Bb][Ee][Aa][Nn]`,
       `print\\s*\\(.*[Pp]eak`
     ],
     solutionHint: `Ask for food, check if unequal to "Beans":
@@ -759,8 +764,8 @@ else:
     solutionRegex: [
       `input\\s*\\(`,
       `%\\s*2`,
-      `print\\s*\\(.*EVEN`,
-      `print\\s*\\(.*ODD`
+      `print\\s*\\(.*[Ee][Vv][Ee][Nn]`,
+      `print\\s*\\(.*[Oo][Dd][Dd]`
     ],
     solutionHint: `Input a number and print ODD/EVEN depending on the modulo remainder:
 num = int(input("Enter number: "))
@@ -1101,7 +1106,7 @@ while i < 100:
 
 `,
     solutionRegex: [
-      `\\[\\s*["'][A-Za-z]+["']\\s*,\\s*["'][A-Za-z]+["']\\s*,\\s*["'][A-Za-z]+["']\\s*\\]`,
+      `\\[\\s*["'][^"'\n]+["']\\s*,\\s*["'][^"'\n]+["']\\s*,\\s*["'][^"'\n]+["']\\s*\\]`,
       `for\\s+.*\\s+in\\s+`,
       `print\\s*\\(`
     ],
@@ -1126,7 +1131,7 @@ for f in friends:
 
 `,
     solutionRegex: [
-      `\\[\\s*["'][A-Za-z]+["']\\s*,\\s*["'][A-Za-z]+["']\\s*,\\s*["'][A-Za-z]+["']\\s*\\]`,
+      `\\[\\s*["'][^"'\n]+["']\\s*,\\s*["'][^"'\n]+["']\\s*,\\s*["'][^"'\n]+["']\\s*\\]`,
       `while\\s+`,
       `print\\s*\\(`
     ],
@@ -1279,7 +1284,7 @@ nums = [i * 10 for i in range(100)] # Differ by 10 from one another increment st
 
 `,
     solutionRegex: [
-      `len\\s*\\(\\s*nums\\s*\\)\\s*==\\s*100`,
+      `(?:len\\s*\\(|for\\s+|diff|100)`,
       `print\\s*\\(`
     ],
     solutionHint: `Ensure the list has exactly 100 elements, then verify the adjacent differences in a loop:
@@ -1305,7 +1310,7 @@ nums = [1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4]
 
 `,
     solutionRegex: [
-      `append\\s*\\(`,
+      `(?:append\\s*\\(|set\\s*\\(|unique|len\\s*\\()`,
       `print\\s*\\(`
     ],
     solutionHint: `Track unique elements using a loop and keep track of adjacent duplicates:
@@ -1409,7 +1414,7 @@ custom_sum(50, 75)`,
 `,
     solutionRegex: [
       `def\\s+`,
-      `int\\s*\\(\\s*input\\s*\\(`,
+      `input\\s*\\(`,
       `\\*`
     ],
     solutionHint: `Define a function, request inputs, cast to integers, and call:
@@ -2358,14 +2363,24 @@ export default function CreativeChallenges({ onBackToMain, onRewardCredits, curr
     // Complete run outputs
     const fullOutputLogs = [...runResult.output];
     
-    // Evaluate if correct using the lenient, space-relaxed regex protocols from the main tasks
+    // Evaluate if correct using lenient regex protocols against both code and executed output
     let matchesAllRegex = true;
+    const combinedOutput = fullOutputLogs.join('\n');
     for (const regexStr of selectedTask.solutionRegex) {
       try {
         const regex = typeof regexStr === 'string' ? new RegExp(regexStr, 'mi') : regexStr;
         if (!testWithRelaxedRegex(regex, codeToRun)) {
-          matchesAllRegex = false;
-          break;
+          // Output fallback: check if the executed output satisfies the pattern
+          let outputMatched = false;
+          try {
+            outputMatched = testWithRelaxedRegex(regex, combinedOutput) || regex.test(combinedOutput);
+          } catch (e) {
+            outputMatched = false;
+          }
+          if (!outputMatched) {
+            matchesAllRegex = false;
+            break;
+          }
         }
       } catch (e) {
         matchesAllRegex = false;

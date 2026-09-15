@@ -25,59 +25,117 @@ export function relaxRegex(r: RegExp): RegExp {
   // 1. Comments: Allow optional spaces after # so `#comment` and `# comment` both work.
   src = src.replace(/([^\\#]|^)#(?:\\s\*|\\s\+|\s)*/g, "$1#\\s*");
 
-  // 2. Allow spaces around commas: replace "," with "\\s*,\\s*"
+  // 2. Word relaxation: allow both British and American spellings (favourite <-> favorite)
+  src = src.replace(/favou\?rite|favourite|favorite/gi, "favou?rite");
+
+  // 4. Allow spaces around commas: replace "," with "\\s*,\\s*"
   src = src.replace(/(\\[\s\S])|(,)/g, (match, escaped, comma) => {
     if (escaped) return escaped;
     return "\\s*,\\s*";
   });
 
-  // 3. Allow spaces around colons: replace ":" with "\\s*:\\s*"
+  // 5. Allow spaces around colons: replace ":" with "\\s*:\\s*"
   src = src.replace(/(\\[\s\S])|(:)/g, (match, escaped, colon) => {
     if (escaped) return escaped;
     return "\\s*:\\s*";
   });
 
-  // 4. Quotes: Allow optional spaces around any quote character or character class matching quotes
+  // 6. Quotes: Allow optional spaces around any quote character or character class matching quotes
   src = src.replace(/(\\[\s\S])|(\[['\"\\\\]+\]|['\"])/g, (match, escaped, target) => {
     if (escaped) return escaped;
     return `\\s*${target}\\s*`;
   });
 
-  // 5. Allow any spacing around assignment & equality operator "=" and "=="
+  // 7. Allow any spacing around assignment & equality operator "=" and "=="
   src = src.replace(/([^\\!=<>+\-*/\s])\s*=\s*([^\\!=<>\s])/g, "$1\\s*=\\s*$2");
 
-  // 6. Allow optional spacing around operators like "+", "-", "*", "/", "%"
+  // 8. Allow optional spacing around operators like "+", "-", "*", "/", "%"
   src = src.replace(/\\([+\-*/%])/g, "\\s*\\$1\\s*");
 
-  // 7. Allow optional spacing around escaped brackets/parentheses: "\\(", "\\)", "\\[", "\\]"
+  // 9. Allow optional spacing around escaped brackets/parentheses: "\\(", "\\)", "\\[", "\\]"
   src = src.replace(/\\\(/g, "\\s*\\(\\s*");
   src = src.replace(/\\\)/g, "\\s*\\)\\s*");
   src = src.replace(/\\\[/g, "\\s*\\[\\s*");
   src = src.replace(/\\\]/g, "\\s*\\]\\s*");
 
-  // 8. Make all unescaped space characters match any optional spaces/tabs \\s*
+  // 10. Make all unescaped space characters match any optional spaces/tabs \\s*
   src = src.replace(/(\\[\s\S])|( )/g, (match, escaped, space) => {
     if (escaped) return escaped;
     return "\\s*";
   });
 
-  // 9. Collapse any double spaces \\s*\\s* or extra \\s* to just one \\s*
+  // 11. Collapse any double spaces \\s*\\s* or extra \\s* to just one \\s*
   src = src.replace(/(?:\\s\*)+/g, "\\s*");
   src = src.replace(/(?:\\s\+)+/g, "\\s+");
 
   return new RegExp(src, r.flags);
 }
 
+export function normalizeUserCode(code: string): string {
+  return normalizeHorizontalSpaces(code)
+    .replace(/[\u201C\u201D]/g, '"')
+    .replace(/[\u2018\u2019]/g, "'")
+    .replace(/[\u2013\u2014]/g, '-');
+}
+
+export function splitTopLevelArgs(str: string): string[] {
+  const args: string[] = [];
+  let cur = '';
+  let parenDepth = 0;
+  let bracketDepth = 0;
+  let braceDepth = 0;
+  let inQ = false;
+  let qChar = '';
+
+  for (let i = 0; i < str.length; i++) {
+    const c = str[i];
+    if (inQ) {
+      cur += c;
+      if (c === qChar && (i === 0 || str[i - 1] !== '\\')) {
+        inQ = false;
+      }
+      continue;
+    }
+    if (c === '"' || c === "'") {
+      inQ = true;
+      qChar = c;
+      cur += c;
+      continue;
+    }
+    if (c === '(') { parenDepth++; cur += c; continue; }
+    if (c === ')') { parenDepth--; cur += c; continue; }
+    if (c === '[') { bracketDepth++; cur += c; continue; }
+    if (c === ']') { bracketDepth--; cur += c; continue; }
+    if (c === '{') { braceDepth++; cur += c; continue; }
+    if (c === '}') { braceDepth--; cur += c; continue; }
+
+    if (c === ',' && parenDepth === 0 && bracketDepth === 0 && braceDepth === 0) {
+      if (cur.trim()) args.push(cur.trim());
+      cur = '';
+      continue;
+    }
+    cur += c;
+  }
+  if (cur.trim()) args.push(cur.trim());
+  return args;
+}
+
 export function testWithRelaxedRegex(regex: RegExp, userCode: string): boolean {
   if (regex.test(userCode)) return true;
   
-  const normalizedUserCode = normalizeHorizontalSpaces(userCode);
+  const normalizedUserCode = normalizeUserCode(userCode);
   if (regex.test(normalizedUserCode)) return true;
 
   try {
     const relaxed = relaxRegex(regex);
     if (relaxed.test(userCode)) return true;
     if (relaxed.test(normalizedUserCode)) return true;
+
+    // Test spelling variations (favorite <-> favourite)
+    const ukCode = normalizedUserCode.replace(/favorite/gi, 'favourite');
+    if (relaxed.test(ukCode)) return true;
+    const usCode = normalizedUserCode.replace(/favourite/gi, 'favorite');
+    if (relaxed.test(usCode)) return true;
   } catch (e) {
     // Ignore RegExp syntax error in relaxRegex
   }
@@ -91,7 +149,7 @@ export function testCaseInsensitiveMatch(regex: RegExp, userCode: string): boole
     const ciRegex = new RegExp(regex.source, flags);
     if (ciRegex.test(userCode)) return true;
     
-    const normalizedUserCode = normalizeHorizontalSpaces(userCode);
+    const normalizedUserCode = normalizeUserCode(userCode);
     if (ciRegex.test(normalizedUserCode)) return true;
 
     const relaxed = relaxRegex(regex);
@@ -941,9 +999,41 @@ export function validateCodeLocally(userCode: string, solutionRegex: (string | R
 
       const isExecuting = executeStack[currentDepth];
 
-      // --- Syntax Check: Brackets (always check) ---
+      // --- Syntax Check: Brackets (ignoring contents of string literals and comments) ---
+      let inSingleQuote = false;
+      let inDoubleQuote = false;
+      let inTripleSingle = false;
+      let inTripleDouble = false;
       for (let j = 0; j < line.length; j++) {
-          const char = line[j];
+        const char = line[j];
+        // Handle comment
+        if (!inSingleQuote && !inDoubleQuote && !inTripleSingle && !inTripleDouble && char === '#') {
+          break; // Rest of line is comment
+        }
+        // Handle quotes
+        if (!inSingleQuote && !inTripleSingle) {
+          if (line.slice(j, j + 3) === '"""') {
+            inTripleDouble = !inTripleDouble;
+            j += 2;
+            continue;
+          } else if (!inTripleDouble && char === '"' && (j === 0 || line[j - 1] !== '\\')) {
+            inDoubleQuote = !inDoubleQuote;
+            continue;
+          }
+        }
+        if (!inDoubleQuote && !inTripleDouble) {
+          if (line.slice(j, j + 3) === "'''") {
+            inTripleSingle = !inTripleSingle;
+            j += 2;
+            continue;
+          } else if (!inTripleSingle && char === "'" && (j === 0 || line[j - 1] !== '\\')) {
+            inSingleQuote = !inSingleQuote;
+            continue;
+          }
+        }
+
+        // Only check brackets outside strings
+        if (!inSingleQuote && !inDoubleQuote && !inTripleSingle && !inTripleDouble) {
           if (['(', '[', '{'].includes(char)) {
             stack.push({ char, line: lineNum, pos: j });
           } else if ([')', ']', '}'].includes(char)) {
@@ -952,43 +1042,32 @@ export function validateCodeLocally(userCode: string, solutionRegex: (string | R
               errors.push({ line: lineNum, message: `SyntaxError: Closing '${char}' does not match any opening bracket.`, type: 'error' });
             }
           }
+        }
       }
 
-      // --- Syntax Check: Quotes (always check) ---
-      const quoteCount = (line.match(/"/g) || []).length;
-      const singleQuoteCount = (line.match(/'/g) || []).length;
-      if (quoteCount % 2 !== 0 && !line.includes("'") && !line.includes("\\\"")) {
-        errors.push({ line: lineNum, message: "SyntaxError: EOL while scanning string literal (unclosed double quote).", type: 'error' });
-      }
-      if (singleQuoteCount % 2 !== 0 && !line.includes('"') && !line.includes("\\'")) {
-        errors.push({ line: lineNum, message: "SyntaxError: EOL while scanning string literal (unclosed single quote).", type: 'error' });
+      // --- Syntax Check: Quotes (always check, ignoring triple-quoted docstrings) ---
+      const hasTripleQuotes = line.includes('"""') || line.includes("'''");
+      if (!hasTripleQuotes) {
+        const quoteCount = (line.match(/"/g) || []).length;
+        const singleQuoteCount = (line.match(/'/g) || []).length;
+        if (quoteCount % 2 !== 0 && !line.includes("'") && !line.includes("\\\"")) {
+          errors.push({ line: lineNum, message: "SyntaxError: EOL while scanning string literal (unclosed double quote).", type: 'error' });
+        }
+        if (singleQuoteCount % 2 !== 0 && !line.includes('"') && !line.includes("\\'")) {
+          errors.push({ line: lineNum, message: "SyntaxError: EOL while scanning string literal (unclosed single quote).", type: 'error' });
+        }
       }
 
       // --- Loop Simulation (FOR) ---
-      const forMatch = trimmed.match(/^for\s+([a-zA-Z_]\w*)\s+in\s+(.*):$/);
+      const forMatch = trimmed.match(/^for\s+([a-zA-Z_][\w,\s]*)\s+in\s+(.*):$/);
       if (forMatch) {
         if (!trimmed.endsWith(':')) {
            errors.push({ line: lineNum, message: "SyntaxError: Expected ':' at the end of statement.", type: 'error' });
         }
         
-        const varName = forMatch[1];
+        const rawVarNames = forMatch[1].trim();
+        const targetVars = rawVarNames.split(',').map(s => s.trim()).filter(Boolean);
         const iterableExpr = forMatch[2].trim().replace(/:$/, ""); // Ensure no colon at end
-        
-        let iterable: any[] = [];
-        const rangeMatch = iterableExpr.match(/^range\s*\(\s*(.*?)\s*\)$/);
-        
-        if (rangeMatch) {
-          const rangeArg = evaluateValue(rangeMatch[1]);
-          const rangeLimit = Number(rangeArg);
-          if (!isNaN(rangeLimit)) {
-             for (let r = 0; r < Math.min(rangeLimit, 100); r++) iterable.push(r);
-          }
-        } else {
-            const evaluated = evaluateValue(iterableExpr);
-            if (typeof evaluated === 'string' || Array.isArray(evaluated)) {
-                iterable = Array.from(evaluated);
-            }
-        }
         
         // Find the block
         const blockLines: string[] = [];
@@ -1018,28 +1097,54 @@ export function validateCodeLocally(userCode: string, solutionRegex: (string | R
         
         if (isExecuting && blockLines.length > 0) {
           try {
-            const iterableExpr = forMatch[2].trim().replace(/:$/, ""); // Ensure no colon at end
-            
             let iterable: any[] = [];
             const rangeMatch = iterableExpr.match(/^range\s*\(\s*(.*?)\s*\)$/);
             
             if (rangeMatch) {
-              const rangeArg = evaluateValue(rangeMatch[1]);
-              const rangeLimit = Number(rangeArg);
-              if (!isNaN(rangeLimit)) {
-                 for (let r = 0; r < Math.min(rangeLimit, 100); r++) iterable.push(r);
+              const parts = splitTopLevelArgs(rangeMatch[1]).map(p => evaluateValue(p));
+              let start = 0, stop = 0, step = 1;
+              if (parts.length === 1) {
+                stop = Number(parts[0]) || 0;
+              } else if (parts.length === 2) {
+                start = Number(parts[0]) || 0;
+                stop = Number(parts[1]) || 0;
+              } else if (parts.length >= 3) {
+                start = Number(parts[0]) || 0;
+                stop = Number(parts[1]) || 0;
+                step = Number(parts[2]) || 1;
+              }
+              if (step > 0) {
+                for (let r = start; r < stop && iterable.length < 2500; r += step) iterable.push(r);
+              } else if (step < 0) {
+                for (let r = start; r > stop && iterable.length < 2500; r += step) iterable.push(r);
               }
             } else {
                 const evaluated = evaluateValue(iterableExpr);
                 if (typeof evaluated === 'string' || Array.isArray(evaluated)) {
                     iterable = Array.from(evaluated);
+                } else if (evaluated && typeof evaluated === 'object') {
+                    iterable = Object.entries(evaluated);
                 }
             }
 
             if (iterable.length > 0) {
               // Process the block N times
-              for (const item of iterable.slice(0, 100)) { // Cap at 100 to avoid infinite loops
-                variables[varName] = item;
+              for (const item of iterable.slice(0, 2500)) { // Cap at 2500 to avoid infinite loops
+                if (targetVars.length === 1) {
+                  variables[targetVars[0]] = item;
+                } else {
+                  if (Array.isArray(item)) {
+                    targetVars.forEach((v, idx) => {
+                      variables[v] = item[idx];
+                    });
+                  } else if (item && typeof item === 'object') {
+                    const entries = Object.entries(item);
+                    if (entries.length > 0) {
+                      targetVars[0] && (variables[targetVars[0]] = entries[0][0]);
+                      targetVars[1] && (variables[targetVars[1]] = entries[0][1]);
+                    }
+                  }
+                }
                 
                 // Save state before processing block
                 const savedExecuteStack = [...executeStack];
@@ -1126,7 +1231,7 @@ export function validateCodeLocally(userCode: string, solutionRegex: (string | R
         if (isExecuting && blockLines.length > 0) {
           try {
             let safetyBreak = 0;
-            while (evaluateCondition(condition) && safetyBreak < 100) {
+            while (evaluateCondition(condition) && safetyBreak < 2500) {
               // Save state before processing block
               const savedExecuteStack = [...executeStack];
               const savedIfLevelMet = [...ifLevelMet];
@@ -1157,8 +1262,8 @@ export function validateCodeLocally(userCode: string, solutionRegex: (string | R
               safetyBreak++;
             }
 
-            if (evaluateCondition(condition) && safetyBreak === 100) {
-              errors.push({ line: lineNum, message: "RuntimeError: Potential infinite loop detected or too many iterations (capped at 100).", type: 'error' });
+            if (evaluateCondition(condition) && safetyBreak === 2500) {
+              errors.push({ line: lineNum, message: "RuntimeError: Potential infinite loop detected or too many iterations (capped at 2500).", type: 'error' });
             }
           } catch (e: any) {
              if (e && e.awaitingInput) {
@@ -1538,50 +1643,65 @@ export function validateCodeLocally(userCode: string, solutionRegex: (string | R
         }
 
         if (found) {
-          const trimmedContent = printContent.trim();
+          const rawArgs = splitTopLevelArgs(printContent);
+          let sep = ' ';
           let hasLineError = false;
-          if (trimmedContent) {
-            const isNumeric = !isNaN(Number(trimmedContent)) && trimmedContent !== '';
-            const isVariable = /^[a-zA-Z_]\w*$/.test(trimmedContent) && variables[trimmedContent] !== undefined;
-            const isUndefinedVariable = /^[a-zA-Z_]\w*$/.test(trimmedContent) && variables[trimmedContent] === undefined;
-            const isStringLiteral = 
-              (trimmedContent.startsWith('"') && trimmedContent.endsWith('"')) || 
-              (trimmedContent.startsWith("'") && trimmedContent.endsWith("'")) ||
-              (trimmedContent.startsWith('f"') && trimmedContent.endsWith('"')) ||
-              (trimmedContent.startsWith("f'") && trimmedContent.endsWith("'")) ||
-              (trimmedContent.startsWith('F"') && trimmedContent.endsWith('"')) ||
-              (trimmedContent.startsWith("F'") && trimmedContent.endsWith("'"));
-            const isReserved = ['True', 'False', 'None'].includes(trimmedContent);
+          const positionalArgs: string[] = [];
 
-            const isBracketedOrSlicing = 
-              (trimmedContent.startsWith('[') && trimmedContent.endsWith(']')) ||
-              (trimmedContent.startsWith('(') && trimmedContent.endsWith(')')) ||
-              (trimmedContent.startsWith('{') && trimmedContent.endsWith('}')) ||
-              (/(?:^[a-zA-Z_]\w*\s*\[.*\]$)/.test(trimmedContent)) ||
-              (/\bfor\s+[a-zA-Z_]\w*\s+in\s+/.test(trimmedContent));
+          for (const rawArg of rawArgs) {
+            const trimmedArg = rawArg.trim();
+            if (!trimmedArg) continue;
 
-            if (!isStringLiteral && !isNumeric && !isVariable && !isReserved && !isBracketedOrSlicing) {
-               const holdsUnquotedSpaces = /\b[a-zA-Z_]\w*\s+[a-zA-Z0-9_]/.test(trimmedContent);
-               const holdsColons = trimmedContent.includes(':');
-               const containsOperators = /[+\-*/%]/.test(trimmedContent);
-               const containsFunctionCall = /[a-zA-Z_]\w*\s*\(/.test(trimmedContent);
-               
-               if ((holdsUnquotedSpaces || holdsColons) && !containsOperators && !containsFunctionCall) {
-                  errors.push({ 
-                    line: lineNum, 
-                    message: `SyntaxError: invalid syntax. String literals must be enclosed in quotes (e.g., "${trimmedContent}")`, 
-                    type: 'error' 
-                  });
-                  hasLineError = true;
-               } else if (isUndefinedVariable) {
-                  errors.push({
-                    line: lineNum,
-                    message: `NameError: name '${trimmedContent}' is not defined. Did you forget to wrap it in quotes or define it?`,
-                    type: 'error'
-                  });
-                  hasLineError = true;
-               }
+            if (trimmedArg.startsWith('sep=')) {
+              const sepVal = evaluateValue(trimmedArg.slice(4).trim());
+              sep = sepVal !== undefined ? String(sepVal) : ' ';
+              continue;
             }
+            if (trimmedArg.startsWith('end=')) {
+              continue;
+            }
+
+            const isNumeric = !isNaN(Number(trimmedArg)) && trimmedArg !== '';
+            const isVariable = /^[a-zA-Z_]\w*$/.test(trimmedArg) && variables[trimmedArg] !== undefined;
+            const isUndefinedVariable = /^[a-zA-Z_]\w*$/.test(trimmedArg) && variables[trimmedArg] === undefined && !['True', 'False', 'None'].includes(trimmedArg);
+            const isStringLiteral = 
+              (trimmedArg.startsWith('"') && trimmedArg.endsWith('"')) || 
+              (trimmedArg.startsWith("'") && trimmedArg.endsWith("'")) ||
+              (trimmedArg.startsWith('f"') && trimmedArg.endsWith('"')) ||
+              (trimmedArg.startsWith("f'") && trimmedArg.endsWith("'")) ||
+              (trimmedArg.startsWith('F"') && trimmedArg.endsWith('"')) ||
+              (trimmedArg.startsWith("F'") && trimmedArg.endsWith("'"));
+            const isReserved = ['True', 'False', 'None'].includes(trimmedArg);
+            const isBracketedOrSlicing = 
+              (trimmedArg.startsWith('[') && trimmedArg.endsWith(']')) ||
+              (trimmedArg.startsWith('(') && trimmedArg.endsWith(')')) ||
+              (trimmedArg.startsWith('{') && trimmedArg.endsWith('}')) ||
+              (/(?:^[a-zA-Z_]\w*\s*\[.*\]$)/.test(trimmedArg)) ||
+              (/\bfor\s+[a-zA-Z_]\w*\s+in\s+/.test(trimmedArg));
+            const containsOperators = /[+\-*/%<>=]/.test(trimmedArg);
+            const containsFunctionCall = /[a-zA-Z_]\w*\s*\(/.test(trimmedArg);
+
+            if (isUndefinedVariable && !containsFunctionCall && !containsOperators) {
+              errors.push({
+                line: lineNum,
+                message: `NameError: name '${trimmedArg}' is not defined. Did you forget to wrap it in quotes or define it?`,
+                type: 'error'
+              });
+              hasLineError = true;
+            } else if (!isStringLiteral && !isNumeric && !isVariable && !isReserved && !isBracketedOrSlicing && !containsOperators && !containsFunctionCall) {
+              const holdsUnquotedSpaces = /\b[a-zA-Z_]\w*\s+[a-zA-Z0-9_]/.test(trimmedArg);
+              const holdsColons = trimmedArg.includes(':');
+              if (holdsUnquotedSpaces || holdsColons) {
+                errors.push({ 
+                  line: lineNum, 
+                  message: `SyntaxError: invalid syntax. String literals must be enclosed in quotes (e.g., "${trimmedArg}")`, 
+                  type: 'error' 
+                });
+                hasLineError = true;
+              }
+            }
+
+            positionalArgs.push(trimmedArg);
           }
 
           if (hasLineError) {
@@ -1590,13 +1710,26 @@ export function validateCodeLocally(userCode: string, solutionRegex: (string | R
           }
 
           try {
-            const evaluated = evaluateValue(printContent);
-            
-            if (evaluated === undefined) {
-               // Avoid printing variable names when undefined
-               prints.push("NameError: identifier not defined");
+            if (positionalArgs.length === 0) {
+              if (prints.length < 1000) prints.push('');
             } else {
-              prints.push(stringifyValue(evaluated));
+              const renderedParts: string[] = [];
+              for (const argExpr of positionalArgs) {
+                const evaluated = evaluateValue(argExpr);
+                if (evaluated === undefined) {
+                  renderedParts.push('None');
+                } else if (typeof evaluated === 'string') {
+                  renderedParts.push(evaluated);
+                } else {
+                  renderedParts.push(stringifyValue(evaluated));
+                }
+              }
+              const outputLine = renderedParts.join(sep);
+              if (prints.length < 1000) {
+                prints.push(outputLine);
+              } else if (prints.length === 1000) {
+                prints.push('... [Output truncated after 1000 lines]');
+              }
             }
           } catch (e: any) {
             if (e && e.awaitingInput) {
