@@ -4057,6 +4057,7 @@ export default function App() {
         currentCredits={currentCredits}
         userInterest={userInterest}
         activeTheme={activeTheme}
+        currentUserEmail={currentUser?.email || undefined}
       />
     );
   }

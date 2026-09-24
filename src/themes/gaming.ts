@@ -551,13 +551,44 @@ export const GAMING_THEME: any = {
     task: "### YOUR MISSION\n\n1. `battery` starts at `100`.\n2. While `battery > 0`, subtract `20` from `battery` to power your controller.\n3. `print` the current `battery` level inside the loop."
   },
   "functions-intro": {
-    headerPrefix: "DAEMON_UPLOADER",
-    missionPrefix: "QUICK_HACK",
-    intro: "# Netrunner Skillset: Functions\n\nDon't hack manually every time! Create a reusable daemon function to distribute a virus across all connected nodes in the apartment.",
-    task: "Write a function `upload_virus(node_id)` that prints `f'Infecting node {node_id}...'`. Call it.",
-    baseCode: "# TODO: Pack daemon function\n",
-    solution: "def upload_virus(node_id):\n    print(f'Infecting node {node_id}...')\n\nupload_virus('A7')",
-    solutionRegex: [/def\s+upload_virus/, /upload_virus\s*\(/]
+    headerPrefix: "SKILL_TREE",
+    missionPrefix: "ABILITY_CAST",
+    intro: "# Game Mechanics: Functions\n\nDon't write out attack damage formulas manually every turn! Package your character's abilities into reusable functions you can cast anytime.",
+    task: "Write a function `cast_spell(spell_name)` that prints `f'Casting {spell_name} at target...'`. Call it with `'Fireball'`.",
+    baseCode: "# TODO: Define spell casting function\n",
+    solution: "def cast_spell(spell_name):\n    print(f'Casting {spell_name} at target...')\n\ncast_spell('Fireball')",
+    solutionRegex: [/def\s+cast_spell/, /cast_spell\s*\(/]
+  },
+  "functions-procedures-vs-functions": {
+    headerPrefix: "RPG_SYSTEM",
+    missionPrefix: "DATA_DELIVERY",
+    title: "Procedures vs Game Functions",
+    intro: "# Game Engine Design: Procedures vs Functions 🎮\n\nIn a video game:\n\n1. **A Procedure (Action Routine)**: Playing a level-up sound effect or displaying a victory splash banner—it draws pixels and plays audio on screen, but passes **zero numerical data** into your character's stats sheet.\n2. **A Function (Value-Returning Routine)**: The XP calculator computing combat experience—it crunches numbers and uses **`return`** to deliver that XP directly into your player's leveling variable!",
+    technical: "### The Core Difference:\n- **Procedure**: Plays SFX or draws banners (like `print()`). Hands back nothing (`None`).\n- **Function**: Uses `return` to pass critical numerical data into the player's main inventory variables.",
+    task: "1. Define a procedure `play_sfx(sound)` that prints: `f\"SFX: Playing {sound}.wav\"` (no return).\n2. Define a function `calculate_xp(monsters, xp_each)` that `return`s `monsters * xp_each`.\n3. In the main program:\n   - Call `play_sfx(\"victory_fanfare\")`.\n   - Call `calculate_xp(10, 5)`, store the result in `total_xp`, and `print(total_xp)`.",
+    baseCode: "# TODO: Define SFX procedure and XP calculation function\n",
+    solution: "def play_sfx(sound):\n    print(f\"SFX: Playing {sound}.wav\")\n\ndef calculate_xp(monsters, xp_each):\n    return monsters * xp_each\n\nplay_sfx(\"victory_fanfare\")\ntotal_xp = calculate_xp(10, 5)\nprint(total_xp)",
+    solutionRegex: [/def\s+play_sfx\s*\(\s*sound\s*\)\s*:/, /def\s+calculate_xp\s*\(\s*monsters\s*,\s*xp_each\s*\)\s*:/, /return\s+monsters\s*\*\s*xp_each/, /play_sfx\s*\(\s*['"]victory_fanfare['"]\s*\)/, /total_xp\s*=\s*calculate_xp\s*\(\s*10\s*,\s*5\s*\)/, /print\s*\(\s*total_xp\s*\)/]
+  },
+  "functions-the-none-trap": {
+    headerPrefix: "LOOT_CORRUPTION",
+    missionPrefix: "DATA_DELIVERY",
+    title: "The RPG None Trap: Chat Window vs Gold Pouch",
+    intro: "# The RPG Trap: Why Game Chat Isn't Return ⚔️\n\nIf your character announces their dungeon gold in the public chat box (`print()`), other players read it, but your gold pouch variable receives **nothing** (`None`)!\n\nTo pass loot rewards directly into your character's purse variables, your looting function MUST use **`return`**.",
+    task: "1. Define a function `loot_gold(dungeon_level)` that `return`s `dungeon_level * 7` back to the inventory.\n2. In the main program, call `loot_gold(15)` and store the delivered result in `gold_earned`.\n3. `print(gold_earned)`.",
+    baseCode: "# TODO: Return looted gold to character purse\n",
+    solution: "def loot_gold(dungeon_level):\n    return dungeon_level * 7\n\ngold_earned = loot_gold(15)\nprint(gold_earned)",
+    solutionRegex: [/def\s+loot_gold\s*\(\s*dungeon_level\s*\)\s*:/, /return\s+dungeon_level\s*\*\s*7/, /gold_earned\s*=\s*loot_gold\s*\(\s*15\s*\)/, /print\s*\(\s*gold_earned\s*\)/]
+  },
+  "functions-main-integration": {
+    headerPrefix: "BOSS_AI",
+    missionPrefix: "COMBAT_DECISION",
+    title: "Boss Fight Decisions: Return to Strategy",
+    intro: "# Boss Fight Strategy: Return to Decision 🛡️\n\nA combat function calculates remaining player HP after a boss attack and hands the number back so your main game loop can decide whether to strike or drink a potion!",
+    task: "1. Define a function `evaluate_hp(damage, max_hp)` that `return`s `max_hp - damage`.\n2. In the main program, call `evaluate_hp(35, 100)` and store the result in `current_hp`.\n3. In the main program, write an `if`/`else` check:\n   - If `current_hp >= 50`, `print(\"Continue Attack\")`.\n   - Else, `print(\"Drink Health Potion\")`.",
+    baseCode: "# TODO: Evaluate HP and execute battle decision\n",
+    solution: "def evaluate_hp(damage, max_hp):\n    return max_hp - damage\n\ncurrent_hp = evaluate_hp(35, 100)\nif current_hp >= 50:\n    print(\"Continue Attack\")\nelse:\n    print(\"Drink Health Potion\")",
+    solutionRegex: [/def\s+evaluate_hp\s*\(\s*damage\s*,\s*max_hp\s*\)\s*:/, /return\s+max_hp\s*-\s*damage/, /current_hp\s*=\s*evaluate_hp\s*\(\s*35\s*,\s*100\s*\)/, /if\s+current_hp\s*>=\s*50\s*:/, /print\s*\(\s*['"]Continue Attack['"]\s*\)/, /else\s*:/, /print\s*\(\s*['"]Drink Health Potion['"]\s*\)/]
   },
   "functions-recursion": {
     headerPrefix: "DAEMON_RECURSE",

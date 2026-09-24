@@ -559,6 +559,37 @@ export const SPACE_THEME: any = {
     solution: "def ping_satellite(satellite_id):\n    print(f'Pinging satellite {satellite_id}...')\n\nping_satellite('A7')",
     solutionRegex: [/def\s+ping_satellite/, /ping_satellite\s*\(/]
   },
+  "functions-procedures-vs-functions": {
+    headerPrefix: "MISSION_CONTROL",
+    missionPrefix: "TELEMETRY_LINK",
+    title: "Procedures vs Telemetry Functions",
+    intro: "# Mission Control: Procedures vs Telemetry Functions 🚀\n\nIn rocket operations:\n\n1. **A Procedure (Action Routine)**: Flight Director broadcasting `\"Launch sequence initiated!\"` over the comms loop—it sounds an alert to the crew, but delivers **no numerical data** to the flight computer's variables.\n2. **A Function (Telemetry Routine)**: The propulsion calculator calculating rocket burn velocity—it calculates data and uses **`return`** to deliver that number directly into the flight computer's guidance system!",
+    technical: "### The Core Difference:\n- **Procedure**: Executes visual or audio output (`print()`). The main flight computer receives nothing (`None`).\n- **Function**: Uses `return` to deliver critical telemetry numbers into the main program's variables.",
+    task: "1. Define a procedure `broadcast_status(stage)` that prints: `f\"COMMS: Stage {stage} active\"` (no return).\n2. Define a function `calculate_thrust(fuel, burn_rate)` that `return`s `fuel * burn_rate`.\n3. In the main program:\n   - Call `broadcast_status(\"Booster\")`.\n   - Call `calculate_thrust(100, 4)`, store the result in `total_thrust`, and `print(total_thrust)`.",
+    baseCode: "# TODO: Define broadcast procedure and thrust function\n",
+    solution: "def broadcast_status(stage):\n    print(f\"COMMS: Stage {stage} active\")\n\ndef calculate_thrust(fuel, burn_rate):\n    return fuel * burn_rate\n\nbroadcast_status(\"Booster\")\ntotal_thrust = calculate_thrust(100, 4)\nprint(total_thrust)",
+    solutionRegex: [/def\s+broadcast_status\s*\(\s*stage\s*\)\s*:/, /def\s+calculate_thrust\s*\(\s*fuel\s*,\s*burn_rate\s*\)\s*:/, /return\s+fuel\s*\*\s*burn_rate/, /broadcast_status\s*\(\s*['"]Booster['"]\s*\)/, /total_thrust\s*=\s*calculate_thrust\s*\(\s*100\s*,\s*4\s*\)/, /print\s*\(\s*total_thrust\s*\)/]
+  },
+  "functions-the-none-trap": {
+    headerPrefix: "TELEMETRY_VOID",
+    missionPrefix: "DATA_DELIVERY",
+    title: "The Orbital None Trap: Display vs Guidance",
+    intro: "# The Orbital Trap: Why Screen Displays Aren't Return 🛰️\n\nIf an astronaut's terminal prints the orbital trajectory on a glass cockpit display (`print()`), human eyes can read it, but the spacecraft's autopilot receives **nothing** (`None`)!\n\nTo pass trajectory values directly into the autopilot's guidance variables, the routine MUST use **`return`**.",
+    task: "1. Define a function `calculate_orbit_speed(altitude)` that `return`s `altitude * 7` to the guidance computer.\n2. In the main program, call `calculate_orbit_speed(11)` and store the delivered result in `orbital_velocity`.\n3. `print(orbital_velocity)`.",
+    baseCode: "# TODO: Return orbit speed to guidance system\n",
+    solution: "def calculate_orbit_speed(altitude):\n    return altitude * 7\n\norbital_velocity = calculate_orbit_speed(11)\nprint(orbital_velocity)",
+    solutionRegex: [/def\s+calculate_orbit_speed\s*\(\s*altitude\s*\)\s*:/, /return\s+altitude\s*\*\s*7/, /orbital_velocity\s*=\s*calculate_orbit_speed\s*\(\s*11\s*\)/, /print\s*\(\s*orbital_velocity\s*\)/]
+  },
+  "functions-main-integration": {
+    headerPrefix: "GUIDANCE_AI",
+    missionPrefix: "TRAJECTORY_DECISION",
+    title: "Flight Decisions: Feeding the Guidance System",
+    intro: "# Mission Trajectory: Return to Decision 🌌\n\nA propulsion function computes remaining propellant and hands the result back so the main flight program can decide whether to proceed with deep-space burn or enter parking orbit!",
+    task: "1. Define a function `check_oxygen_reserve(consumed, total)` that `return`s `total - consumed`.\n2. In the main program, call `check_oxygen_reserve(40, 100)` and store the result in `net_oxygen`.\n3. In the main program, write an `if`/`else` check:\n   - If `net_oxygen >= 50`, `print(\"Life Support Nominal\")`.\n   - Else, `print(\"Oxygen Critical\")`.",
+    baseCode: "# TODO: Check reserves and execute flight decision\n",
+    solution: "def check_oxygen_reserve(consumed, total):\n    return total - consumed\n\nnet_oxygen = check_oxygen_reserve(40, 100)\nif net_oxygen >= 50:\n    print(\"Life Support Nominal\")\nelse:\n    print(\"Oxygen Critical\")",
+    solutionRegex: [/def\s+check_oxygen_reserve\s*\(\s*consumed\s*,\s*total\s*\)\s*:/, /return\s+total\s*-\s*consumed/, /net_oxygen\s*=\s*check_oxygen_reserve\s*\(\s*40\s*,\s*100\s*\)/, /if\s+net_oxygen\s*>=\s*50\s*:/, /print\s*\(\s*['"]Life Support Nominal['"]\s*\)/, /else\s*:/, /print\s*\(\s*['"]Oxygen Critical['"]\s*\)/]
+  },
   "functions-recursion": {
     headerPrefix: "ORBIT_DESCENT",
     missionPrefix: "SURFACE_PROBE",

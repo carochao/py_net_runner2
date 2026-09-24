@@ -1058,6 +1058,69 @@ export const LESSONS: Lesson[] = [
     solutionRegex: [/return\s+base\s*\+\s*drift/, /print\s*\(\s*result\s*\)/]
   },
 {
+    id: "functions-procedures-vs-functions",
+    level: "functions",
+    title: "Procedures vs Functions: The Return Divide",
+    description: "Learn the difference between action-performing procedures and value-returning functions.",
+    headerPrefix: "SUBROUTINE_DIVIDE",
+    missionPrefix: "DATA_DELIVERY",
+    intro: "# Procedures vs Functions: Action vs Delivery 🔄\n\nIn Python, you can write two distinct types of subroutines:\n\n1. **A Procedure (Action Routine)**: Performs an action (like printing an alert to the screen or logging a timestamp). It completes its task, but **passes zero data back into the main program's variables**.\n2. **A Function (Value-Returning Routine)**: Takes inputs, computes a result, and uses the **`return`** statement to **hand a parcel of data back into the main program** so your code can store it and use it!",
+    technical: "### The Core Difference:\n- **Procedure**: Executes instructions for their *side effects* (e.g., displaying text on screen). If you try to save its output: `result = my_procedure()`, `result` is literally `None`!\n- **Function**: Uses `return` to send a calculated value back to where it was called. You catch that delivered parcel using assignment: `result = my_function()`.\n- **The Rule**: If the main program needs to use the answer to do math, make decisions, or store in memory, you MUST use `return`!",
+    example: "# 1. PROCEDURE: Prints an alert, but returns nothing\ndef log_alert(node):\n    print(f\"Warning: Node {node} offline\")\n\n# 2. FUNCTION: Returns a calculated number to the main program\ndef calculate_power(core, booster):\n    return core * booster\n\n# Main Program Execution:\nlog_alert(\"A1\")                     # Action executed\ntotal = calculate_power(10, 5)       # Data handed back to main program!\nprint(f\"Main Program Total: {total}\") # 50",
+    task: "### YOUR MISSION\n\n1. Define a procedure `log_system(msg)` that `print`s: `f\"LOG: {msg}\"` (do NOT use return).\n2. Define a function `calculate_power(core, booster)` that `return`s `core * booster` to the caller.\n3. In the main program (unindented):\n   - Call `log_system(\"Mainframe Online\")`.\n   - Call `calculate_power(10, 5)`, assign the delivered result to `total_power`, and `print(total_power)`.",
+    baseCode: "# TODO: Define procedure log_system and function calculate_power\n",
+    hints: [
+      "def log_system(msg): with print inside.",
+      "def calculate_power(core, booster): with return core * booster inside.",
+      "In the main program: total_power = calculate_power(10, 5)",
+      "Then print(total_power)"
+    ],
+    solution: "def log_system(msg):\n    print(f\"LOG: {msg}\")\n\ndef calculate_power(core, booster):\n    return core * booster\n\nlog_system(\"Mainframe Online\")\ntotal_power = calculate_power(10, 5)\nprint(total_power)",
+    solutionRegex: [/def\s+log_system\s*\(\s*msg\s*\)\s*:/, /def\s+calculate_power\s*\(\s*core\s*,\s*booster\s*\)\s*:/, /return\s+core\s*\*\s*booster/, /log_system\s*\(\s*['"]Mainframe Online['"]\s*\)/, /total_power\s*=\s*calculate_power\s*\(\s*10\s*,\s*5\s*\)/, /print\s*\(\s*total_power\s*\)/]
+  },
+{
+    id: "functions-the-none-trap",
+    level: "functions",
+    title: "The None Trap: Why Print Isn't Return",
+    description: "Understand why print() cannot pass data to your main program, and how return acts as the messenger.",
+    headerPrefix: "DATA_CORRUPTION",
+    missionPrefix: "VOID_VS_VALUE",
+    intro: "# The None Trap: Why Print Isn't Return ⚠️\n\nA universal trap for beginners is believing that typing `print()` inside a routine sends the answer to their main program. **It does not!**\n\n- `print()` simply displays characters on the monitor screen for human eyes. It evaporates into the air!\n- The computer's memory receives **nothing** (`None`).\n- To hand data directly to a variable in your main program, you **must use `return`**.",
+    technical: "### The None Disaster:\n```python\ndef broken_generator(seed):\n    print(seed * 7) # Only prints to screen!\n\nkey = broken_generator(10)\n# In your main program, key is now: None!\n# If you try 'key + 5', Python crashes with TypeError!\n```\n### The Fix (The Return Messenger):\n```python\ndef working_generator(seed):\n    return seed * 7 # Hands the value directly to 'key'!\n\nkey = working_generator(10)\n# key holds 70 in main memory! Ready for use.\n```",
+    example: "# Print only displays:\ndef echo(val):\n    print(val)\n\nx = echo(42)  # x is None\n\n# Return delivers:\ndef deliver(val):\n    return val\n\ny = deliver(42)  # y is 42\nprint(y * 2)     # Output: 84",
+    task: "### YOUR MISSION\n\nA security module needs a function that securely returns an encryption key into the main program's memory instead of printing it to the screen.\n\n1. Define a function `generate_key(seed)` that **returns** `seed * 7` back to the main program.\n2. In the main program, call `generate_key(12)` and store the returned value in a variable named `access_code`.\n3. `print(access_code)`.",
+    baseCode: "# TODO: Define generate_key with return\n",
+    hints: [
+      "Use 'def generate_key(seed):'",
+      "Use 'return seed * 7' inside (do not print inside the function)",
+      "In the main program: access_code = generate_key(12)",
+      "Then print(access_code)"
+    ],
+    solution: "def generate_key(seed):\n    return seed * 7\n\naccess_code = generate_key(12)\nprint(access_code)",
+    solutionRegex: [/def\s+generate_key\s*\(\s*seed\s*\)\s*:/, /return\s+seed\s*\*\s*7/, /access_code\s*=\s*generate_key\s*\(\s*12\s*\)/, /print\s*\(\s*access_code\s*\)/]
+  },
+{
+    id: "functions-main-integration",
+    level: "functions",
+    title: "Feeding the Main Program: Return to Logic",
+    description: "Learn how the main program captures returned data and uses it to make branching decisions.",
+    headerPrefix: "PIPELINE_LINK",
+    missionPrefix: "LOGIC_BRANCH",
+    intro: "# Feeding the Main Program: Return to Logic 🧠\n\nWhy is passing data back to the main program so crucial? Because once your main program captures the returned answer, **it can use it to make intelligent decisions**!\n\nA good function does the hard math in isolation and hands back the result. The main program then uses `if`/`else` statements to decide what action to take next.",
+    technical: "### The Two-Tier Architecture:\n1. **The Function (Worker)**: Focuses on pure calculation.\n   ```python\n   def evaluate_integrity(damage, armor):\n       return armor - damage\n   ```\n2. **The Main Program (Boss)**: Captures the returned value and decides the strategy.\n   ```python\n   net_health = evaluate_integrity(30, 100)\n   if net_health >= 50:\n       print(\"System Stable\")\n   else:\n       print(\"Critical Damage\")\n   ```\nIf the function had hardcoded `print()` statements inside itself, the main program wouldn't have the flexibility to make decisions!",
+    example: "def calc_score(points, penalty):\n    return points - penalty\n\nfinal_score = calc_score(100, 20)\nif final_score > 50:\n    print(\"Passed\")\nelse:\n    print(\"Failed\")",
+    task: "### YOUR MISSION\n\n1. Define a function `evaluate_integrity(damage, armor)` that calculates `armor - damage` and **returns** the result to the caller.\n2. In the main program, call `evaluate_integrity(30, 100)` and save the returned value into `net_health`.\n3. In the main program, write an `if`/`else` block:\n   - If `net_health >= 50`, `print(\"System Stable\")`.\n   - Else, `print(\"Critical Damage\")`.",
+    baseCode: "# TODO: Define function and use returned value in main program\n",
+    hints: [
+      "def evaluate_integrity(damage, armor): return armor - damage",
+      "net_health = evaluate_integrity(30, 100)",
+      "if net_health >= 50: print('System Stable')",
+      "else: print('Critical Damage')"
+    ],
+    solution: "def evaluate_integrity(damage, armor):\n    return armor - damage\n\nnet_health = evaluate_integrity(30, 100)\nif net_health >= 50:\n    print(\"System Stable\")\nelse:\n    print(\"Critical Damage\")",
+    solutionRegex: [/def\s+evaluate_integrity\s*\(\s*damage\s*,\s*armor\s*\)\s*:/, /return\s+armor\s*-\s*damage/, /net_health\s*=\s*evaluate_integrity\s*\(\s*30\s*,\s*100\s*\)/, /if\s+net_health\s*>=\s*50\s*:/, /print\s*\(\s*['"]System Stable['"]\s*\)/, /else\s*:/, /print\s*\(\s*['"]Critical Damage['"]\s*\)/]
+  },
+{
     id: "functions-lambda",
     level: "functions",
     title: "Ghost Scripts: Lambdas",

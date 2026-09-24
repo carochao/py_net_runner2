@@ -569,6 +569,37 @@ export const FOOTBALL_THEME: any = {
     solution: "def run_drill(player_name):\n    print(f'Player {player_name} completed the sprint run...')\n\nrun_drill('Ronaldo')",
     solutionRegex: [/def\s+run_drill/, /run_drill\s*\(/]
   },
+  "functions-procedures-vs-functions": {
+    headerPrefix: "TACTICAL_BOARD",
+    missionPrefix: "DATA_DELIVERY",
+    title: "Tactical Procedures vs Scout Functions",
+    intro: "# Match Procedures vs Scout Functions ⚽\n\nIn football management, instructions fall into two categories:\n\n1. **A Procedure (Match Action)**: The stadium announcer calling a substitution over the loudspeaker—it prints news to the fans, but hands **zero data back** to the manager's tactical notebook.\n2. **A Function (Scout Data Supplier)**: A tactical algorithm calculating a player's match stamina—it calculates numbers and uses **`return`** to deliver that number directly into the manager's notebook!",
+    technical: "### The Core Difference:\n- **Procedure**: Performs a visible pitchside action (like `print()`). It hands nothing back (`None`).\n- **Function**: Uses `return` to pass a calculated number directly into a variable in the manager's main program.",
+    task: "1. Define a procedure `announce_sub(player_in)` that prints: `f\"Substitution: {player_in} entering the pitch\"` (no return).\n2. Define a function `calculate_stamina(base_stamina, fatigue)` that `return`s `base_stamina - fatigue`.\n3. In the main tactics sheet:\n   - Call `announce_sub(\"Messi\")`.\n   - Call `calculate_stamina(90, 15)`, assign the delivered result to `current_energy`, and `print(current_energy)`.",
+    baseCode: "# TODO: Define procedure and function, then run main tactics code\n",
+    solution: "def announce_sub(player_in):\n    print(f\"Substitution: {player_in} entering the pitch\")\n\ndef calculate_stamina(base_stamina, fatigue):\n    return base_stamina - fatigue\n\nannounce_sub(\"Messi\")\ncurrent_energy = calculate_stamina(90, 15)\nprint(current_energy)",
+    solutionRegex: [/def\s+announce_sub\s*\(\s*player_in\s*\)\s*:/, /def\s+calculate_stamina\s*\(\s*base_stamina\s*,\s*fatigue\s*\)\s*:/, /return\s+base_stamina\s*-\s*fatigue/, /announce_sub\s*\(\s*['"]Messi['"]\s*\)/, /current_energy\s*=\s*calculate_stamina\s*\(\s*90\s*,\s*15\s*\)/, /print\s*\(\s*current_energy\s*\)/]
+  },
+  "functions-the-none-trap": {
+    headerPrefix: "SCOUT_REPORT",
+    missionPrefix: "PASS_THE_PARCEL",
+    title: "The Dugout None Trap: Shouting vs Delivering",
+    intro: "# The Dugout Trap: Why Shouting Isn't Returning 🏟️\n\nIf a scout stands in the stadium and shouts a player's transfer value, the spectators hear it (`print()`), but the manager's transfer spreadsheet receives **nothing** (`None`)!\n\nTo pass calculated data directly into the club's financial ledger, the scout function MUST use **`return`**.",
+    task: "1. Define a function `calculate_transfer_value(rating)` that uses `return` to pass `rating * 10` back to the manager's ledger.\n2. In the main program, call `calculate_transfer_value(8)` and assign the delivered result to `budget_spent`.\n3. `print(budget_spent)`.",
+    baseCode: "# TODO: Return transfer value to main ledger\n",
+    solution: "def calculate_transfer_value(rating):\n    return rating * 10\n\nbudget_spent = calculate_transfer_value(8)\nprint(budget_spent)",
+    solutionRegex: [/def\s+calculate_transfer_value\s*\(\s*rating\s*\)\s*:/, /return\s+rating\s*\*\s*10/, /budget_spent\s*=\s*calculate_transfer_value\s*\(\s*8\s*\)/, /print\s*\(\s*budget_spent\s*\)/]
+  },
+  "functions-main-integration": {
+    headerPrefix: "MANAGER_DESK",
+    missionPrefix: "LINEUP_DECISION",
+    title: "Tactical Decisions: Feeding the Manager's Lineup",
+    intro: "# Feeding the Match Lineup: Return to Decision 📋\n\nA scouting function computes physical metrics and hands the value back so the manager's main program can decide whether the player starts the match or stays on the bench!",
+    task: "1. Define a function `evaluate_match_fitness(fitness, knocks)` that `return`s `fitness - knocks` to the main lineup program.\n2. In the main program, call `evaluate_match_fitness(85, 20)` and store the result in `readiness`.\n3. In the main program, write an `if`/`else` check:\n   - If `readiness >= 60`, `print(\"Match Starter\")`.\n   - Else, `print(\"Bench Substitute\")`.",
+    baseCode: "# TODO: Evaluate match fitness and execute lineup decision\n",
+    solution: "def evaluate_match_fitness(fitness, knocks):\n    return fitness - knocks\n\nreadiness = evaluate_match_fitness(85, 20)\nif readiness >= 60:\n    print(\"Match Starter\")\nelse:\n    print(\"Bench Substitute\")",
+    solutionRegex: [/def\s+evaluate_match_fitness\s*\(\s*fitness\s*,\s*knocks\s*\)\s*:/, /return\s+fitness\s*-\s*knocks/, /readiness\s*=\s*evaluate_match_fitness\s*\(\s*85\s*,\s*20\s*\)/, /if\s+readiness\s*>=\s*60\s*:/, /print\s*\(\s*['"]Match Starter['"]\s*\)/, /else\s*:/, /print\s*\(\s*['"]Bench Substitute['"]\s*\)/]
+  },
   "functions-recursion": {
     headerPrefix: "CHAMPIONS_CUP",
     missionPrefix: "PLAYOFF_TREE",

@@ -23,10 +23,12 @@ import {
   Sparkles,
   Layers,
   Search,
-  Filter
+  Filter,
+  GraduationCap
 } from 'lucide-react';
 import { validateCodeLocally, testWithRelaxedRegex } from '../services/geminiService';
 import { ADVANCED_CREATIVE_TASKS } from '../data/advancedCreativeTasks';
+import { TeacherToolkitModal } from './TeacherToolkitModal';
 
 interface CreativeChallengesProps {
   onBackToMain: () => void;
@@ -34,6 +36,7 @@ interface CreativeChallengesProps {
   currentCredits: number;
   userInterest?: string;
   activeTheme?: { id: string; name: string; value: string };
+  currentUserEmail?: string;
 }
 
 export interface CreativeTask {
@@ -2006,7 +2009,14 @@ export const ALL_CREATIVE_TASKS: CreativeTask[] = [
   ...ADVANCED_CREATIVE_TASKS.map(t => ({ ...t, section: 'advanced' as const }))
 ];
 
-export default function CreativeChallenges({ onBackToMain, onRewardCredits, currentCredits, userInterest, activeTheme }: CreativeChallengesProps) {
+export default function CreativeChallenges({ 
+  onBackToMain, 
+  onRewardCredits, 
+  currentCredits, 
+  userInterest, 
+  activeTheme,
+  currentUserEmail
+}: CreativeChallengesProps) {
   // Theme titles & badges
   const getThemeDetails = () => {
     const rawInterest = (userInterest || activeTheme?.value || '').toLowerCase().trim();
@@ -2158,6 +2168,81 @@ export default function CreativeChallenges({ onBackToMain, onRewardCredits, curr
   const [inputPlaceholder, setInputPlaceholder] = useState('Type your input here...');
   const [liveInputValue, setLiveInputValue] = useState('');
   const [editorFontSize, setEditorFontSize] = useState(13);
+
+  // Instructor Teacher Toolkit state
+  const [isTeacherModalOpen, setIsTeacherModalOpen] = useState(false);
+  const [isTeacherUnlocked, setIsTeacherUnlocked] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('py_teacher_mode_active') === 'true';
+    } catch {
+      return false;
+    }
+  });
+
+  const handleLockTeacherMode = () => {
+    setIsTeacherUnlocked(false);
+    setIsTeacherModalOpen(false);
+    try {
+      localStorage.removeItem('py_teacher_mode_active');
+    } catch {}
+  };
+
+  // Stealth Trigger: Triple-click the header title within 1.5s to toggle toolkit
+  const secretClickCountRef = useRef(0);
+  const secretClickTimerRef = useRef<any>(null);
+
+  const handleSecretTitleClick = () => {
+    secretClickCountRef.current += 1;
+    if (secretClickTimerRef.current) {
+      clearTimeout(secretClickTimerRef.current);
+    }
+    if (secretClickCountRef.current >= 3) {
+      secretClickCountRef.current = 0;
+      setIsTeacherModalOpen(prev => !prev);
+    } else {
+      secretClickTimerRef.current = setTimeout(() => {
+        secretClickCountRef.current = 0;
+      }, 1500);
+    }
+  };
+
+  // Emergency Instructor Hotkey:
+  // 1. Alt + Shift + T (or Option + Shift + T on macOS)
+  // 2. Alt + T
+  // 3. Ctrl + Alt + K or Ctrl + Alt + T
+  // 4. F2 function key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const code = e.code;
+      const key = e.key ? e.key.toLowerCase() : '';
+      
+      const isKeyT = code === 'KeyT' || key === 't' || key === 'ˇ' || key === '†';
+      const isKeyK = code === 'KeyK' || key === 'k';
+      
+      const isAltT = e.altKey && isKeyT; // Matches Alt+T, Alt+Shift+T, Option+Shift+T
+      const isCtrlAltChord = (e.ctrlKey && e.altKey) && (isKeyT || isKeyK);
+      const isF2 = code === 'F2' || key === 'f2';
+
+      if (isAltT || isCtrlAltChord || isF2) {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsTeacherModalOpen(prev => !prev);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown, true);
+    return () => window.removeEventListener('keydown', handleKeyDown, true);
+  }, []);
+
+  const handleLoadSolutionIntoEditor = (solutionCode: string) => {
+    setUserCode(solutionCode);
+    setSuccess(null);
+    setCompileLogs(prev => [
+      ...prev,
+      `>>> [INSTRUCTOR OVERRIDE] Model reference solution loaded into editor.`,
+      `>>> Click 'COMPILE & RUN PROGRAM' to execute.`
+    ]);
+  };
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const highlightRef = useRef<HTMLDivElement>(null);
@@ -2424,7 +2509,25 @@ export default function CreativeChallenges({ onBackToMain, onRewardCredits, curr
           logsToAppend.push(`   [LINE ${err.line}]: ${err.message}`);
         });
       }
-      logsToAppend.push(`>>> SUGGESTION: ${selectedTask.solutionHint}`);
+
+      if (isTeacherUnlocked) {
+        logsToAppend.push(`>>> INSTRUCTOR INTEL: Model solution available in Teacher Toolkit [Alt+Shift+T]`);
+        logsToAppend.push(`>>> REFERENCE HINT: ${selectedTask.solutionHint}`);
+      } else {
+        // Constructive pedagogical guidance for student without literal code spoiler
+        const firstLine = selectedTask.solutionHint.split('\n')[0] || '';
+        const cleanGuidance = firstLine
+          .replace(/^Simply type:.*$/i, 'Check that your print statement wraps the exact requested sentence in quotes.')
+          .replace(/^Write two print lines:.*$/i, 'Output each required sentence with its own separate print statement.')
+          .replace(/^Put both sentences as arguments separated by a comma:.*$/i, 'Pass both arguments into a single print statement separated by a comma.')
+          .replace(/^Declare:\s*.*$/i, 'Declare the requested variable name and assign it the required value.')
+          .replace(/^Define:\s*.*$/i, 'Assign the specified value to the variable and display it.')
+          .replace(/^Set .* without any quotes.*$/i, 'Use a boolean literal (True or False) without quotation marks.')
+          .replace(/^Combine them into one print command.*$/i, 'Separate arguments with a comma or formatted f-string.')
+          .replace(/^Declare a variable and set it equal to input.*$/i, 'Assign the result of input() to your variable.');
+
+        logsToAppend.push(`>>> GUIDANCE: ${cleanGuidance || 'Review challenge criteria, quotations, variable names, and syntax.'}`);
+      }
       setSuccess(false);
       playBeep(120, 'square', 0.45);
     }
@@ -2521,7 +2624,11 @@ export default function CreativeChallenges({ onBackToMain, onRewardCredits, curr
           
           <div className="h-4 w-px bg-slate-800 hidden sm:block" />
           
-          <div className="flex items-center gap-2">
+          <div 
+            className="flex items-center gap-2 cursor-pointer select-none" 
+            onClick={handleSecretTitleClick}
+            title={themeDetails.title}
+          >
             <span className="w-2 h-2 rounded-full bg-[var(--primary)] animate-ping" />
             <h1 className="text-sm font-black text-white hover:brightness-110 tracking-widest uppercase font-mono">
               {themeDetails.title}
@@ -2529,7 +2636,29 @@ export default function CreativeChallenges({ onBackToMain, onRewardCredits, curr
           </div>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
+          {isTeacherUnlocked && (
+            <div className="flex items-center gap-1.5 bg-amber-500/15 border border-amber-500/40 px-3 py-1.5 rounded-lg text-amber-300 font-mono text-[10.5px] font-bold shadow-[0_0_12px_rgba(245,158,11,0.15)] animate-fadeIn">
+              <button
+                type="button"
+                onClick={() => setIsTeacherModalOpen(true)}
+                className="flex items-center gap-1.5 hover:text-white cursor-pointer"
+                title="Open Teacher Toolkit"
+              >
+                <GraduationCap className="w-3.5 h-3.5 text-amber-400" />
+                <span className="hidden sm:inline">INSTRUCTOR ACTIVE</span>
+              </button>
+              <button
+                type="button"
+                onClick={handleLockTeacherMode}
+                className="ml-1 px-1.5 py-0.5 bg-slate-900 hover:bg-slate-800 text-amber-400 hover:text-amber-200 rounded text-[9px] border border-amber-500/30 cursor-pointer font-mono"
+                title="Lock Teacher Mode immediately and hide"
+              >
+                LOCK
+              </button>
+            </div>
+          )}
+
           <div className="flex items-center gap-1.5 bg-black/40 px-3 py-1.5 rounded-lg border border-[#1a1b26]">
             <Award className="w-3.5 h-3.5 text-[var(--secondary)]" />
             <span className="text-[10px] font-mono text-slate-400 uppercase tracking-widest leading-none">REWARD SCHEDULING</span>
@@ -2844,7 +2973,20 @@ export default function CreativeChallenges({ onBackToMain, onRewardCredits, curr
                   </button>
                 </div>
 
-                <div className="h-3 w-px bg-[#1a1b26]" />
+                {isTeacherUnlocked && (
+                  <>
+                    <div className="h-3 w-px bg-[#1a1b26]" />
+                    <button 
+                      type="button"
+                      onClick={() => setIsTeacherModalOpen(true)}
+                      className="px-2.5 py-1 text-[9.5px] font-mono bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/20 text-amber-300 rounded transition-colors flex items-center gap-1 cursor-pointer"
+                      title="Teacher Toolkit: Inspect model answers & notes (Alt + Shift + T)"
+                    >
+                      <GraduationCap className="w-3 h-3 text-amber-400" />
+                      <span>MODEL ANSWER</span>
+                    </button>
+                  </>
+                )}
 
                 <button 
                   onClick={resetSandbox}
@@ -3076,6 +3218,23 @@ export default function CreativeChallenges({ onBackToMain, onRewardCredits, curr
           </div>
         </main>
       </div>
+
+      {/* Teacher Toolkit & Model Solutions Modal */}
+      <TeacherToolkitModal
+        isOpen={isTeacherModalOpen}
+        onClose={() => setIsTeacherModalOpen(false)}
+        selectedTask={selectedTask}
+        onLoadSolutionIntoEditor={handleLoadSolutionIntoEditor}
+        currentUserEmail={currentUserEmail}
+        isUnlocked={isTeacherUnlocked}
+        onUnlock={() => {
+          setIsTeacherUnlocked(true);
+          try {
+            localStorage.setItem('py_teacher_mode_active', 'true');
+          } catch {}
+        }}
+        onLock={handleLockTeacherMode}
+      />
     </div>
   );
 }

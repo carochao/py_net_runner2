@@ -605,6 +605,37 @@ export const STARWARS_THEME: any = {
     solution: "def ping_outpost(outpost_id):\n    print(f'Signal uplink to outpost {outpost_id} established.')\n\nping_outpost('Yavin 4')",
     solutionRegex: [/def\s+ping_outpost/, /ping_outpost\s*\(/]
   },
+  "functions-procedures-vs-functions": {
+    headerPrefix: "REBEL_COUNCIL",
+    missionPrefix: "DATA_DELIVERY",
+    title: "Procedures vs Hyperdrive Functions",
+    intro: "# Rebel Command: Procedures vs Functions 🛸\n\nIn the Rebel Fleet:\n\n1. **A Procedure (Action Routine)**: A Klaxon sounding general quarters or a hologram greeting from General Leia—it shows a message to the bridge crew, but delivers **no coordinates** to the Falcon's navicomputer variables.\n2. **A Function (Navicomputer Calculation)**: Calculating hyperdrive jump vectors—it crunches parsecs and uses **`return`** to deliver the jump coordinates directly into the navicomputer!",
+    technical: "### The Core Difference:\n- **Procedure**: Sounds alarms or broadcasts holos (like `print()`). Delivers nothing back (`None`).\n- **Function**: Uses `return` to deliver hyperspace coordinates into your ship's variables.",
+    task: "1. Define a procedure `rebel_alert(system)` that prints: `f\"REBEL BASE: Scramble fleet in {system}!\"` (no return).\n2. Define a function `calculate_hyperdrive(parsecs, fuel)` that `return`s `parsecs * fuel`.\n3. In the main program:\n   - Call `rebel_alert(\"Hoth\")`.\n   - Call `calculate_hyperdrive(12, 5)`, store the result in `jump_power`, and `print(jump_power)`.",
+    baseCode: "# TODO: Define alert procedure and hyperdrive calculation function\n",
+    solution: "def rebel_alert(system):\n    print(f\"REBEL BASE: Scramble fleet in {system}!\")\n\ndef calculate_hyperdrive(parsecs, fuel):\n    return parsecs * fuel\n\nrebel_alert(\"Hoth\")\njump_power = calculate_hyperdrive(12, 5)\nprint(jump_power)",
+    solutionRegex: [/def\s+rebel_alert\s*\(\s*system\s*\)\s*:/, /def\s+calculate_hyperdrive\s*\(\s*parsecs\s*,\s*fuel\s*\)\s*:/, /return\s+parsecs\s*\*\s*fuel/, /rebel_alert\s*\(\s*['"]Hoth['"]\s*\)/, /jump_power\s*=\s*calculate_hyperdrive\s*\(\s*12\s*,\s*5\s*\)/, /print\s*\(\s*jump_power\s*\)/]
+  },
+  "functions-the-none-trap": {
+    headerPrefix: "HOLOCRON_NONE",
+    missionPrefix: "DATA_DELIVERY",
+    title: "The Jedi None Trap: Holocron Glow vs Memory",
+    intro: "# The Jedi Trap: Why Holocron Audio Isn't Return ⚔️\n\nIf a holocron chants an ancient prophecy out loud (`print()`), the Younglings hear it, but the Jedi Archives database registers **nothing** (`None`)!\n\nTo pass kyber resonance numbers directly into the Temple archive variables, the routine MUST use **`return`**.",
+    task: "1. Define a function `kyber_frequency(crystals)` that `return`s `crystals * 7` back to the lightsaber hilt computer.\n2. In the main program, call `kyber_frequency(13)` and store the delivered result in `blade_resonance`.\n3. `print(blade_resonance)`.",
+    baseCode: "# TODO: Return kyber frequency to saber hilt\n",
+    solution: "def kyber_frequency(crystals):\n    return crystals * 7\n\nblade_resonance = kyber_frequency(13)\nprint(blade_resonance)",
+    solutionRegex: [/def\s+kyber_frequency\s*\(\s*crystals\s*\)\s*:/, /return\s+crystals\s*\*\s*7/, /blade_resonance\s*=\s*kyber_frequency\s*\(\s*13\s*\)/, /print\s*\(\s*blade_resonance\s*\)/]
+  },
+  "functions-main-integration": {
+    headerPrefix: "FALCON_NAV",
+    missionPrefix: "HYPERSPACE_DECISION",
+    title: "Hyperspace Decisions: Feeding the Navicomputer",
+    intro: "# Flight Navigation: Return to Decision 🌌\n\nA deflector shield function calculates remaining power after TIE Fighter fire and hands the number back so Han Solo's main flight script can decide whether to jump to lightspeed or keep fighting!",
+    task: "1. Define a function `evaluate_deflectors(blaster_fire, shield_power)` that `return`s `shield_power - blaster_fire`.\n2. In the main program, call `evaluate_deflectors(40, 100)` and store the result in `net_deflectors`.\n3. In the main program, write an `if`/`else` check:\n   - If `net_deflectors >= 50`, `print(\"Shields Holding\")`.\n   - Else, `print(\"Punch It Chewie\")`.",
+    baseCode: "# TODO: Evaluate deflectors and execute navicomputer decision\n",
+    solution: "def evaluate_deflectors(blaster_fire, shield_power):\n    return shield_power - blaster_fire\n\nnet_deflectors = evaluate_deflectors(40, 100)\nif net_deflectors >= 50:\n    print(\"Shields Holding\")\nelse:\n    print(\"Punch It Chewie\")",
+    solutionRegex: [/def\s+evaluate_deflectors\s*\(\s*blaster_fire\s*,\s*shield_power\s*\)\s*:/, /return\s+shield_power\s*-\s*blaster_fire/, /net_deflectors\s*=\s*evaluate_deflectors\s*\(\s*40\s*,\s*100\s*\)/, /if\s+net_deflectors\s*>=\s*50\s*:/, /print\s*\(\s*['"]Shields Holding['"]\s*\)/, /else\s*:/, /print\s*\(\s*['"]Punch It Chewie['"]\s*\)/]
+  },
   "functions-recursion": {
     title: "Jedi Archives: Holocron Decryption",
     headerPrefix: "JEDI_HOLOCRON",

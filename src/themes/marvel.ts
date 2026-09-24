@@ -559,6 +559,37 @@ export const MARVEL_THEME: any = {
     solution: "def deploy_armor(armor_id):\n    print(f'Deploying armor model {armor_id}...')\n\ndeploy_armor('Mark 85')",
     solutionRegex: [/def\s+deploy_armor/, /deploy_armor\s*\(/]
   },
+  "functions-procedures-vs-functions": {
+    headerPrefix: "STARK_MAINFRAME",
+    missionPrefix: "JARVIS_DISPATCH",
+    title: "Procedures vs Stark Reactor Functions",
+    intro: "# Avengers Protocol: Procedures vs Functions 💥\n\nInside Tony Stark's lab:\n\n1. **A Procedure (Action Routine)**: JARVIS playing an audio greeting or flashing suit LED lights—it performs an action on screen/speakers, but delivers **zero numeric data** into Tony's suit HUD variables.\n2. **A Function (Core Energy Routine)**: The Arc Reactor calculating repulsor discharge wattage—it crunches energy metrics and uses **`return`** to deliver that value directly into the suit's targeting computer!",
+    technical: "### The Core Difference:\n- **Procedure**: Performs lab actions (like `print()`). Hands nothing back (`None`).\n- **Function**: Uses `return` to pass vital power numbers directly into the main program's variables.",
+    task: "1. Define a procedure `jarvis_log(alert)` that prints: `f\"JARVIS: {alert}\"` (no return).\n2. Define a function `calculate_repulsor(core_power, boost)` that `return`s `core_power * boost`.\n3. In the main program:\n   - Call `jarvis_log(\"Repulsor calibrated\")`.\n   - Call `calculate_repulsor(20, 5)`, store the result in `total_output`, and `print(total_output)`.",
+    baseCode: "# TODO: Define Jarvis procedure and repulsor function\n",
+    solution: "def jarvis_log(alert):\n    print(f\"JARVIS: {alert}\")\n\ndef calculate_repulsor(core_power, boost):\n    return core_power * boost\n\njarvis_log(\"Repulsor calibrated\")\ntotal_output = calculate_repulsor(20, 5)\nprint(total_output)",
+    solutionRegex: [/def\s+jarvis_log\s*\(\s*alert\s*\)\s*:/, /def\s+calculate_repulsor\s*\(\s*core_power\s*,\s*boost\s*\)\s*:/, /return\s+core_power\s*\*\s*boost/, /jarvis_log\s*\(\s*['"]Repulsor calibrated['"]\s*\)/, /total_output\s*=\s*calculate_repulsor\s*\(\s*20\s*,\s*5\s*\)/, /print\s*\(\s*total_output\s*\)/]
+  },
+  "functions-the-none-trap": {
+    headerPrefix: "ARC_CORRUPTION",
+    missionPrefix: "DATA_DELIVERY",
+    title: "The Stark None Trap: HUD Echo vs Suit Return",
+    intro: "# The Stark Tech Trap: Why HUD Echo Isn't Return 🦾\n\nIf JARVIS prints suit telemetry onto Tony's helmet glass (`print()`), Tony sees it, but the suit's flight thrusters receive **nothing** (`None`)!\n\nTo pass nano-core output directly into the suit's flight variables, the function MUST use **`return`**.",
+    task: "1. Define a function `nanotech_core(cells)` that `return`s `cells * 7` back to the main suit computer.\n2. In the main program, call `nanotech_core(14)` and store the delivered result in `suit_power`.\n3. `print(suit_power)`.",
+    baseCode: "# TODO: Return nanotech power to suit computer\n",
+    solution: "def nanotech_core(cells):\n    return cells * 7\n\nsuit_power = nanotech_core(14)\nprint(suit_power)",
+    solutionRegex: [/def\s+nanotech_core\s*\(\s*cells\s*\)\s*:/, /return\s+cells\s*\*\s*7/, /suit_power\s*=\s*nanotech_core\s*\(\s*14\s*\)/, /print\s*\(\s*suit_power\s*\)/]
+  },
+  "functions-main-integration": {
+    headerPrefix: "MARK_LXXXV_AI",
+    missionPrefix: "COMBAT_DECISION",
+    title: "Combat Decisions: Feeding the Suit Computer",
+    intro: "# Combat Strategy: Return to Decision ⚡\n\nA defense function calculates remaining shield capacity and hands the number back so the main combat program can decide whether to engage Thanos or activate shield overdrive!",
+    task: "1. Define a function `evaluate_shield(damage, shields)` that `return`s `shields - damage`.\n2. In the main program, call `evaluate_shield(45, 100)` and store the result in `net_shields`.\n3. In the main program, write an `if`/`else` check:\n   - If `net_shields >= 50`, `print(\"Shields Online\")`.\n   - Else, `print(\"Shields Depleted\")`.",
+    baseCode: "# TODO: Evaluate shield and execute combat decision\n",
+    solution: "def evaluate_shield(damage, shields):\n    return shields - damage\n\nnet_shields = evaluate_shield(45, 100)\nif net_shields >= 50:\n    print(\"Shields Online\")\nelse:\n    print(\"Shields Depleted\")",
+    solutionRegex: [/def\s+evaluate_shield\s*\(\s*damage\s*,\s*shields\s*\)\s*:/, /return\s+shields\s*-\s*damage/, /net_shields\s*=\s*evaluate_shield\s*\(\s*45\s*,\s*100\s*\)/, /if\s+net_shields\s*>=\s*50\s*:/, /print\s*\(\s*['"]Shields Online['"]\s*\)/, /else\s*:/, /print\s*\(\s*['"]Shields Depleted['"]\s*\)/]
+  },
   "functions-recursion": {
     headerPrefix: "STARK_LINK",
     missionPrefix: "NANO_UPGRADE",

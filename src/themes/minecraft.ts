@@ -561,6 +561,37 @@ export const MINECRAFT_THEME: any = {
     solution: "def craft_recipe(item_name):\n    print(f'Crafting {item_name} on workbench...')\n\ncraft_recipe('Diamond Sword')",
     solutionRegex: [/def\s+craft_recipe/, /craft_recipe\s*\(/]
   },
+  "functions-procedures-vs-functions": {
+    headerPrefix: "REDSTONE_CIRCUIT",
+    missionPrefix: "DATA_DELIVERY",
+    title: "Procedures vs Redstone Functions",
+    intro: "# Minecraft Redstone: Procedures vs Functions ⛏️\n\nIn Minecraft automation:\n\n1. **A Procedure (Action Routine)**: Ringing a village bell or powering a note block—it creates a sound on screen, but passes **zero item data** into Steve's inventory variables.\n2. **A Function (Crafting Routine)**: Calculating iron ingots required for rails—it crunches numbers and uses **`return`** to deliver that count directly into your inventory counter!",
+    technical: "### The Core Difference:\n- **Procedure**: Plays sounds or flashes particles (like `print()`). Gives nothing back (`None`).\n- **Function**: Uses `return` to deliver block quantities directly into your main program variables.",
+    task: "1. Define a procedure `ring_bell(village_name)` that prints: `f\"BELL: Warning in {village_name}!\"` (no return).\n2. Define a function `calculate_blocks(stacks, per_stack)` that `return`s `stacks * per_stack`.\n3. In the main program:\n   - Call `ring_bell(\"Plains Village\")`.\n   - Call `calculate_blocks(3, 64)`, store the result in `total_blocks`, and `print(total_blocks)`.",
+    baseCode: "# TODO: Define village procedure and block calculation function\n",
+    solution: "def ring_bell(village_name):\n    print(f\"BELL: Warning in {village_name}!\")\n\ndef calculate_blocks(stacks, per_stack):\n    return stacks * per_stack\n\nring_bell(\"Plains Village\")\ntotal_blocks = calculate_blocks(3, 64)\nprint(total_blocks)",
+    solutionRegex: [/def\s+ring_bell\s*\(\s*village_name\s*\)\s*:/, /def\s+calculate_blocks\s*\(\s*stacks\s*,\s*per_stack\s*\)\s*:/, /return\s+stacks\s*\*\s*per_stack/, /ring_bell\s*\(\s*['"]Plains Village['"]\s*\)/, /total_blocks\s*=\s*calculate_blocks\s*\(\s*3\s*,\s*64\s*\)/, /print\s*\(\s*total_blocks\s*\)/]
+  },
+  "functions-the-none-trap": {
+    headerPrefix: "CHEST_INVENTORY",
+    missionPrefix: "DATA_DELIVERY",
+    title: "The Inventory None Trap: Chat vs Chest",
+    intro: "# The Inventory Trap: Why In-Game Chat Isn't Return 📦\n\nIf Steve shouts his diamond count in chat (`print()`), other players read it, but his crafting chest receives **nothing** (`None`)!\n\nTo pass harvested diamonds directly into your storage chest variables, the function MUST use **`return`**.",
+    task: "1. Define a function `smelt_ore(raw_chunks)` that `return`s `raw_chunks * 7` back to the player's chest.\n2. In the main program, call `smelt_ore(9)` and store the delivered result in `ingots_crafted`.\n3. `print(ingots_crafted)`.",
+    baseCode: "# TODO: Return smelted ingots to chest variable\n",
+    solution: "def smelt_ore(raw_chunks):\n    return raw_chunks * 7\n\ningots_crafted = smelt_ore(9)\nprint(ingots_crafted)",
+    solutionRegex: [/def\s+smelt_ore\s*\(\s*raw_chunks\s*\)\s*:/, /return\s+raw_chunks\s*\*\s*7/, /ingots_crafted\s*=\s*smelt_ore\s*\(\s*9\s*\)/, /print\s*\(\s*ingots_crafted\s*\)/]
+  },
+  "functions-main-integration": {
+    headerPrefix: "SURVIVAL_AI",
+    missionPrefix: "HEARTS_DECISION",
+    title: "Survival Decisions: Feeding the Health Bar",
+    intro: "# Overworld Survival: Return to Decision ❤️\n\nA damage calculation function works out remaining health and hands the number back so Steve's main survival script can decide whether to fight the Creeper or eat a Golden Apple!",
+    task: "1. Define a function `evaluate_hearts(damage, health)` that `return`s `health - damage`.\n2. In the main program, call `evaluate_hearts(35, 100)` and store the result in `net_hearts`.\n3. In the main program, write an `if`/`else` check:\n   - If `net_hearts >= 50`, `print(\"Ready to Fight\")`.\n   - Else, `print(\"Eat Golden Apple\")`.",
+    baseCode: "# TODO: Evaluate hearts and execute survival decision\n",
+    solution: "def evaluate_hearts(damage, health):\n    return health - damage\n\nnet_hearts = evaluate_hearts(35, 100)\nif net_hearts >= 50:\n    print(\"Ready to Fight\")\nelse:\n    print(\"Eat Golden Apple\")",
+    solutionRegex: [/def\s+evaluate_hearts\s*\(\s*damage\s*,\s*health\s*\)\s*:/, /return\s+health\s*-\s*damage/, /net_hearts\s*=\s*evaluate_hearts\s*\(\s*35\s*,\s*100\s*\)/, /if\s+net_hearts\s*>=\s*50\s*:/, /print\s*\(\s*['"]Ready to Fight['"]\s*\)/, /else\s*:/, /print\s*\(\s*['"]Eat Golden Apple['"]\s*\)/]
+  },
   "functions-recursion": {
     headerPrefix: "MINE_SHAFT_DIG",
     missionPrefix: "RECURSIVE_DIG",

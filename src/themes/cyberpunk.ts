@@ -575,6 +575,37 @@ export const CYBERPUNK_THEME: any = {
     solution: "def upload_virus(node_id):\n    print(f'Infecting node {node_id}...')\n\nupload_virus('A7')",
     solutionRegex: [/def\s+upload_virus/, /upload_virus\s*\(/]
   },
+  "functions-procedures-vs-functions": {
+    headerPrefix: "DAEMON_DISPATCH",
+    missionPrefix: "DATA_DELIVERY",
+    title: "Procedures vs Daemon Functions",
+    intro: "# Netrunner Dispatch: Procedures vs Functions ⚡\n\nSome subroutines are **procedures** (like pinging an ICE alert siren across Night City—executing a visual warning, but passing zero data back to your cyberdeck's RAM).\n\nOther subroutines are **functions** (like calculating overclocked bandwidth—crunching numbers and using `return` to deliver the result directly into your deck's active memory)!",
+    technical: "### The Core Difference:\n- **Procedure**: Executes visual commands (like `print()`). It hands nothing back (`None`).\n- **Function**: Uses `return` to deliver computed numbers directly into your deck's variables.",
+    task: "1. Define a procedure `sound_siren(district)` that prints: `f\"CYBER ALERT: Security breach in {district}!\"` (no return).\n2. Define a function `overclock_deck(ram, boost)` that `return`s `ram * boost`.\n3. In the main program:\n   - Call `sound_siren(\"Watson\")`.\n   - Call `overclock_deck(8, 4)`, store the result in `total_ram`, and `print(total_ram)`.",
+    baseCode: "# TODO: Write siren procedure and overclock function\n",
+    solution: "def sound_siren(district):\n    print(f\"CYBER ALERT: Security breach in {district}!\")\n\ndef overclock_deck(ram, boost):\n    return ram * boost\n\nsound_siren(\"Watson\")\ntotal_ram = overclock_deck(8, 4)\nprint(total_ram)",
+    solutionRegex: [/def\s+sound_siren\s*\(\s*district\s*\)\s*:/, /def\s+overclock_deck\s*\(\s*ram\s*,\s*boost\s*\)\s*:/, /return\s+ram\s*\*\s*boost/, /sound_siren\s*\(\s*['"]Watson['"]\s*\)/, /total_ram\s*=\s*overclock_deck\s*\(\s*8\s*,\s*4\s*\)/, /print\s*\(\s*total_ram\s*\)/]
+  },
+  "functions-the-none-trap": {
+    headerPrefix: "MEMORY_LEAK",
+    missionPrefix: "NONE_EXPOSURE",
+    title: "The Netrunner None Trap: Echo vs Return",
+    intro: "# The Cyberdeck Trap: Why Terminal Echo Isn't Return 🕹️\n\nIf your daemon uses `print()`, it outputs text onto the HUD glass for your eyes to see, but hands `None` to your deck's memory chips!\n\nTo pass decrypted cryptographic keys directly into your cyberdeck's operational variables, you MUST use `return`.",
+    task: "1. Define a function `decrypt_key(raw_byte)` that `return`s `raw_byte * 7` back to the main deck.\n2. In the main program, call `decrypt_key(16)` and store the delivered result in `master_key`.\n3. `print(master_key)`.",
+    baseCode: "# TODO: Return decrypted key to cyberdeck\n",
+    solution: "def decrypt_key(raw_byte):\n    return raw_byte * 7\n\nmaster_key = decrypt_key(16)\nprint(master_key)",
+    solutionRegex: [/def\s+decrypt_key\s*\(\s*raw_byte\s*\)\s*:/, /return\s+raw_byte\s*\*\s*7/, /master_key\s*=\s*decrypt_key\s*\(\s*16\s*\)/, /print\s*\(\s*master_key\s*\)/]
+  },
+  "functions-main-integration": {
+    headerPrefix: "ICE_EVALUATOR",
+    missionPrefix: "BREACH_DECISION",
+    title: "Blackwall Infiltration: Return to Decision",
+    intro: "# Infiltration Decisions: Return to Logic 🖥️\n\nA daemon function crunches raw defense metrics and passes the value back so your main infiltration script can decide whether to penetrate the firewall or abort!",
+    task: "1. Define a function `assess_firewall(ice_level, bypass_power)` that `return`s `bypass_power - ice_level`.\n2. In the main program, call `assess_firewall(40, 95)` and store the delivered result in `penetration_margin`.\n3. In the main program, check `penetration_margin`:\n   - If `penetration_margin >= 50`, `print(\"Firewall Breached\")`.\n   - Else, `print(\"Retreat Immediately\")`.",
+    baseCode: "# TODO: Assess firewall and execute branching logic\n",
+    solution: "def assess_firewall(ice_level, bypass_power):\n    return bypass_power - ice_level\n\npenetration_margin = assess_firewall(40, 95)\nif penetration_margin >= 50:\n    print(\"Firewall Breached\")\nelse:\n    print(\"Retreat Immediately\")",
+    solutionRegex: [/def\s+assess_firewall\s*\(\s*ice_level\s*,\s*bypass_power\s*\)\s*:/, /return\s+bypass_power\s*-\s*ice_level/, /penetration_margin\s*=\s*assess_firewall\s*\(\s*40\s*,\s*95\s*\)/, /if\s+penetration_margin\s*>=\s*50\s*:/, /print\s*\(\s*['"]Firewall Breached['"]\s*\)/, /else\s*:/, /print\s*\(\s*['"]Retreat Immediately['"]\s*\)/]
+  },
   "functions-recursion": {
     headerPrefix: "DAEMON_RECURSE",
     missionPrefix: "ICE_PICK",
