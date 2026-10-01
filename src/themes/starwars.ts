@@ -837,5 +837,93 @@ export const STARWARS_THEME: any = {
     hints: ["undone_coord = nav_coords.pop()", "print(f\"Undone: {undone_coord}\")", "print(nav_coords)"],
     solution: "nav_coords = [\"jump_tatooine\", \"jump_kessel\", \"jump_hoth_danger\"]\nundone_coord = nav_coords.pop()\nprint(f\"Undone: {undone_coord}\")\nprint(nav_coords)",
     solutionRegex: [/undone_coord\s*=\s*nav_coords\.pop\s*\(\s*\)/, /print\s*\(\s*(?:f['"]Undone:\s*\{undone_coord\}['"]|['"]Undone:\s*['"]\s*,\s*undone_coord|['"]Undone:\s*['"]\s*\+\s*undone_coord)\s*\)/, /print\s*\(\s*nav_coords\s*\)/]
+  },
+  "rec-intro": {
+    title: "Jedi Holocron Chambers: Nested Recursion",
+    headerPrefix: "JEDI_HOLOCRON",
+    missionPrefix: "HOLOCRON_NEST",
+    intro: "# Ancient Jedi Holocron: Recursive Chambers 🪆⚔️\n\nOpening an ancient Sith or Jedi Holocron reveals smaller concentric pyramid chambers within. A function that unpacks smaller inner chambers until reaching the Kyber heart is called **Recursion**!",
+    task: "### YOUR MISSION\n\n1. Define `unlock_holocron(size)`.\n2. Base case: If `size == 1`: print `\"Found Kyber Crystal!\"` and `return`.\n3. Else: print `f\"Unlocking holocron tier {size}\"` and call `unlock_holocron(size - 1)`.\n4. Call `unlock_holocron(3)`.",
+    baseCode: "# TODO: Define unlock_holocron(size) and call unlock_holocron(3)\n",
+    hints: ["def unlock_holocron(size):", "if size == 1: print(\"Found Kyber Crystal!\"); return", "unlock_holocron(3)"],
+    solution: "def unlock_holocron(size):\n    if size == 1:\n        print(\"Found Kyber Crystal!\")\n        return\n    print(f\"Unlocking holocron tier {size}\")\n    unlock_holocron(size - 1)\n\nunlock_holocron(3)",
+    solutionRegex: [/def\s+unlock_holocron\s*\(\s*size\s*\)\s*:/, /if\s+size\s*==\s*1\s*:/, /print\s*\(\s*['"]Found Kyber Crystal!['"]\s*\)/, /unlock_holocron\s*\(\s*size\s*-\s*1\s*\)/, /unlock_holocron\s*\(\s*3\s*\)/]
+  },
+  "rec-base-case": {
+    title: "Thermal Detonator: Emergency Base Case",
+    headerPrefix: "THERMAL_DETONATOR",
+    missionPrefix: "ARMED_FUSE",
+    intro: "# Thermal Detonator: Ticking Fuse 💣\n\nBoushh activates a thermal detonator in Jabba's palace! The fuse counts down: 3... 2... 1... Detonation! The Base Case stops the ticking.",
+    task: "### YOUR MISSION\n\n1. Define `detonator_fuse(seconds)`.\n2. Base case: If `seconds == 0`: print `\"Detonation!\"` and `return`.\n3. Print `seconds`.\n4. Call `detonator_fuse(seconds - 1)`.\n5. Call `detonator_fuse(3)`.",
+    baseCode: "# TODO: Define detonator_fuse(seconds) and call detonator_fuse(3)\n",
+    hints: ["if seconds == 0: print(\"Detonation!\"); return", "detonator_fuse(seconds - 1)", "detonator_fuse(3)"],
+    solution: "def detonator_fuse(seconds):\n    if seconds == 0:\n        print(\"Detonation!\")\n        return\n    print(seconds)\n    detonator_fuse(seconds - 1)\n\ndetonator_fuse(3)",
+    solutionRegex: [/def\s+detonator_fuse\s*\(\s*seconds\s*\)\s*:/, /if\s+seconds\s*==\s*0\s*:/, /print\s*\(\s*['"]Detonation!['"]\s*\)/, /detonator_fuse\s*\(\s*seconds\s*-\s*1\s*\)/, /detonator_fuse\s*\(\s*3\s*\)/]
+  },
+  "rec-call-stack": {
+    title: "Death Star Trench Run: Call Stack Descent",
+    headerPrefix: "TRENCH_RUN",
+    missionPrefix: "NAV_UNWIND",
+    intro: "# Death Star Trench: Diving and Escaping 🌌🚀\n\nLuke Skywalker flies deeper into the thermal exhaust trench. Reaching the reactor core triggers proton torpedoes, and the X-Wing accelerates back out to safety (LIFO)!",
+    task: "### YOUR MISSION\n\n1. Define `trench_dive(depth)`.\n2. Base case: If `depth == 0`: print `\"Direct Hit: Torpedo Away!\"` and `return`.\n3. Print `f\"Navigating trench sector {depth}\"`.\n4. Call `trench_dive(depth - 1)`.\n5. Print `f\"Escaping sector {depth}\"`.\n6. Call `trench_dive(2)`.",
+    baseCode: "# TODO: Define trench_dive(depth) and call trench_dive(2)\n",
+    hints: ["def trench_dive(depth):", "if depth == 0: print(\"Direct Hit: Torpedo Away!\"); return", "trench_dive(2)"],
+    solution: "def trench_dive(depth):\n    if depth == 0:\n        print(\"Direct Hit: Torpedo Away!\")\n        return\n    print(f\"Navigating trench sector {depth}\")\n    trench_dive(depth - 1)\n    print(f\"Escaping sector {depth}\")\n\ntrench_dive(2)",
+    solutionRegex: [/def\s+trench_dive\s*\(\s*depth\s*\)\s*:/, /if\s+depth\s*==\s*0\s*:/, /print\s*\(\s*['"]Direct Hit:\s*Torpedo Away!['"]\s*\)/, /trench_dive\s*\(\s*depth\s*-\s*1\s*\)/, /trench_dive\s*\(\s*2\s*\)/]
+  },
+  "rec-return-accumulation": {
+    title: "Kyber Resonance: Factorial Cascade",
+    headerPrefix: "KYBER_FOCUS",
+    missionPrefix: "POWER_CASCADE",
+    intro: "# Kyber Crystal Array: Harmonic Multiplier ✨\n\nFocusing kyber crystal beams compounds energy harmonics down to base frequency 1 using Factorial recursion!",
+    task: "### YOUR MISSION\n\n1. Define `kyber_power(n)`.\n2. Base case: If `n <= 1`: `return 1`.\n3. Recursive step: `return n * kyber_power(n - 1)`.\n4. Print `kyber_power(4)`.",
+    baseCode: "# TODO: Define kyber_power(n) and print kyber_power(4)\n",
+    hints: ["if n <= 1: return 1", "return n * kyber_power(n - 1)", "print(kyber_power(4))"],
+    solution: "def kyber_power(n):\n    if n <= 1:\n        return 1\n    return n * kyber_power(n - 1)\n\nprint(kyber_power(4))",
+    solutionRegex: [/def\s+kyber_power\s*\(\s*n\s*\)\s*:/, /if\s+n\s*<=\s*1\s*:/, /return\s+1/, /return\s+n\s*\*\s*kyber_power\s*\(\s*n\s*-\s*1\s*\)/, /print\s*\(\s*kyber_power\s*\(\s*4\s*\)\s*\)/]
+  },
+  "rec-sum-series": {
+    title: "Rebel Squadrons: Recursive Sum",
+    headerPrefix: "FLEET_COMMAND",
+    missionPrefix: "FIGHTER_SUM",
+    intro: "# Rebel Fleet Rally: Summing Starfighter Wings 🚀\n\nWings of X-Wings and Y-Wings assemble from 5 down to 1. Sum squadron fighters recursively!",
+    task: "### YOUR MISSION\n\n1. Define `rebel_squads(n)`.\n2. Base case: If `n == 1`: `return 1`.\n3. Recursive step: `return n + rebel_squads(n - 1)`.\n4. Print `rebel_squads(5)`.",
+    baseCode: "# TODO: Define rebel_squads(n) and print rebel_squads(5)\n",
+    hints: ["if n == 1: return 1", "return n + rebel_squads(n - 1)", "print(rebel_squads(5))"],
+    solution: "def rebel_squads(n):\n    if n == 1:\n        return 1\n    return n + rebel_squads(n - 1)\n\nprint(rebel_squads(5))",
+    solutionRegex: [/def\s+rebel_squads\s*\(\s*n\s*\)\s*:/, /if\s+n\s*==\s*1\s*:/, /return\s+1/, /return\s+n\s*\+\s*rebel_squads\s*\(\s*n\s*-\s*1\s*\)/, /print\s*\(\s*rebel_squads\s*\(\s*5\s*\)\s*\)/]
+  },
+  "rec-power": {
+    title: "Hyperdrive Reactor: Power Multiplication",
+    headerPrefix: "HYPERDRIVE_CORE",
+    missionPrefix: "WARP_ENERGY",
+    intro: "# Hyperspace Motivation: Exponent Output ($2^4$) ⚡🌌\n\nThe Millennium Falcon's hyperdrive coils surge in binary tiers ($2^4 = 16$). Calculate power recursively!",
+    task: "### YOUR MISSION\n\n1. Define `hyper_power(base, exp)`.\n2. Base case: If `exp == 0`: `return 1`.\n3. Recursive step: `return base * hyper_power(base, exp - 1)`.\n4. Print `hyper_power(2, 4)`.",
+    baseCode: "# TODO: Define hyper_power(base, exp) and print hyper_power(2, 4)\n",
+    hints: ["if exp == 0: return 1", "return base * hyper_power(base, exp - 1)", "print(hyper_power(2, 4))"],
+    solution: "def hyper_power(base, exp):\n    if exp == 0:\n        return 1\n    return base * hyper_power(base, exp - 1)\n\nprint(hyper_power(2, 4))",
+    solutionRegex: [/def\s+hyper_power\s*\(\s*base\s*,\s*exp\s*\)\s*:/, /if\s+exp\s*==\s*0\s*:/, /return\s+1/, /return\s+base\s*\*\s*hyper_power\s*\(\s*base\s*,\s*exp\s*-\s*1\s*\)/, /print\s*\(\s*hyper_power\s*\(\s*2\s*,\s*4\s*\)\s*\)/]
+  },
+  "rec-fibonacci": {
+    title: "Droid Factory: Fibonacci Assembly",
+    headerPrefix: "GEONOSIS_FOUNDRY",
+    missionPrefix: "DROID_REPLICATE",
+    intro: "# Geonosis Droid Foundries: Fibonacci Line 🤖\n\nAutomated droid assembly lines multiply units branching recursively. Compute `fibonacci(6)`!",
+    task: "### YOUR MISSION\n\n1. Define `fibonacci(n)`.\n2. Base case: If `n <= 1`: `return n`.\n3. Recursive step: `return fibonacci(n - 1) + fibonacci(n - 2)`.\n4. Print `fibonacci(6)`.",
+    baseCode: "# TODO: Define fibonacci(n) and print fibonacci(6)\n",
+    hints: ["if n <= 1: return n", "return fibonacci(n - 1) + fibonacci(n - 2)", "print(fibonacci(6))"],
+    solution: "def fibonacci(n):\n    if n <= 1:\n        return n\n    return fibonacci(n - 1) + fibonacci(n - 2)\n\nprint(fibonacci(6))",
+    solutionRegex: [/def\s+fibonacci\s*\(\s*n\s*\)\s*:/, /if\s+n\s*<=\s*1\s*:/, /return\s+n/, /return\s+fibonacci\s*\(\s*n\s*-\s*1\s*\)\s*\+\s*fibonacci\s*\(\s*n\s*-\s*2\s*\)/, /print\s*\(\s*fibonacci\s*\(\s*6\s*\)\s*\)/]
+  },
+  "rec-mastery": {
+    title: "Shield Generator Assault: Master Raid",
+    headerPrefix: "ENDOR_BUNKER",
+    missionPrefix: "SHIELD_BREACH",
+    intro: "# Endor Bunker Infiltration: Master Raid 🛡️🌲\n\nBreach 3 blast doors into the shield generator bunker to bring down the Death Star deflector shield!",
+    task: "### YOUR MISSION\n\n1. Define `clear_bunker(doors)`.\n2. Base case: If `doors == 0`: print `\"Core: Shield Generator Down!\"` and `return`.\n3. Print `f\"Breaching Door {doors}...\"`.\n4. Call `clear_bunker(doors - 1)`.\n5. Print `f\"Door {doors} Secured!\"`.\n6. Call `clear_bunker(3)`.",
+    baseCode: "# TODO: Define clear_bunker(doors) and call clear_bunker(3)\n",
+    hints: ["if doors == 0: print(\"Core: Shield Generator Down!\"); return", "clear_bunker(doors - 1)", "clear_bunker(3)"],
+    solution: "def clear_bunker(doors):\n    if doors == 0:\n        print(\"Core: Shield Generator Down!\")\n        return\n    print(f\"Breaching Door {doors}...\")\n    clear_bunker(doors - 1)\n    print(f\"Door {doors} Secured!\")\n\nclear_bunker(3)",
+    solutionRegex: [/def\s+clear_bunker\s*\(\s*doors\s*\)\s*:/, /if\s+doors\s*==\s*0\s*:/, /print\s*\(\s*['"]Core:\s*Shield Generator Down!['"]\s*\)/, /clear_bunker\s*\(\s*doors\s*-\s*1\s*\)/, /clear_bunker\s*\(\s*3\s*\)/]
   }
 };

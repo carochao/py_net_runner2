@@ -737,5 +737,93 @@ export const POKEMON_THEME: any = {
     hints: ["undone_move = move_history.pop()", "print(f\"Undone: {undone_move}\")", "print(move_history)"],
     solution: "move_history = [\"select_potion\", \"switch_pokemon\", \"use_splash\"]\nundone_move = move_history.pop()\nprint(f\"Undone: {undone_move}\")\nprint(move_history)",
     solutionRegex: [/undone_move\s*=\s*move_history\.pop\s*\(\s*\)/, /print\s*\(\s*(?:f['"]Undone:\s*\{undone_move\}['"]|['"]Undone:\s*['"]\s*,\s*undone_move|['"]Undone:\s*['"]\s*\+\s*undone_move)\s*\)/, /print\s*\(\s*move_history\s*\)/]
+  },
+  "rec-intro": {
+    title: "Pokémon Egg Hatching: Nested Warmth",
+    headerPrefix: "DAY_CARE",
+    missionPrefix: "EGG_WARMTH",
+    intro: "# Mysterious Pokémon Egg: Recursion 🪺✨\n\nInside a glowing Pokémon egg, the slumbering Pokémon requires warmth steps to awaken. In Python, a function that calls smaller versions of itself until hatching is called **Recursion**!",
+    task: "### YOUR MISSION\n\n1. Define `hatch_egg(warmth)`.\n2. Base case: If `warmth == 1`: print `\"Togepi hatched!\"` and `return`.\n3. Else: print `f\"Warming egg stage {warmth}\"` and call `hatch_egg(warmth - 1)`.\n4. Call `hatch_egg(3)`.",
+    baseCode: "# TODO: Define hatch_egg(warmth) and call hatch_egg(3)\n",
+    hints: ["def hatch_egg(warmth):", "if warmth == 1: print(\"Togepi hatched!\"); return", "hatch_egg(3)"],
+    solution: "def hatch_egg(warmth):\n    if warmth == 1:\n        print(\"Togepi hatched!\")\n        return\n    print(f\"Warming egg stage {warmth}\")\n    hatch_egg(warmth - 1)\n\nhatch_egg(3)",
+    solutionRegex: [/def\s+hatch_egg\s*\(\s*warmth\s*\)\s*:/, /if\s+warmth\s*==\s*1\s*:/, /print\s*\(\s*['"]Togepi hatched!['"]\s*\)/, /hatch_egg\s*\(\s*warmth\s*-\s*1\s*\)/, /hatch_egg\s*\(\s*3\s*\)/]
+  },
+  "rec-base-case": {
+    title: "Voltorb Fuse: Emergency Base Case",
+    headerPrefix: "VOLTORB_SPARK",
+    missionPrefix: "SELF_DESTRUCT",
+    intro: "# Wild Voltorb: Self-Destruct Fuse ⚡💣\n\nA startled Voltorb starts ticking down its self-destruct fuse: 3... 2... 1... Explosion! The base case at 0 stops the recursive sparks.",
+    task: "### YOUR MISSION\n\n1. Define `voltorb_fuse(seconds)`.\n2. Base case: If `seconds == 0`: print `\"Explosion!\"` and `return`.\n3. Print `seconds`.\n4. Call `voltorb_fuse(seconds - 1)`.\n5. Call `voltorb_fuse(3)`.",
+    baseCode: "# TODO: Define voltorb_fuse(seconds) and call voltorb_fuse(3)\n",
+    hints: ["if seconds == 0: print(\"Explosion!\"); return", "voltorb_fuse(seconds - 1)", "voltorb_fuse(3)"],
+    solution: "def voltorb_fuse(seconds):\n    if seconds == 0:\n        print(\"Explosion!\")\n        return\n    print(seconds)\n    voltorb_fuse(seconds - 1)\n\nvoltorb_fuse(3)",
+    solutionRegex: [/def\s+voltorb_fuse\s*\(\s*seconds\s*\)\s*:/, /if\s+seconds\s*==\s*0\s*:/, /print\s*\(\s*['"]Explosion!['"]\s*\)/, /voltorb_fuse\s*\(\s*seconds\s*-\s*1\s*\)/, /voltorb_fuse\s*\(\s*3\s*\)/]
+  },
+  "rec-call-stack": {
+    title: "Seafoam Islands Cave: Call Stack Diving",
+    headerPrefix: "CAVE_DESCENT",
+    missionPrefix: "ARTICUNO_LAIR",
+    intro: "# Seafoam Islands: Diving and Surfacing 🌊❄️\n\nSurfing deeper into Seafoam Islands pushes cave floors onto Python's Call Stack. When you find Articuno at the bottom, your squad surfaces back up floor-by-floor (LIFO)!",
+    task: "### YOUR MISSION\n\n1. Define `cave_dive(depth)`.\n2. Base case: If `depth == 0`: print `\"Found Articuno!\"` and `return`.\n3. Print `f\"Descending cave B{depth}F\"`.\n4. Call `cave_dive(depth - 1)`.\n5. Print `f\"Surfacing cave B{depth}F\"`.\n6. Call `cave_dive(2)`.",
+    baseCode: "# TODO: Define cave_dive(depth) and call cave_dive(2)\n",
+    hints: ["def cave_dive(depth):", "if depth == 0: print(\"Found Articuno!\"); return", "cave_dive(2)"],
+    solution: "def cave_dive(depth):\n    if depth == 0:\n        print(\"Found Articuno!\")\n        return\n    print(f\"Descending cave B{depth}F\")\n    cave_dive(depth - 1)\n    print(f\"Surfacing cave B{depth}F\")\n\ncave_dive(2)",
+    solutionRegex: [/def\s+cave_dive\s*\(\s*depth\s*\)\s*:/, /if\s+depth\s*==\s*0\s*:/, /print\s*\(\s*['"]Found Articuno!['"]\s*\)/, /cave_dive\s*\(\s*depth\s*-\s*1\s*\)/, /cave_dive\s*\(\s*2\s*\)/]
+  },
+  "rec-return-accumulation": {
+    title: "Lucky Egg EXP Multiplier: Factorial Power",
+    headerPrefix: "EXP_BOOST",
+    missionPrefix: "LUCKY_EGG",
+    intro: "# Lucky Egg: Compounding Battle EXP ✨\n\nCalculate cascading battle victory multipliers recursively using the Factorial mathematical pattern!",
+    task: "### YOUR MISSION\n\n1. Define `exp_multiplier(n)`.\n2. Base case: If `n <= 1`: `return 1`.\n3. Recursive step: `return n * exp_multiplier(n - 1)`.\n4. Print `exp_multiplier(4)`.",
+    baseCode: "# TODO: Define exp_multiplier(n) and print exp_multiplier(4)\n",
+    hints: ["if n <= 1: return 1", "return n * exp_multiplier(n - 1)", "print(exp_multiplier(4))"],
+    solution: "def exp_multiplier(n):\n    if n <= 1:\n        return 1\n    return n * exp_multiplier(n - 1)\n\nprint(exp_multiplier(4))",
+    solutionRegex: [/def\s+exp_multiplier\s*\(\s*n\s*\)\s*:/, /if\s+n\s*<=\s*1\s*:/, /return\s+1/, /return\s+n\s*\*\s*exp_multiplier\s*\(\s*n\s*-\s*1\s*\)/, /print\s*\(\s*exp_multiplier\s*\(\s*4\s*\)\s*\)/]
+  },
+  "rec-sum-series": {
+    title: "Gym Badge Power: Recursive Sum",
+    headerPrefix: "INDIGO_LEAGUE",
+    missionPrefix: "BADGE_SUM",
+    intro: "# Indigo Plateau: Summing Gym Badges 🏅\n\nEach Gym Leader defeated yields power scaling from 5 down to 1. Sum badge energies recursively!",
+    task: "### YOUR MISSION\n\n1. Define `badge_power(n)`.\n2. Base case: If `n == 1`: `return 1`.\n3. Recursive step: `return n + badge_power(n - 1)`.\n4. Print `badge_power(5)`.",
+    baseCode: "# TODO: Define badge_power(n) and print badge_power(5)\n",
+    hints: ["if n == 1: return 1", "return n + badge_power(n - 1)", "print(badge_power(5))"],
+    solution: "def badge_power(n):\n    if n == 1:\n        return 1\n    return n + badge_power(n - 1)\n\nprint(badge_power(5))",
+    solutionRegex: [/def\s+badge_power\s*\(\s*n\s*\)\s*:/, /if\s+n\s*==\s*1\s*:/, /return\s+1/, /return\s+n\s*\+\s*badge_power\s*\(\s*n\s*-\s*1\s*\)/, /print\s*\(\s*badge_power\s*\(\s*5\s*\)\s*\)/]
+  },
+  "rec-power": {
+    title: "Thunderbolt Voltage: Power Function",
+    headerPrefix: "PIKACHU_VOLT",
+    missionPrefix: "VOLT_POWER",
+    intro: "# Electrifying Voltage: Exponent Power ⚡\n\nPikachu charges Thunderbolt in exponential surges ($2^4 = 16$). Calculate power recursively!",
+    task: "### YOUR MISSION\n\n1. Define `thunder_power(base, exp)`.\n2. Base case: If `exp == 0`: `return 1`.\n3. Recursive step: `return base * thunder_power(base, exp - 1)`.\n4. Print `thunder_power(2, 4)`.",
+    baseCode: "# TODO: Define thunder_power(base, exp) and print thunder_power(2, 4)\n",
+    hints: ["if exp == 0: return 1", "return base * thunder_power(base, exp - 1)", "print(thunder_power(2, 4))"],
+    solution: "def thunder_power(base, exp):\n    if exp == 0:\n        return 1\n    return base * thunder_power(base, exp - 1)\n\nprint(thunder_power(2, 4))",
+    solutionRegex: [/def\s+thunder_power\s*\(\s*base\s*,\s*exp\s*\)\s*:/, /if\s+exp\s*==\s*0\s*:/, /return\s+1/, /return\s+base\s*\*\s*thunder_power\s*\(\s*base\s*,\s*exp\s*-\s*1\s*\)/, /print\s*\(\s*thunder_power\s*\(\s*2\s*,\s*4\s*\)\s*\)/]
+  },
+  "rec-fibonacci": {
+    title: "Mareep Ranch: Fibonacci Growth",
+    headerPrefix: "MAREEP_FARM",
+    missionPrefix: "FLOCK_GROWTH",
+    intro: "# Johto Mareep Ranch: Branching Population 🐑⚡\n\nFluffy Mareep flocks expand in the golden Fibonacci ratio. Compute `fibonacci(6)`!",
+    task: "### YOUR MISSION\n\n1. Define `fibonacci(n)`.\n2. Base case: If `n <= 1`: `return n`.\n3. Recursive step: `return fibonacci(n - 1) + fibonacci(n - 2)`.\n4. Print `fibonacci(6)`.",
+    baseCode: "# TODO: Define fibonacci(n) and print fibonacci(6)\n",
+    hints: ["if n <= 1: return n", "return fibonacci(n - 1) + fibonacci(n - 2)", "print(fibonacci(6))"],
+    solution: "def fibonacci(n):\n    if n <= 1:\n        return n\n    return fibonacci(n - 1) + fibonacci(n - 2)\n\nprint(fibonacci(6))",
+    solutionRegex: [/def\s+fibonacci\s*\(\s*n\s*\)\s*:/, /if\s+n\s*<=\s*1\s*:/, /return\s+n/, /return\s+fibonacci\s*\(\s*n\s*-\s*1\s*\)\s*\+\s*fibonacci\s*\(\s*n\s*-\s*2\s*\)/, /print\s*\(\s*fibonacci\s*\(\s*6\s*\)\s*\)/]
+  },
+  "rec-mastery": {
+    title: "Cerulean Cave Master: Mewtwo Chamber",
+    headerPrefix: "CERULEAN_CORE",
+    missionPrefix: "MEWTWO_LAIR",
+    intro: "# Deepest Cerulean Cave: Master Raid 🔮\n\nBattle through 3 subterranean chambers to reach Mewtwo at the core of the cave!",
+    task: "### YOUR MISSION\n\n1. Define `clear_cave(chambers)`.\n2. Base case: If `chambers == 0`: print `\"Core: Master Ball Thrown!\"` and `return`.\n3. Print `f\"Breaching Chamber {chambers}...\"`.\n4. Call `clear_cave(chambers - 1)`.\n5. Print `f\"Chamber {chambers} Secured!\"`.\n6. Call `clear_cave(3)`.",
+    baseCode: "# TODO: Define clear_cave(chambers) and call clear_cave(3)\n",
+    hints: ["if chambers == 0: print(\"Core: Master Ball Thrown!\"); return", "clear_cave(chambers - 1)", "clear_cave(3)"],
+    solution: "def clear_cave(chambers):\n    if chambers == 0:\n        print(\"Core: Master Ball Thrown!\")\n        return\n    print(f\"Breaching Chamber {chambers}...\")\n    clear_cave(chambers - 1)\n    print(f\"Chamber {chambers} Secured!\")\n\nclear_cave(3)",
+    solutionRegex: [/def\s+clear_cave\s*\(\s*chambers\s*\)\s*:/, /if\s+chambers\s*==\s*0\s*:/, /print\s*\(\s*['"]Core:\s*Master Ball Thrown!['"]\s*\)/, /clear_cave\s*\(\s*chambers\s*-\s*1\s*\)/, /clear_cave\s*\(\s*3\s*\)/]
   }
 };

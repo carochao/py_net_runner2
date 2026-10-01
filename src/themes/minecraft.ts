@@ -768,5 +768,93 @@ export const MINECRAFT_THEME: any = {
     hints: ["undone_craft = craft_history.pop()", "print(f\"Undone: {undone_craft}\")", "print(craft_history)"],
     solution: "craft_history = [\"mine_wood\", \"craft_planks\", \"craft_doors\"]\nundone_craft = craft_history.pop()\nprint(f\"Undone: {undone_craft}\")\nprint(craft_history)",
     solutionRegex: [/undone_craft\s*=\s*craft_history\.pop\s*\(\s*\)/, /print\s*\(\s*(?:f['"]Undone:\s*\{undone_craft\}['"]|['"]Undone:\s*['"]\s*,\s*undone_craft|['"]Undone:\s*['"]\s*\+\s*undone_craft)\s*\)/, /print\s*\(\s*craft_history\s*\)/]
+  },
+  "rec-intro": {
+    title: "Shulker Box Inside a Shulker: Recursion",
+    headerPrefix: "SHULKER_NEST",
+    missionPrefix: "NESTED_CONTAINER",
+    intro: "# Opening Nested Shulker Boxes: Recursion 🪆📦\n\nEver found a shulker box inside a shulker box, inside another shulker box? In Python, a function that opens smaller versions of itself is called **Recursion**! The smallest box with the diamond is your Base Case.",
+    task: "### YOUR MISSION\n\n1. Define `def open_shulker(size):`.\n2. Base case: If `size == 1`: print `\"Found Netherite Ingot!\"` and `return`.\n3. Else: print `f\"Unpacking shulker tier {size}\"` and call `open_shulker(size - 1)`.\n4. Call `open_shulker(3)`.",
+    baseCode: "# TODO: Define open_shulker(size) with base case and recursive call\n",
+    hints: ["def open_shulker(size):", "if size == 1: print(\"Found Netherite Ingot!\"); return", "open_shulker(3)"],
+    solution: "def open_shulker(size):\n    if size == 1:\n        print(\"Found Netherite Ingot!\")\n        return\n    print(f\"Unpacking shulker tier {size}\")\n    open_shulker(size - 1)\n\nopen_shulker(3)",
+    solutionRegex: [/def\s+open_shulker\s*\(\s*size\s*\)\s*:/, /if\s+size\s*==\s*1\s*:/, /print\s*\(\s*['"]Found Netherite Ingot!['"]\s*\)/, /open_shulker\s*\(\s*size\s*-\s*1\s*\)/, /open_shulker\s*\(\s*3\s*\)/]
+  },
+  "rec-base-case": {
+    title: "TNT Fuse Countdown: The Emergency Base Case",
+    headerPrefix: "TNT_IGNITE",
+    missionPrefix: "FUSE_COUNTDOWN",
+    intro: "# Primed TNT: The Fuse Countdown 💣\n\nWhen a TNT block is ignited with flint and steel, its white flashing fuse ticks down: 3... 2... 1... BOOM! The explosion at 0 is the Base Case that prevents infinite ticking.",
+    task: "### YOUR MISSION\n\n1. Define `tnt_countdown(seconds)`.\n2. Base case: If `seconds == 0`: print `\"BOOM!\"` and `return`.\n3. Print `seconds`.\n4. Call `tnt_countdown(seconds - 1)`.\n5. Call `tnt_countdown(3)`.",
+    baseCode: "# TODO: Define tnt_countdown(seconds) and call tnt_countdown(3)\n",
+    hints: ["if seconds == 0: print(\"BOOM!\"); return", "tnt_countdown(seconds - 1)", "tnt_countdown(3)"],
+    solution: "def tnt_countdown(seconds):\n    if seconds == 0:\n        print(\"BOOM!\")\n        return\n    print(seconds)\n    tnt_countdown(seconds - 1)\n\ntnt_countdown(3)",
+    solutionRegex: [/def\s+tnt_countdown\s*\(\s*seconds\s*\)\s*:/, /if\s+seconds\s*==\s*0\s*:/, /print\s*\(\s*['"]BOOM!['"]\s*\)/, /tnt_countdown\s*\(\s*seconds\s*-\s*1\s*\)/, /tnt_countdown\s*\(\s*3\s*\)/]
+  },
+  "rec-call-stack": {
+    title: "Mining Down to Bedrock: The Call Stack Unwind",
+    headerPrefix: "DEEP_MINE",
+    missionPrefix: "STACK_UNWIND",
+    intro: "# Digging Down, Torching Up: The Call Stack ⛏️🕯️\n\nWhen Steve digs down into a deep cavern, each level pushed is a call stack frame. When you reach bedrock, you climb back out placing torches on the way up!",
+    task: "### YOUR MISSION\n\n1. Define `mine_down(depth)`.\n2. Base case: If `depth == 0`: print `\"Hit Bedrock!\"` and `return`.\n3. Print `f\"Mining down layer {depth}\"`.\n4. Call `mine_down(depth - 1)`.\n5. Print `f\"Placed torch on layer {depth}\"`.\n6. Call `mine_down(2)`.",
+    baseCode: "# TODO: Define mine_down(depth) and call mine_down(2)\n",
+    hints: ["def mine_down(depth):", "if depth == 0: print(\"Hit Bedrock!\"); return", "mine_down(2)"],
+    solution: "def mine_down(depth):\n    if depth == 0:\n        print(\"Hit Bedrock!\")\n        return\n    print(f\"Mining down layer {depth}\")\n    mine_down(depth - 1)\n    print(f\"Placed torch on layer {depth}\")\n\nmine_down(2)",
+    solutionRegex: [/def\s+mine_down\s*\(\s*depth\s*\)\s*:/, /if\s+depth\s*==\s*0\s*:/, /print\s*\(\s*['"]Hit Bedrock!['"]\s*\)/, /mine_down\s*\(\s*depth\s*-\s*1\s*\)/, /mine_down\s*\(\s*2\s*\)/]
+  },
+  "rec-return-accumulation": {
+    title: "Enchantment Multiplier: Recursive Factorials",
+    headerPrefix: "ENCHANT_TABLE",
+    missionPrefix: "XP_CASCADE",
+    intro: "# Lapis Lazuli Enchantment: Factorial Power ✨\n\nEnchanting diamond armor multiplies arcane XP points down to level 1. Calculate factorial power recursively!",
+    task: "### YOUR MISSION\n\n1. Define `enchant_power(n)`.\n2. Base case: If `n <= 1`: `return 1`.\n3. Recursive step: `return n * enchant_power(n - 1)`.\n4. Print `enchant_power(4)`.",
+    baseCode: "# TODO: Define enchant_power(n) and print enchant_power(4)\n",
+    hints: ["if n <= 1: return 1", "return n * enchant_power(n - 1)", "print(enchant_power(4))"],
+    solution: "def enchant_power(n):\n    if n <= 1:\n        return 1\n    return n * enchant_power(n - 1)\n\nprint(enchant_power(4))",
+    solutionRegex: [/def\s+enchant_power\s*\(\s*n\s*\)\s*:/, /if\s+n\s*<=\s*1\s*:/, /return\s+1/, /return\s+n\s*\*\s*enchant_power\s*\(\s*n\s*-\s*1\s*\)/, /print\s*\(\s*enchant_power\s*\(\s*4\s*\)\s*\)/]
+  },
+  "rec-sum-series": {
+    title: "Vein Mining: Recursive Ore Sum",
+    headerPrefix: "ORE_VEIN",
+    missionPrefix: "SUM_MINE",
+    intro: "# Vein Miner: Summing Cluster Blocks 💎\n\nA cluster of diamond ore stretches across underground blocks. Sum all blocks recursively from 5 down to 1.",
+    task: "### YOUR MISSION\n\n1. Define `mine_vein(n)`.\n2. Base case: If `n == 1`: `return 1`.\n3. Recursive step: `return n + mine_vein(n - 1)`.\n4. Print `mine_vein(5)`.",
+    baseCode: "# TODO: Define mine_vein(n) and print mine_vein(5)\n",
+    hints: ["if n == 1: return 1", "return n + mine_vein(n - 1)", "print(mine_vein(5))"],
+    solution: "def mine_vein(n):\n    if n == 1:\n        return 1\n    return n + mine_vein(n - 1)\n\nprint(mine_vein(5))",
+    solutionRegex: [/def\s+mine_vein\s*\(\s*n\s*\)\s*:/, /if\s+n\s*==\s*1\s*:/, /return\s+1/, /return\s+n\s*\+\s*mine_vein\s*\(\s*n\s*-\s*1\s*\)/, /print\s*\(\s*mine_vein\s*\(\s*5\s*\)\s*\)/]
+  },
+  "rec-power": {
+    title: "Redstone Repeater: Power Multiplication",
+    headerPrefix: "REDSTONE_SIGNAL",
+    missionPrefix: "REPEATER_POWER",
+    intro: "# Redstone Pulse Amplification: 2^4 🔴\n\nRedstone repeaters boost signal strengths in binary powers ($2^4 = 16$). Compute this recursively!",
+    task: "### YOUR MISSION\n\n1. Define `redstone_power(base, exp)`.\n2. Base case: If `exp == 0`: `return 1`.\n3. Recursive step: `return base * redstone_power(base, exp - 1)`.\n4. Print `redstone_power(2, 4)`.",
+    baseCode: "# TODO: Define redstone_power(base, exp) and print redstone_power(2, 4)\n",
+    hints: ["if exp == 0: return 1", "return base * redstone_power(base, exp - 1)", "print(redstone_power(2, 4))"],
+    solution: "def redstone_power(base, exp):\n    if exp == 0:\n        return 1\n    return base * redstone_power(base, exp - 1)\n\nprint(redstone_power(2, 4))",
+    solutionRegex: [/def\s+redstone_power\s*\(\s*base\s*,\s*exp\s*\)\s*:/, /if\s+exp\s*==\s*0\s*:/, /return\s+1/, /return\s+base\s*\*\s*redstone_power\s*\(\s*base\s*,\s*exp\s*-\s*1\s*\)/, /print\s*\(\s*redstone_power\s*\(\s*2\s*,\s*4\s*\)\s*\)/]
+  },
+  "rec-fibonacci": {
+    title: "Rabbit Breeding: Fibonacci Sequence",
+    headerPrefix: "RABBIT_FARM",
+    missionPrefix: "FIBONACCI_HERD",
+    intro: "# Bunny Farm: Branching Fibonacci Recursion 🐇\n\nTwo bunnies produce offspring who grow and breed, branching like a Fibonacci tree. Compute `fibonacci(6)`!",
+    task: "### YOUR MISSION\n\n1. Define `fibonacci(n)`.\n2. Base case: If `n <= 1`: `return n`.\n3. Recursive step: `return fibonacci(n - 1) + fibonacci(n - 2)`.\n4. Print `fibonacci(6)`.",
+    baseCode: "# TODO: Define fibonacci(n) and print fibonacci(6)\n",
+    hints: ["if n <= 1: return n", "return fibonacci(n - 1) + fibonacci(n - 2)", "print(fibonacci(6))"],
+    solution: "def fibonacci(n):\n    if n <= 1:\n        return n\n    return fibonacci(n - 1) + fibonacci(n - 2)\n\nprint(fibonacci(6))",
+    solutionRegex: [/def\s+fibonacci\s*\(\s*n\s*\)\s*:/, /if\s+n\s*<=\s*1\s*:/, /return\s+n/, /return\s+fibonacci\s*\(\s*n\s*-\s*1\s*\)\s*\+\s*fibonacci\s*\(\s*n\s*-\s*2\s*\)/, /print\s*\(\s*fibonacci\s*\(\s*6\s*\)\s*\)/]
+  },
+  "rec-mastery": {
+    title: "Ancient City Labyrinth: Dungeon Crawler",
+    headerPrefix: "DEEP_DARK",
+    missionPrefix: "WARDEN_CORRIDOR",
+    intro: "# Ancient City Exploration: Master Recursive Raid 🏛️\n\nDelve through 3 Warden chambers down into the center shrine to claim the Enchanted Golden Apple!",
+    task: "### YOUR MISSION\n\n1. Define `explore_city(chambers)`.\n2. Base case: If `chambers == 0`: print `\"Shrine: Golden Apple Acquired!\"` and `return`.\n3. Print `f\"Breaching Chamber {chambers}...\"`.\n4. Call `explore_city(chambers - 1)`.\n5. Print `f\"Chamber {chambers} Cleared!\"`.\n6. Call `explore_city(3)`.",
+    baseCode: "# TODO: Define explore_city(chambers) and call explore_city(3)\n",
+    hints: ["if chambers == 0: print(\"Shrine: Golden Apple Acquired!\"); return", "explore_city(chambers - 1)", "explore_city(3)"],
+    solution: "def explore_city(chambers):\n    if chambers == 0:\n        print(\"Shrine: Golden Apple Acquired!\")\n        return\n    print(f\"Breaching Chamber {chambers}...\")\n    explore_city(chambers - 1)\n    print(f\"Chamber {chambers} Cleared!\")\n\nexplore_city(3)",
+    solutionRegex: [/def\s+explore_city\s*\(\s*chambers\s*\)\s*:/, /if\s+chambers\s*==\s*0\s*:/, /print\s*\(\s*['"]Shrine:\s*Golden Apple Acquired!['"]\s*\)/, /explore_city\s*\(\s*chambers\s*-\s*1\s*\)/, /explore_city\s*\(\s*3\s*\)/]
   }
 };

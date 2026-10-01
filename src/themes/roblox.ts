@@ -759,5 +759,93 @@ export const ROBLOX_THEME: any = {
     hints: ["undone_step = studio_history.pop()", "print(f\"Undone: {undone_step}\")", "print(studio_history)"],
     solution: "studio_history = [\"spawn_part\", \"scale_x10\", \"paint_neon_pink\"]\nundone_step = studio_history.pop()\nprint(f\"Undone: {undone_step}\")\nprint(studio_history)",
     solutionRegex: [/undone_step\s*=\s*studio_history\.pop\s*\(\s*\)/, /print\s*\(\s*(?:f['"]Undone:\s*\{undone_step\}['"]|['"]Undone:\s*['"]\s*,\s*undone_step|['"]Undone:\s*['"]\s*\+\s*undone_step)\s*\)/, /print\s*\(\s*studio_history\s*\)/]
+  },
+  "rec-intro": {
+    title: "Mystery Crate in a Crate: Recursion",
+    headerPrefix: "LOOT_CRATE",
+    missionPrefix: "NESTED_REWARD",
+    intro: "# Opening Nested VIP Crates: Recursion 🎁🧱\n\nYou won a mystery loot box in a Roblox simulator! When opened, it reveals a smaller crate inside. Recursively unpack until reaching the ultra-rare Dominus hat!",
+    task: "### YOUR MISSION\n\n1. Define `open_crate(size)`.\n2. Base case: If `size == 1`: print `\"Found Dominus Hat!\"` and `return`.\n3. Else: print `f\"Opening crate tier {size}\"` and call `open_crate(size - 1)`.\n4. Call `open_crate(3)`.",
+    baseCode: "# TODO: Define open_crate(size) and call open_crate(3)\n",
+    hints: ["def open_crate(size):", "if size == 1: print(\"Found Dominus Hat!\"); return", "open_crate(3)"],
+    solution: "def open_crate(size):\n    if size == 1:\n        print(\"Found Dominus Hat!\")\n        return\n    print(f\"Opening crate tier {size}\")\n    open_crate(size - 1)\n\nopen_crate(3)",
+    solutionRegex: [/def\s+open_crate\s*\(\s*size\s*\)\s*:/, /if\s+size\s*==\s*1\s*:/, /print\s*\(\s*['"]Found Dominus Hat!['"]\s*\)/, /open_crate\s*\(\s*size\s*-\s*1\s*\)/, /open_crate\s*\(\s*3\s*\)/]
+  },
+  "rec-base-case": {
+    title: "Speedrun Timer: Emergency Base Case",
+    headerPrefix: "OBBY_CLOCK",
+    missionPrefix: "SPEEDRUN_TICK",
+    intro: "# Speedrun Timer: Halting at Zero ⏱️\n\nA timer countdowns seconds to the lava floor rising: 3... 2... 1... Floor is Lava! The Base Case stops the clock at zero.",
+    task: "### YOUR MISSION\n\n1. Define `obby_timer(seconds)`.\n2. Base case: If `seconds == 0`: print `\"Floor is Lava!\"` and `return`.\n3. Print `seconds`.\n4. Call `obby_timer(seconds - 1)`.\n5. Call `obby_timer(3)`.",
+    baseCode: "# TODO: Define obby_timer(seconds) and call obby_timer(3)\n",
+    hints: ["if seconds == 0: print(\"Floor is Lava!\"); return", "obby_timer(seconds - 1)", "obby_timer(3)"],
+    solution: "def obby_timer(seconds):\n    if seconds == 0:\n        print(\"Floor is Lava!\")\n        return\n    print(seconds)\n    obby_timer(seconds - 1)\n\nobby_timer(3)",
+    solutionRegex: [/def\s+obby_timer\s*\(\s*seconds\s*\)\s*:/, /if\s+seconds\s*==\s*0\s*:/, /print\s*\(\s*['"]Floor is Lava!['"]\s*\)/, /obby_timer\s*\(\s*seconds\s*-\s*1\s*\)/, /obby_timer\s*\(\s*3\s*\)/]
+  },
+  "rec-call-stack": {
+    title: "Gravity Elevator: Call Stack Dive",
+    headerPrefix: "GRAVITY_COIL",
+    missionPrefix: "LIFT_UNWIND",
+    intro: "# Tower Descent & Ascent: The Call Stack 🌀\n\nDropping through gravity tubes pushes layers onto the Call Stack. Bouncing on the trampoline at the bottom pops frames back up!",
+    task: "### YOUR MISSION\n\n1. Define `gravity_dive(depth)`.\n2. Base case: If `depth == 0`: print `\"Hit Trampoline!\"` and `return`.\n3. Print `f\"Dropping tube layer {depth}\"`.\n4. Call `gravity_dive(depth - 1)`.\n5. Print `f\"Bouncing up layer {depth}\"`.\n6. Call `gravity_dive(2)`.",
+    baseCode: "# TODO: Define gravity_dive(depth) and call gravity_dive(2)\n",
+    hints: ["def gravity_dive(depth):", "if depth == 0: print(\"Hit Trampoline!\"); return", "gravity_dive(2)"],
+    solution: "def gravity_dive(depth):\n    if depth == 0:\n        print(\"Hit Trampoline!\")\n        return\n    print(f\"Dropping tube layer {depth}\")\n    gravity_dive(depth - 1)\n    print(f\"Bouncing up layer {depth}\")\n\ngravity_dive(2)",
+    solutionRegex: [/def\s+gravity_dive\s*\(\s*depth\s*\)\s*:/, /if\s+depth\s*==\s*0\s*:/, /print\s*\(\s*['"]Hit Trampoline!['"]\s*\)/, /gravity_dive\s*\(\s*depth\s*-\s*1\s*\)/, /gravity_dive\s*\(\s*2\s*\)/]
+  },
+  "rec-return-accumulation": {
+    title: "Rebirth Multiplier: Factorial Power",
+    headerPrefix: "REBIRTH_STAT",
+    missionPrefix: "MULTIPLIER_STACK",
+    intro: "# Rebirth Multiplier: Compounding Blox Coins 💰\n\nRebirths multiply stat gains down to rebirth 1 using the Factorial mathematical structure!",
+    task: "### YOUR MISSION\n\n1. Define `calc_multiplier(n)`.\n2. Base case: If `n <= 1`: `return 1`.\n3. Recursive step: `return n * calc_multiplier(n - 1)`.\n4. Print `calc_multiplier(4)`.",
+    baseCode: "# TODO: Define calc_multiplier(n) and print calc_multiplier(4)\n",
+    hints: ["if n <= 1: return 1", "return n * calc_multiplier(n - 1)", "print(calc_multiplier(4))"],
+    solution: "def calc_multiplier(n):\n    if n <= 1:\n        return 1\n    return n * calc_multiplier(n - 1)\n\nprint(calc_multiplier(4))",
+    solutionRegex: [/def\s+calc_multiplier\s*\(\s*n\s*\)\s*:/, /if\s+n\s*<=\s*1\s*:/, /return\s+1/, /return\s+n\s*\*\s*calc_multiplier\s*\(\s*n\s*-\s*1\s*\)/, /print\s*\(\s*calc_multiplier\s*\(\s*4\s*\)\s*\)/]
+  },
+  "rec-sum-series": {
+    title: "Obby Coins: Recursive Sum",
+    headerPrefix: "COIN_STAGE",
+    missionPrefix: "SUM_COINS",
+    intro: "# Checkpoint Rewards: Summing Coins Across Stages 🪙\n\nStage checkpoints award coins from 5 down to 1. Sum total coins recursively!",
+    task: "### YOUR MISSION\n\n1. Define `stage_coins(n)`.\n2. Base case: If `n == 1`: `return 1`.\n3. Recursive step: `return n + stage_coins(n - 1)`.\n4. Print `stage_coins(5)`.",
+    baseCode: "# TODO: Define stage_coins(n) and print stage_coins(5)\n",
+    hints: ["if n == 1: return 1", "return n + stage_coins(n - 1)", "print(stage_coins(5))"],
+    solution: "def stage_coins(n):\n    if n == 1:\n        return 1\n    return n + stage_coins(n - 1)\n\nprint(stage_coins(5))",
+    solutionRegex: [/def\s+stage_coins\s*\(\s*n\s*\)\s*:/, /if\s+n\s*==\s*1\s*:/, /return\s+1/, /return\s+n\s*\+\s*stage_coins\s*\(\s*n\s*-\s*1\s*\)/, /print\s*\(\s*stage_coins\s*\(\s*5\s*\)\s*\)/]
+  },
+  "rec-power": {
+    title: "Speed Coil Surge: Power Function",
+    headerPrefix: "SPEED_BOOST",
+    missionPrefix: "COIL_POWER",
+    intro: "# Speed Coil Boost: Exponential Velocity ($2^4$) ⚡👟\n\nSpeed coils double run velocity per upgrade tier ($2^4 = 16$). Calculate power recursively!",
+    task: "### YOUR MISSION\n\n1. Define `coil_power(base, exp)`.\n2. Base case: If `exp == 0`: `return 1`.\n3. Recursive step: `return base * coil_power(base, exp - 1)`.\n4. Print `coil_power(2, 4)`.",
+    baseCode: "# TODO: Define coil_power(base, exp) and print coil_power(2, 4)\n",
+    hints: ["if exp == 0: return 1", "return base * coil_power(base, exp - 1)", "print(coil_power(2, 4))"],
+    solution: "def coil_power(base, exp):\n    if exp == 0:\n        return 1\n    return base * coil_power(base, exp - 1)\n\nprint(coil_power(2, 4))",
+    solutionRegex: [/def\s+coil_power\s*\(\s*base\s*,\s*exp\s*\)\s*:/, /if\s+exp\s*==\s*0\s*:/, /return\s+1/, /return\s+base\s*\*\s*coil_power\s*\(\s*base\s*,\s*exp\s*-\s*1\s*\)/, /print\s*\(\s*coil_power\s*\(\s*2\s*,\s*4\s*\)\s*\)/]
+  },
+  "rec-fibonacci": {
+    title: "Pet Hatching: Fibonacci Multiplication",
+    headerPrefix: "PET_SIM",
+    missionPrefix: "EGG_BRANCH",
+    intro: "# Pet Simulator: Branching Fibonacci Hatches 🐾\n\nGolden pet hatching rates expand along Fibonacci branching paths. Compute `fibonacci(6)`!",
+    task: "### YOUR MISSION\n\n1. Define `fibonacci(n)`.\n2. Base case: If `n <= 1`: `return n`.\n3. Recursive step: `return fibonacci(n - 1) + fibonacci(n - 2)`.\n4. Print `fibonacci(6)`.",
+    baseCode: "# TODO: Define fibonacci(n) and print fibonacci(6)\n",
+    hints: ["if n <= 1: return n", "return fibonacci(n - 1) + fibonacci(n - 2)", "print(fibonacci(6))"],
+    solution: "def fibonacci(n):\n    if n <= 1:\n        return n\n    return fibonacci(n - 1) + fibonacci(n - 2)\n\nprint(fibonacci(6))",
+    solutionRegex: [/def\s+fibonacci\s*\(\s*n\s*\)\s*:/, /if\s+n\s*<=\s*1\s*:/, /return\s+n/, /return\s+fibonacci\s*\(\s*n\s*-\s*1\s*\)\s*\+\s*fibonacci\s*\(\s*n\s*-\s*2\s*\)/, /print\s*\(\s*fibonacci\s*\(\s*6\s*\)\s*\)/]
+  },
+  "rec-mastery": {
+    title: "Dungeon Boss Raid: Master Descent",
+    headerPrefix: "RAID_TOWER",
+    missionPrefix: "BOSS_CLEAR",
+    intro: "# Dungeon Quest Raid: Clearing 3 Boss Floors 🏰🛡️\n\nRaid down 3 dungeon floors to defeat the Dungeon Boss and claim legendary loot!",
+    task: "### YOUR MISSION\n\n1. Define `clear_dungeon(floors)`.\n2. Base case: If `floors == 0`: print `\"Boss Defeated: Legendary Sword!\"` and `return`.\n3. Print `f\"Breaching Floor {floors}...\"`.\n4. Call `clear_dungeon(floors - 1)`.\n5. Print `f\"Floor {floors} Cleared!\"`.\n6. Call `clear_dungeon(3)`.",
+    baseCode: "# TODO: Define clear_dungeon(floors) and call clear_dungeon(3)\n",
+    hints: ["if floors == 0: print(\"Boss Defeated: Legendary Sword!\"); return", "clear_dungeon(floors - 1)", "clear_dungeon(3)"],
+    solution: "def clear_dungeon(floors):\n    if floors == 0:\n        print(\"Boss Defeated: Legendary Sword!\")\n        return\n    print(f\"Breaching Floor {floors}...\")\n    clear_dungeon(floors - 1)\n    print(f\"Floor {floors} Cleared!\")\n\nclear_dungeon(3)",
+    solutionRegex: [/def\s+clear_dungeon\s*\(\s*floors\s*\)\s*:/, /if\s+floors\s*==\s*0\s*:/, /print\s*\(\s*['"]Boss Defeated:\s*Legendary Sword!['"]\s*\)/, /clear_dungeon\s*\(\s*floors\s*-\s*1\s*\)/, /clear_dungeon\s*\(\s*3\s*\)/]
   }
 };

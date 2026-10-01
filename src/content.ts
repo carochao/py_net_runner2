@@ -1504,5 +1504,234 @@ export const LESSONS: Lesson[] = [
       /print\s*\(\s*(?:f['"]Undone:\s*\{undone\}['"]|['"]Undone:\s*['"]\s*,\s*undone|['"]Undone:\s*['"]\s*\+\s*undone)\s*\)/,
       /print\s*\(\s*history\s*\)/
     ]
+  },
+  {
+    id: "rec-intro",
+    level: "recursion",
+    title: "The Matryoshka Doll: Intro to Recursion",
+    description: "Understand recursion as a function that calls a smaller version of itself, like nested Russian dolls.",
+    headerPrefix: "RECURSIVE_MIRROR",
+    missionPrefix: "NESTED_DOLL",
+    intro: "# Mirrors Facing Mirrors: What is Recursion? 🪆🪞\n\nHave you ever opened a set of **Russian Matryoshka dolls**?\nYou pull apart the biggest doll, and what's inside? A smaller identical doll!\nYou open that one, and inside is an even smaller doll!\nYou keep opening them until you finally reach the tiniest, solid wooden baby doll at the center.\n\nIn computer science, **Recursion** is when a function solves a problem by **calling a smaller copy of itself**!\n\nInstead of using a `while` or `for` loop, a recursive function divides a problem into:\n1. Doing one small piece of work now.\n2. Passing the rest of the problem to a clone of itself!",
+    technical: "### The Two Golden Laws of Recursion 📜\n\nEvery recursive function MUST have two parts, or it will run forever:\n\n1. **The Base Case (The Baby Doll)** 🛑:\n   A condition where the function **stops** and doesn't call itself anymore! Without this, your computer will freeze or crash with a **Stack Overflow**.\n2. **The Recursive Step (Opening the Next Doll)** 🔄:\n   The function calls itself, but with a **smaller or simpler input** (like `size - 1`) so it gets closer to the base case!\n\n```text\n  open_doll(3)  --->  Prints \"Opening doll size 3\"\n       |\n  open_doll(2)  --->  Prints \"Opening doll size 2\"\n       |\n  open_doll(1)  --->  BASE CASE! Prints \"Found the mini doll!\" (STOPS!)\n```",
+    example: "def knock(doors):\n    if doors == 1:\n        print(\"Knocked on the final door!\")\n        return\n    print(f\"Knocking on door {doors}...\")\n    knock(doors - 1)\n\nknock(3)",
+    task: "### YOUR MISSION 🎯\n\nWrite a recursive function named `open_doll(size)`:\n\n1. Define `def open_doll(size):`.\n2. **Base Case**: If `size == 1`:\n   - Print `\"Found the mini doll!\"`\n   - Use `return` to stop the recursion.\n3. Otherwise (outside the if):\n   - Print `f\"Opening doll size {size}\"`\n   - Call `open_doll(size - 1)` to unpack the next doll!\n4. Call `open_doll(3)` to start the chain!",
+    baseCode: "# TODO: Define open_doll(size) with base case and recursive call\n",
+    hints: [
+      "Start with: def open_doll(size):",
+      "Check: if size == 1: print(\"Found the mini doll!\") followed by return",
+      "Below the if block: print(f\"Opening doll size {size}\") and open_doll(size - 1)",
+      "At the bottom without indentation: open_doll(3)"
+    ],
+    solution: "def open_doll(size):\n    if size == 1:\n        print(\"Found the mini doll!\")\n        return\n    print(f\"Opening doll size {size}\")\n    open_doll(size - 1)\n\nopen_doll(3)",
+    solutionRegex: [
+      /def\s+open_doll\s*\(\s*size\s*\)\s*:/,
+      /if\s+size\s*==\s*1\s*:/,
+      /print\s*\(\s*['"]Found the mini doll!['"]\s*\)/,
+      /return/,
+      /open_doll\s*\(\s*size\s*-\s*1\s*\)/,
+      /open_doll\s*\(\s*3\s*\)/
+    ]
+  },
+  {
+    id: "rec-base-case",
+    level: "recursion",
+    title: "The Emergency Brake: The Base Case",
+    description: "Master the Base Case to prevent infinite recursion and stack overflow errors.",
+    headerPrefix: "EMERGENCY_BRAKE",
+    missionPrefix: "COUNTDOWN_SYS",
+    intro: "# The Runaway Train: Why the Base Case is Sacred 🛑\n\nWhat happens if you tell a robot:\n*\"Take a step forward, and then repeat this command!\"*\n\nThe robot will step forward forever until it crashes through the wall and runs out of battery!\n\nIn Python, if a function calls itself without ever stopping:\n```python\ndef runaway():\n    runaway()  # Calls itself forever!\n```\nPython will allocate memory for thousands of calls until it panics and halts with:\n`RecursionError: maximum recursion depth exceeded`\n(also famously known as a **Stack Overflow**!)\n\nThe **Base Case** is the emergency handbrake that halts the chain at the right moment.",
+    technical: "### Writing Clean Guard Clauses 🛡️\n\nPlace your base case right at the top of the function:\n```python\ndef countdown(seconds):\n    # 1. Base Case GUARD at the top:\n    if seconds == 0:\n        print(\"Blastoff!\")\n        return  # Halts execution! No more calls!\n\n    # 2. Action:\n    print(seconds)\n\n    # 3. Recursive Call with smaller number:\n    countdown(seconds - 1)\n```\n\nNotice how `seconds` shrinks each time ($3 \\rightarrow 2 \\rightarrow 1 \\rightarrow 0$). When it hits 0, `return` stops the chain!",
+    example: "def timer(t):\n    if t <= 0:\n        print(\"Ring ring! Time's up!\")\n        return\n    print(f\"{t} seconds remaining\")\n    timer(t - 1)\n\ntimer(2)",
+    task: "### YOUR MISSION 🎯\n\nBuild a launch pad rocket countdown using recursion!\n\n1. Define a function `countdown(seconds)`.\n2. Inside, write the base case:\n   - If `seconds == 0`: print `\"Blastoff!\"` and `return`.\n3. If not 0, print `seconds`.\n4. Then call `countdown(seconds - 1)`.\n5. Call `countdown(3)` to initiate launch!",
+    baseCode: "# TODO: Define countdown(seconds) and call countdown(3)\n",
+    hints: [
+      "Write 'def countdown(seconds):'",
+      "First line inside: if seconds == 0: print(\"Blastoff!\") and return",
+      "Next lines: print(seconds) and countdown(seconds - 1)",
+      "Outside the function: countdown(3)"
+    ],
+    solution: "def countdown(seconds):\n    if seconds == 0:\n        print(\"Blastoff!\")\n        return\n    print(seconds)\n    countdown(seconds - 1)\n\ncountdown(3)",
+    solutionRegex: [
+      /def\s+countdown\s*\(\s*seconds\s*\)\s*:/,
+      /if\s+seconds\s*==\s*0\s*:/,
+      /print\s*\(\s*['"]Blastoff!['"]\s*\)/,
+      /return/,
+      /print\s*\(\s*seconds\s*\)/,
+      /countdown\s*\(\s*seconds\s*-\s*1\s*\)/,
+      /countdown\s*\(\s*3\s*\)/
+    ]
+  },
+  {
+    id: "rec-call-stack",
+    level: "recursion",
+    title: "Stack Frames: How Memory Remembers",
+    description: "Connect recursion to the Call Stack and observe how functions unwind in reverse LIFO order.",
+    headerPrefix: "CALL_STACK_HUD",
+    missionPrefix: "UNWIND_MEMORY",
+    intro: "# The Connection: Why Recursion is Powered by a Stack! 🥞⚡\n\nIn the previous section, you learned that a **Stack** operates on **LIFO (Last-In, First-Out)**.\n\nHere is the secret connecting the two worlds:\n**Your computer's operating system manages function calls using an internal Stack called the CALL STACK!**\n\nEvery time a function is called, the computer pushes a new **Stack Frame** (its personal memory box with local variables) onto the Call Stack.\n\nWhen you dive down into recursive calls, the stack grows taller and taller.\nWhen you hit the Base Case, the calls **unwind** in reverse order (LIFO), popping off the stack one by one!",
+    technical: "### The \"Echo Chamber\": Before vs. After the Call 🌊\n\nLook closely at this structure:\n```python\ndef echo_dive(depth):\n    if depth == 0:\n        print(\"Reached the bottom!\")\n        return\n\n    print(f\"Diving level {depth}\")     # 1. RUNS ON THE WAY DOWN (Pushing)\n    echo_dive(depth - 1)               # 2. THE RECURSIVE CALL\n    print(f\"Surfacing level {depth}\")  # 3. RUNS ON THE WAY UP (Popping / Unwinding!)\n```\n\nWhen you call `echo_dive(2)`:\n1. `Diving level 2` (Push frame 2)\n2. `Diving level 1` (Push frame 1)\n3. `Reached the bottom!` (Base case!)\n4. `Surfacing level 1` (Frame 1 pops and finishes!)\n5. `Surfacing level 2` (Frame 2 pops and finishes!)\n\nNotice how level 1 surfaced *before* level 2? That is pure **LIFO**!",
+    example: "def ladder(step):\n    if step == 0:\n        print(\"At the ground!\")\n        return\n    print(f\"Climbing down step {step}\")\n    ladder(step - 1)\n    print(f\"Cleaned step {step}\")\n\nladder(2)",
+    task: "### YOUR MISSION 🎯\n\nWitness the Call Stack unwinding in reverse!\n\n1. Define `def echo_dive(depth):`.\n2. Base case: If `depth == 0`: print `\"Reached the bottom!\"` and `return`.\n3. Before the recursive call: print `f\"Diving level {depth}\"`.\n4. Make the recursive call: `echo_dive(depth - 1)`.\n5. After the recursive call: print `f\"Surfacing level {depth}\"`.\n6. Call `echo_dive(2)` to observe both the dive and the ascent!",
+    baseCode: "# TODO: Define echo_dive(depth) and call echo_dive(2)\n",
+    hints: [
+      "Define def echo_dive(depth):",
+      "Base case: if depth == 0: print(\"Reached the bottom!\") and return",
+      "Print diving line: print(f\"Diving level {depth}\")",
+      "Call echo_dive(depth - 1)",
+      "Print surfacing line: print(f\"Surfacing level {depth}\")",
+      "Call echo_dive(2) at the bottom"
+    ],
+    solution: "def echo_dive(depth):\n    if depth == 0:\n        print(\"Reached the bottom!\")\n        return\n    print(f\"Diving level {depth}\")\n    echo_dive(depth - 1)\n    print(f\"Surfacing level {depth}\")\n\necho_dive(2)",
+    solutionRegex: [
+      /def\s+echo_dive\s*\(\s*depth\s*\)\s*:/,
+      /if\s+depth\s*==\s*0\s*:/,
+      /print\s*\(\s*['"]Reached the bottom!['"]\s*\)/,
+      /return/,
+      /print\s*\(\s*(?:f['"]Diving\s+level\s+\{depth\}['"]|['"]Diving\s+level\s+['"]\s*,\s*depth)\s*\)/,
+      /echo_dive\s*\(\s*depth\s*-\s*1\s*\)/,
+      /print\s*\(\s*(?:f['"]Surfacing\s+level\s+\{depth\}['"]|['"]Surfacing\s+level\s+['"]\s*,\s*depth)\s*\)/,
+      /echo_dive\s*\(\s*2\s*\)/
+    ]
+  },
+  {
+    id: "rec-return-accumulation",
+    level: "recursion",
+    title: "Passing the Note: Recursive Returns (Factorial)",
+    description: "Learn how recursive functions return values back up the call stack to calculate Factorials.",
+    headerPrefix: "PASS_THE_NOTE",
+    missionPrefix: "MATH_FACTORIAL",
+    intro: "# Passing Notes in Class: The Factorial Cascade 📝✨\n\nImagine sitting in the 4th row of a classroom. You want to know which row you are in, but you forgot your glasses:\n1. You tap Row 3: *\"Hey, which row are you in? When you tell me, I'll add 1!\"*\n2. Row 3 taps Row 2: *\"Tell me your row, and I'll add 1!\"*\n3. Row 2 taps Row 1: *\"Tell me your row, and I'll add 1!\"*\n4. Row 1 looks at the blackboard: *\"I'm in Row 1!\"* (This is the **Base Case**!).\n\nNow the answers cascade back:\n- Row 1 returns $1$ to Row 2 $\\rightarrow$ Row 2 calculates $1 + 1 = 2$.\n- Row 2 returns $2$ to Row 3 $\\rightarrow$ Row 3 calculates $2 + 1 = 3$.\n- Row 3 returns $3$ to Row 4 $\\rightarrow$ You calculate $3 + 1 = 4$!\n\nWhen a recursive function uses **`return`**, each stack frame calculates its part and passes the answer back up!",
+    technical: "### The Classic Factorial ($n!$) 🔢\n\nIn mathematics and gaming, **Factorial** ($n!$) multiplies all positive integers down to 1:\n$$4! = 4 \\times 3 \\times 2 \\times 1 = 24$$\n\nNotice the recursive relationship:\n$$4! = 4 \\times 3!$$\n$$3! = 3 \\times 2!$$\n$$2! = 2 \\times 1!$$\n$$1! = 1 \\text{ (Base Case!)}$$\n\nIn Python:\n```python\ndef factorial(n):\n    if n <= 1:\n        return 1  # Base Case!\n    return n * factorial(n - 1)  # Recursive Step!\n```",
+    example: "def factorial(n):\n    if n <= 1:\n        return 1\n    return n * factorial(n - 1)\n\nresult = factorial(3)  # 3 * 2 * 1 = 6\nprint(result)          # 6",
+    task: "### YOUR MISSION 🎯\n\nWrite a recursive function `factorial(n)`:\n\n1. Define `def factorial(n):`.\n2. Base case: If `n <= 1`: `return 1`.\n3. Recursive step: `return n * factorial(n - 1)`.\n4. Outside the function, print `factorial(4)`! (It should output `24`!).",
+    baseCode: "# TODO: Define factorial(n) and print factorial(4)\n",
+    hints: [
+      "Define def factorial(n):",
+      "Base case: if n <= 1: return 1",
+      "Recursive call: return n * factorial(n - 1)",
+      "Print the result: print(factorial(4))"
+    ],
+    solution: "def factorial(n):\n    if n <= 1:\n        return 1\n    return n * factorial(n - 1)\n\nprint(factorial(4))",
+    solutionRegex: [
+      /def\s+factorial\s*\(\s*n\s*\)\s*:/,
+      /if\s+n\s*<=\s*1\s*:/,
+      /return\s+1/,
+      /return\s+n\s*\*\s*factorial\s*\(\s*n\s*-\s*1\s*\)/,
+      /print\s*\(\s*factorial\s*\(\s*4\s*\)\s*\)/
+    ]
+  },
+  {
+    id: "rec-sum-series",
+    level: "recursion",
+    title: "The Quest Trail: Sum of Numbers",
+    description: "Calculate the sum of all numbers from n down to 1 using recursive addition.",
+    headerPrefix: "QUEST_TRAIL",
+    missionPrefix: "ACCUMULATOR_SUM",
+    intro: "# Collecting Loot on Every Level: Recursive Sum 💰⚔️\n\nImagine an RPG dungeon where:\n- Level 5 contains 5 gold coins 🪙\n- Level 4 contains 4 gold coins\n- Level 3 contains 3 gold coins\n- Level 2 contains 2 gold coins\n- Level 1 contains 1 gold coin\n\nHow many total coins do you collect from Level 5 all the way down?\n$$5 + 4 + 3 + 2 + 1 = 15$$\n\nInstead of a `for` loop, you can express this recursively:\n*\"The total coins from Level $n$ is $n$ PLUS the coins from Level $n-1$!\"*",
+    technical: "### Mathematical Anatomy of Recursive Sum 📐\n\n$$\\text{sum\\_quest}(n) = n + \\text{sum\\_quest}(n - 1)$$\n\n- **Base Case**: At level 1, there's just 1 coin!\n  ```python\n  if n == 1:\n      return 1\n  ```\n- **Recursive Step**:\n  ```python\n  return n + sum_quest(n - 1)\n  ```",
+    example: "def sum_quest(n):\n    if n == 1:\n        return 1\n    return n + sum_quest(n - 1)\n\nprint(sum_quest(3))  # 3 + 2 + 1 = 6",
+    task: "### YOUR MISSION 🎯\n\nCalculate the cumulative quest score from stage 5 down to 1!\n\n1. Define a function named `sum_quest(n)`.\n2. Base case: If `n == 1`: `return 1`.\n3. Recursive step: `return n + sum_quest(n - 1)`.\n4. Outside the function, print `sum_quest(5)` (It should output `15`!).",
+    baseCode: "# TODO: Define sum_quest(n) and print sum_quest(5)\n",
+    hints: [
+      "Write def sum_quest(n):",
+      "Base case: if n == 1: return 1",
+      "Recursive step: return n + sum_quest(n - 1)",
+      "Print result: print(sum_quest(5))"
+    ],
+    solution: "def sum_quest(n):\n    if n == 1:\n        return 1\n    return n + sum_quest(n - 1)\n\nprint(sum_quest(5))",
+    solutionRegex: [
+      /def\s+sum_quest\s*\(\s*n\s*\)\s*:/,
+      /if\s+n\s*==\s*1\s*:/,
+      /return\s+1/,
+      /return\s+n\s*\+\s*sum_quest\s*\(\s*n\s*-\s*1\s*\)/,
+      /print\s*\(\s*sum_quest\s*\(\s*5\s*\)\s*\)/
+    ]
+  },
+  {
+    id: "rec-power",
+    level: "recursion",
+    title: "Exponential Energy: Power Functions",
+    description: "Compute powers like 2^4 recursively by multiplying the base by power(base, exp - 1).",
+    headerPrefix: "POWER_CORE",
+    missionPrefix: "EXPONENT_CASCADE",
+    intro: "# Supercharged Energy: Exponents ($2^4$) ⚡🔋\n\nIn physics and games, critical hits and energy shields scale exponentially:\n$$2^4 = 2 \\times 2 \\times 2 \\times 2 = 16$$\n\nNotice the recursive pattern:\n$$2^4 = 2 \\times 2^3$$\n$$2^3 = 2 \\times 2^2$$\n$$2^2 = 2 \\times 2^1$$\n$$2^1 = 2 \\times 2^0$$\n$$2^0 = 1 \\text{ (Any number raised to power 0 is 1!)}$$\n\nThat makes $exp == 0$ the ideal Base Case!",
+    technical: "### Building `power(base, exp)` 🔌\n\n1. **Base Case**: If `exp == 0`, return `1`.\n2. **Recursive Step**: Return `base * power(base, exp - 1)`.\n\nLook how clean and readable that is compared to complex loops!",
+    example: "def power(base, exp):\n    if exp == 0:\n        return 1\n    return base * power(base, exp - 1)\n\nprint(power(3, 2))  # 3^2 = 9",
+    task: "### YOUR MISSION 🎯\n\nCalculate the mainframe power grid output ($2^4$)!\n\n1. Define a function `power(base, exp)`.\n2. Base case: If `exp == 0`: `return 1`.\n3. Recursive step: `return base * power(base, exp - 1)`.\n4. Outside the function, print `power(2, 4)` (It should output `16`!).",
+    baseCode: "# TODO: Define power(base, exp) and print power(2, 4)\n",
+    hints: [
+      "Define def power(base, exp):",
+      "Base case: if exp == 0: return 1",
+      "Recursive step: return base * power(base, exp - 1)",
+      "Print power(2, 4)"
+    ],
+    solution: "def power(base, exp):\n    if exp == 0:\n        return 1\n    return base * power(base, exp - 1)\n\nprint(power(2, 4))",
+    solutionRegex: [
+      /def\s+power\s*\(\s*base\s*,\s*exp\s*\)\s*:/,
+      /if\s+exp\s*==\s*0\s*:/,
+      /return\s+1/,
+      /return\s+base\s*\*\s*power\s*\(\s*base\s*,\s*exp\s*-\s*1\s*\)/,
+      /print\s*\(\s*power\s*\(\s*2\s*,\s*4\s*\)\s*\)/
+    ]
+  },
+  {
+    id: "rec-fibonacci",
+    level: "recursion",
+    title: "The Golden Spiral: Fibonacci Numbers",
+    description: "Explore branching dual-recursion with the legendary Fibonacci sequence: 0, 1, 1, 2, 3, 5, 8...",
+    headerPrefix: "NATURE_SPIRAL",
+    missionPrefix: "BRANCHING_TREE",
+    intro: "# Nature's Secret Code: Fibonacci Numbers 🌻🐇\n\nLook at sunflower seed spirals, pinecones, seashell swirls, or how branches split off a tree trunk. They all follow the famous **Fibonacci sequence**:\n$$0, 1, 1, 2, 3, 5, 8, 13, 21, 34...$$\n\nEach number is the **sum of the previous two numbers**!\n- $2 = 1 + 1$\n- $3 = 2 + 1$\n- $5 = 3 + 2$\n- $8 = 5 + 3$\n\nThis introduces **Branching Recursion**: a function that calls itself **twice**!",
+    technical: "### Branching Recursion: The Call Tree 🌳\n\n```python\ndef fibonacci(n):\n    if n <= 1:\n        return n  # Base cases: fib(0) = 0, fib(1) = 1\n    return fibonacci(n - 1) + fibonacci(n - 2)\n```\n\nNotice how `fibonacci` splits like a tree branch:\n```text\n                   fib(4)\n                  /      \\\n             fib(3)      fib(2)\n            /     \\      /     \\\n        fib(2)  fib(1) fib(1)  fib(0)\n```\nEach branch computes its sub-problem and combines the results!",
+    example: "def fib(n):\n    if n <= 1:\n        return n\n    return fib(n - 1) + fib(n - 2)\n\nprint(fib(4))  # Output: 3 (0, 1, 1, 2, 3)",
+    task: "### YOUR MISSION 🎯\n\nCompute the 6th Fibonacci number ($n = 6$)!\n\n1. Define `def fibonacci(n):`.\n2. Base case: If `n <= 1`: `return n`.\n3. Recursive step: `return fibonacci(n - 1) + fibonacci(n - 2)`.\n4. Outside the function, print `fibonacci(6)` (It should output `8`!).",
+    baseCode: "# TODO: Define fibonacci(n) and print fibonacci(6)\n",
+    hints: [
+      "Define def fibonacci(n):",
+      "Base case: if n <= 1: return n",
+      "Recursive step: return fibonacci(n - 1) + fibonacci(n - 2)",
+      "Print fibonacci(6)"
+    ],
+    solution: "def fibonacci(n):\n    if n <= 1:\n        return n\n    return fibonacci(n - 1) + fibonacci(n - 2)\n\nprint(fibonacci(6))",
+    solutionRegex: [
+      /def\s+fibonacci\s*\(\s*n\s*\)\s*:/,
+      /if\s+n\s*<=\s*1\s*:/,
+      /return\s+n/,
+      /return\s+fibonacci\s*\(\s*n\s*-\s*1\s*\)\s*\+\s*fibonacci\s*\(\s*n\s*-\s*2\s*\)/,
+      /print\s*\(\s*fibonacci\s*\(\s*6\s*\)\s*\)/
+    ]
+  },
+  {
+    id: "rec-mastery",
+    level: "recursion",
+    title: "The Dungeon Crawler: Recursive Countdown & Loot",
+    description: "Combine state tracking, base conditions, and recursive calls to conquer a multi-chamber dungeon.",
+    headerPrefix: "MASTER_CHALLENGE",
+    missionPrefix: "DUNGEON_DESCENT",
+    intro: "# The Final Test: The Labyrinth Explorer 🗝️🏰\n\nYou've explored how recursion works, how base cases act as emergency brakes, how the call stack remembers your path, and how functions pass values back up!\n\nIn this grand graduation mission, you will guide an autonomous explorer droid through deeper and deeper dungeon vaults:\n- Each vault cleared decrements the remaining vault count ($vaults - 1$).\n- When the droid reaches Vault 0, it discovers the ancient **Relic of Recursion**!\n- As the droid surfaces, it reports each cleared chamber in reverse stack order!",
+    technical: "### Full Recursive Cycle 🔄\n\n```python\ndef clear_vaults(vaults):\n    if vaults == 0:\n        print(\"Vault 0: Relic Acquired!\")\n        return\n\n    print(f\"Breaching Vault {vaults}...\")\n    clear_vaults(vaults - 1)\n    print(f\"Vault {vaults} Secured!\")\n```\n\nOutput:\n```text\nBreaching Vault 3...\nBreaching Vault 2...\nBreaching Vault 1...\nVault 0: Relic Acquired!\nVault 1 Secured!\nVault 2 Secured!\nVault 3 Secured!\n```",
+    example: "def delve(depth):\n    if depth == 0:\n        print(\"Core reached!\")\n        return\n    print(f\"Entering level {depth}\")\n    delve(depth - 1)\n    print(f\"Leaving level {depth}\")\n\ndelve(2)",
+    task: "### YOUR MISSION 🎯\n\nClear all 3 security chambers in the underground mainframe!\n\n1. Define a function `clear_vaults(vaults)`.\n2. Base case: If `vaults == 0`:\n   - Print `\"Vault 0: Relic Acquired!\"`\n   - Use `return` to stop.\n3. Before the call: print `f\"Breaching Vault {vaults}...\"`.\n4. Recursive call: `clear_vaults(vaults - 1)`.\n5. After the call: print `f\"Vault {vaults} Secured!\"`.\n6. Call `clear_vaults(3)` to launch the raid!",
+    baseCode: "# TODO: Define clear_vaults(vaults) and call clear_vaults(3)\n",
+    hints: [
+      "Define def clear_vaults(vaults):",
+      "Base case: if vaults == 0: print(\"Vault 0: Relic Acquired!\") and return",
+      "Before call: print(f\"Breaching Vault {vaults}...\")",
+      "Call clear_vaults(vaults - 1)",
+      "After call: print(f\"Vault {vaults} Secured!\")",
+      "Call clear_vaults(3) at the bottom"
+    ],
+    solution: "def clear_vaults(vaults):\n    if vaults == 0:\n        print(\"Vault 0: Relic Acquired!\")\n        return\n    print(f\"Breaching Vault {vaults}...\")\n    clear_vaults(vaults - 1)\n    print(f\"Vault {vaults} Secured!\")\n\nclear_vaults(3)",
+    solutionRegex: [
+      /def\s+clear_vaults\s*\(\s*vaults\s*\)\s*:/,
+      /if\s+vaults\s*==\s*0\s*:/,
+      /print\s*\(\s*['"]Vault 0:\s*Relic Acquired!['"]\s*\)/,
+      /return/,
+      /print\s*\(\s*.*Breaching Vault.*vaults/,
+      /clear_vaults\s*\(\s*vaults\s*-\s*1\s*\)/,
+      /print\s*\(\s*.*Vault.*vaults.*Secured!/,
+      /clear_vaults\s*\(\s*3\s*\)/
+    ]
   }
 ];

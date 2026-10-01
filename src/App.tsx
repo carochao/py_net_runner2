@@ -13,6 +13,7 @@ import {
   Layers, 
   Box, 
   Boxes, 
+  Repeat, 
   ChevronRight, 
   Play, 
   Lightbulb, 
@@ -4083,6 +4084,7 @@ export default function App() {
     { id: 'functions', icon: Layers, label: 'Functions' },
     { id: 'oop', icon: Box, label: 'OOP' },
     { id: 'data_structures', icon: Boxes, label: 'Stacks & Queues' },
+    { id: 'recursion', icon: Repeat, label: 'Recursion' },
   ];
 
   return (

@@ -1451,9 +1451,9 @@ export function validateCodeLocally(userCode: string, solutionRegex: (string | R
         continue;
       }
 
-      // --- Logic Simulation (Standalone Expression / Method Call) ---
-      const isStandaloneMethodCall = /^[a-zA-Z_]\w*\s*\.\s*[a-zA-Z_]\w*\s*\(.*\)$/.test(trimmed);
-      if (isStandaloneMethodCall && isExecuting) {
+      // --- Logic Simulation (Standalone Expression / Method Call / Function Call) ---
+      const isStandaloneCall = /^[a-zA-Z_]\w*(?:\s*\.\s*[a-zA-Z_]\w*)?\s*\(.*\)$/.test(trimmed);
+      if (isStandaloneCall && isExecuting && !trimmed.startsWith('print(')) {
         evaluateValue(trimmed);
         i++;
         continue;
