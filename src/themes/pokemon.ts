@@ -649,5 +649,93 @@ export const POKEMON_THEME: any = {
     hints: ["classification = \"Pocket Monster\"","print(Pokemon.classification)"],
     solution: "class Pokemon:\n    classification = \"Pocket Monster\"\n\nprint(Pokemon.classification)",
     solutionRegex: [/classification\s*=\s*['"]Pocket Monster['"]/, /print\s*\(\s*Pokemon\.classification\s*\)/]
+  },
+  "ds-stack-intro": {
+    title: "Trainer Belt: Stacking Poké Balls (LIFO)",
+    headerPrefix: "POKEBALL_BELT",
+    missionPrefix: "STACK_POKEBALL",
+    intro: "# Trainer Belt: Last-In, First-Out 🎒\n\nTrainers clip Poké Balls onto their travel belts in a spring-loaded stack! When you buy Poké Balls from the Mart, they stack up. The last ball clipped onto the holster is the first one ready to grab (**LIFO: Last-In, First-Out**)!",
+    task: "### YOUR MISSION\n\n1. Create empty list `ball_stack = []`.\n2. Use `.append()` to push `\"Poke_Ball\"`.\n3. Use `.append()` to push `\"Great_Ball\"`.\n4. Use `.append()` to push `\"Ultra_Ball\"`.\n5. Print `ball_stack`.",
+    baseCode: "# TODO: Create ball_stack and append the three Poké Balls\n",
+    hints: ["ball_stack = []", "ball_stack.append(\"Poke_Ball\")", "print(ball_stack)"],
+    solution: "ball_stack = []\nball_stack.append(\"Poke_Ball\")\nball_stack.append(\"Great_Ball\")\nball_stack.append(\"Ultra_Ball\")\nprint(ball_stack)",
+    solutionRegex: [/ball_stack\s*=\s*\[\s*\]/, /ball_stack\.append\s*\(\s*['"]Poke_Ball['"]\s*\)/, /ball_stack\.append\s*\(\s*['"]Great_Ball['"]\s*\)/, /ball_stack\.append\s*\(\s*['"]Ultra_Ball['"]\s*\)/, /print\s*\(\s*ball_stack\s*\)/]
+  },
+  "ds-stack-pop": {
+    title: "Throw Poké Ball: The pop() Action",
+    headerPrefix: "WILD_ENCOUNTER",
+    missionPrefix: "POP_THROW",
+    intro: "# Wild Battle: Popping from the Holster ⚡\n\nA wild Pikachu appeared! You reach for your belt holster and `.pop()` the top Poké Ball into battle.",
+    task: "### YOUR MISSION\n\n1. You have `belt = [\"Poke_Ball\", \"Great_Ball\", \"Master_Ball\"]`.\n2. Pop the top ball using `belt.pop()` into `thrown_ball`.\n3. Print `thrown_ball` (Master_Ball!).\n4. Print `belt`.",
+    baseCode: "belt = [\"Poke_Ball\", \"Great_Ball\", \"Master_Ball\"]\n# TODO: Pop top ball into thrown_ball, print thrown_ball, and print belt\n",
+    hints: ["thrown_ball = belt.pop()", "print(thrown_ball)", "print(belt)"],
+    solution: "belt = [\"Poke_Ball\", \"Great_Ball\", \"Master_Ball\"]\nthrown_ball = belt.pop()\nprint(thrown_ball)\nprint(belt)",
+    solutionRegex: [/thrown_ball\s*=\s*belt\.pop\s*\(\s*\)/, /print\s*\(\s*thrown_ball\s*\)/, /print\s*\(\s*belt\s*\)/]
+  },
+  "ds-stack-peek": {
+    title: "Deck Inspection: Peeking with [-1]",
+    headerPrefix: "TCG_BATTLE",
+    missionPrefix: "CARD_PEEK",
+    intro: "# Pokémon TCG: Peeking at the Top Card 🃏\n\nBefore drawing in the Pokémon Trading Card Game, an ability lets you peek at the top card of your deck without drawing it! Use `deck[-1]` to inspect the top card non-destructively.",
+    task: "### YOUR MISSION\n\n1. You have `deck = [\"Charmander\", \"Squirtle\", \"Charizard_EX\"]`.\n2. Peek at the top card using `deck[-1]` into `top_card`.\n3. Print `top_card`.\n4. Print `len(deck)` to confirm no cards were drawn.",
+    baseCode: "deck = [\"Charmander\", \"Squirtle\", \"Charizard_EX\"]\n# TODO: Peek at top into top_card, print top_card, and print len(deck)\n",
+    hints: ["top_card = deck[-1]", "print(top_card)", "print(len(deck))"],
+    solution: "deck = [\"Charmander\", \"Squirtle\", \"Charizard_EX\"]\ntop_card = deck[-1]\nprint(top_card)\nprint(len(deck))",
+    solutionRegex: [/top_card\s*=\s*deck\s*\[\s*-1\s*\]/, /print\s*\(\s*top_card\s*\)/, /print\s*\(\s*len\s*\(\s*deck\s*\)\s*\)/]
+  },
+  "ds-stack-empty": {
+    title: "Out of Poké Balls: Guarding Underflow",
+    headerPrefix: "POUCH_EMPTY",
+    missionPrefix: "UNDERFLOW_SAFETY",
+    intro: "# Pouch Empty: Underflow Hazard 🎒\n\nReaching into an empty bag during a battle causes a crash if you try to pop! Always check `len(bag) == 0` first.",
+    task: "### YOUR MISSION\n\n1. You have empty `bag = []`.\n2. If `len(bag) == 0`: print `\"Stack Underflow\"`\n3. Else: print `bag.pop()`.",
+    baseCode: "bag = []\n# TODO: Check if bag is empty before popping\n",
+    hints: ["if len(bag) == 0:", "    print(\"Stack Underflow\")", "else:", "    print(bag.pop())"],
+    solution: "bag = []\nif len(bag) == 0:\n    print(\"Stack Underflow\")\nelse:\n    print(bag.pop())",
+    solutionRegex: [/if\s+(?:len\s*\(\s*bag\s*\)\s*==\s*0|not\s+bag)\s*:/, /print\s*\(\s*['"]Stack Underflow['"]\s*\)/, /else\s*:/]
+  },
+  "ds-queue-intro": {
+    title: "Pokémon Center: Queues & FIFO",
+    headerPrefix: "NURSE_JOY",
+    missionPrefix: "HEALING_QUEUE",
+    intro: "# Waiting at Nurse Joy's Counter: FIFO 🏥\n\nTrainers line up at the Pokémon Center to heal their fainted Pokémon. The first trainer to step in line gets their Poké Balls placed on the healing machine first: **FIFO (First-In, First-Out)**!",
+    task: "### YOUR MISSION\n\n1. Create `heal_queue = []`.\n2. Enqueue `\"Ash\"` using `.append()`.\n3. Enqueue `\"Misty\"` using `.append()`.\n4. Enqueue `\"Brock\"` using `.append()`.\n5. Print `heal_queue`.",
+    baseCode: "# TODO: Create heal_queue and enqueue the trainers\n",
+    hints: ["heal_queue = []", "heal_queue.append(\"Ash\")", "print(heal_queue)"],
+    solution: "heal_queue = []\nheal_queue.append(\"Ash\")\nheal_queue.append(\"Misty\")\nheal_queue.append(\"Brock\")\nprint(heal_queue)",
+    solutionRegex: [/heal_queue\s*=\s*\[\s*\]/, /heal_queue\.append\s*\(\s*['"]Ash['"]\s*\)/, /heal_queue\.append\s*\(\s*['"]Misty['"]\s*\)/, /heal_queue\.append\s*\(\s*['"]Brock['"]\s*\)/, /print\s*\(\s*heal_queue\s*\)/]
+  },
+  "ds-queue-dequeue": {
+    title: "Nurse Joy's Call: Dequeuing with pop(0)",
+    headerPrefix: "HEALING_MACHINE",
+    missionPrefix: "SERVE_FIRST",
+    intro: "# Next Trainer Please! Dequeue with pop(0) ✨\n\nNurse Joy calls the first trainer in line! We remove from index 0 using `heal_queue.pop(0)` so the line advances fairly.",
+    task: "### YOUR MISSION\n\n1. You have `heal_queue = [\"Ash\", \"Misty\", \"Brock\"]`.\n2. Dequeue the first trainer using `heal_queue.pop(0)` into `healed_trainer`.\n3. Print `healed_trainer` (Ash!).\n4. Print `heal_queue`.",
+    baseCode: "heal_queue = [\"Ash\", \"Misty\", \"Brock\"]\n# TODO: Dequeue first trainer into healed_trainer, print healed_trainer, and print heal_queue\n",
+    hints: ["healed_trainer = heal_queue.pop(0)", "print(healed_trainer)", "print(heal_queue)"],
+    solution: "heal_queue = [\"Ash\", \"Misty\", \"Brock\"]\nhealed_trainer = heal_queue.pop(0)\nprint(healed_trainer)\nprint(heal_queue)",
+    solutionRegex: [/healed_trainer\s*=\s*heal_queue\.pop\s*\(\s*0\s*\)/, /print\s*\(\s*healed_trainer\s*\)/, /print\s*\(\s*heal_queue\s*\)/]
+  },
+  "ds-queue-peek": {
+    title: "Gym Lobby: Peeking at the Front [0]",
+    headerPrefix: "GYM_CHALLENGE",
+    missionPrefix: "FRONT_BATTLER",
+    intro: "# Gym Leader Desk: Peeking at the Line 🥊\n\nThe Pewter City Gym Leader wants to see which challenger is next outside the arena doors without letting them in yet! Peek with `challengers[0]`.",
+    task: "### YOUR MISSION\n\n1. You have `challengers = [\"Pikachu_Trainer\", \"Eevee_Trainer\", \"Gengar_Trainer\"]`.\n2. Peek at the front trainer using `challengers[0]` into `next_battler`.\n3. Print `next_battler`.\n4. Print `len(challengers)`.",
+    baseCode: "challengers = [\"Pikachu_Trainer\", \"Eevee_Trainer\", \"Gengar_Trainer\"]\n# TODO: Peek at challengers[0] into next_battler, print next_battler, and print len(challengers)\n",
+    hints: ["next_battler = challengers[0]", "print(next_battler)", "print(len(challengers))"],
+    solution: "challengers = [\"Pikachu_Trainer\", \"Eevee_Trainer\", \"Gengar_Trainer\"]\nnext_battler = challengers[0]\nprint(next_battler)\nprint(len(challengers))",
+    solutionRegex: [/next_battler\s*=\s*challengers\s*\[\s*0\s*\]/, /print\s*\(\s*next_battler\s*\)/, /print\s*\(\s*len\s*\(\s*challengers\s*\)\s*\)/]
+  },
+  "ds-data-structures-mastery": {
+    title: "Battle Move Undo: The Turn Stack",
+    headerPrefix: "BATTLE_COMMAND",
+    missionPrefix: "UNDO_MOVE",
+    intro: "# Selected the Wrong Attack? Undo with Stacks! 🔄\n\nAccidentally clicked 'Splash' instead of 'Thunderbolt'? Battle engines keep a command stack. Pressing B (Undo) pops the last chosen action so you can choose again!",
+    task: "### YOUR MISSION\n\n1. You have `move_history = [\"select_potion\", \"switch_pokemon\", \"use_splash\"]`.\n2. Pop the last move using `move_history.pop()` into `undone_move`.\n3. Print `f\"Undone: {undone_move}\"`.\n4. Print `move_history`.",
+    baseCode: "move_history = [\"select_potion\", \"switch_pokemon\", \"use_splash\"]\n# TODO: Pop last move into undone_move, print f\"Undone: {undone_move}\", and print move_history\n",
+    hints: ["undone_move = move_history.pop()", "print(f\"Undone: {undone_move}\")", "print(move_history)"],
+    solution: "move_history = [\"select_potion\", \"switch_pokemon\", \"use_splash\"]\nundone_move = move_history.pop()\nprint(f\"Undone: {undone_move}\")\nprint(move_history)",
+    solutionRegex: [/undone_move\s*=\s*move_history\.pop\s*\(\s*\)/, /print\s*\(\s*(?:f['"]Undone:\s*\{undone_move\}['"]|['"]Undone:\s*['"]\s*,\s*undone_move|['"]Undone:\s*['"]\s*\+\s*undone_move)\s*\)/, /print\s*\(\s*move_history\s*\)/]
   }
 };

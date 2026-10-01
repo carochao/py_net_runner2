@@ -1309,5 +1309,200 @@ export const LESSONS: Lesson[] = [
     ],
     solution: "class Operative:\n    security_level = \"High\"\n\nprint(Operative.security_level)",
     solutionRegex: [/security_level\s*=\s*['"]High['"]/, /print\s*\(\s*(?:Operative|[a-zA-Z_]\w*)\.security_level\s*\)/]
+  },
+  {
+    id: "ds-stack-intro",
+    level: "data_structures",
+    title: "The Memory Tower: Stacks & LIFO",
+    description: "Discover Stacks and the Last-In, First-Out (LIFO) rule using real-world analogies and list append.",
+    headerPrefix: "STACK_CORE",
+    missionPrefix: "LIFO_PUSH",
+    intro: "# Welcome to Data Structures: The Stack 🥞\n\nUp until now, you've stored individual values in variables and grouped data inside objects. But in real-world software, games, and operating systems, we need structured ways to organize, order, and process collections of data. These are called **Data Structures**!\n\nThe first essential data structure you need to master is **The Stack**.\n\n### What is a Stack? 🤔\nThink about everyday stacks:\n- 🥞 A tall stack of blueberry pancakes on Saturday morning\n- 🍽️ A spring-loaded stack of clean dinner plates at a buffet\n- 🍬 A PEZ candy dispenser\n- 🃏 A deck of playing cards face-down\n\nWhere do new pancakes go? **Right on top!**\nWhere do you take a pancake to eat? **From the top!**\n\nThis golden rule is called **LIFO: Last-In, First-Out**. The very last item you placed on top is the very first one you grab!",
+    technical: "### Pushing Onto a Stack in Python 📥\n\nIn Python, we don't need a complicated new library to build a stack—we can use a standard Python **list**!\n\n1. **Initialize an empty stack**:\n   ```python\n   stack = []\n   ```\n2. **Pushing an item onto the stack**:\n   In computer science, adding to a stack is called **PUSH**. In Python, we push by calling **`.append()`**:\n   ```python\n   stack.append(\"plate_1\")\n   stack.append(\"plate_2\")\n   stack.append(\"plate_3\")\n   ```\n\n```text\n       PUSH \"plate_3\"  --->   [ \"plate_3\" ]  <-- TOP (Last-In)\n                              [ \"plate_2\" ]\n                              [ \"plate_1\" ]  <-- BOTTOM (First-In)\n                              +-----------+\n```\nEvery new item lands on top of the pile!",
+    example: "pancake_stack = []\npancake_stack.append(\"Blueberry\")\npancake_stack.append(\"Chocolate\")\npancake_stack.append(\"Maple\")\n\nprint(pancake_stack)  # Output: ['Blueberry', 'Chocolate', 'Maple']",
+    task: "### YOUR MISSION 🎯\n\nBuild a neural action stack tracking a hacker's infiltration trail!\n\n1. Create an empty list named `action_stack = []`.\n2. Use `.append()` to push `\"scan_ports\"` onto `action_stack`.\n3. Use `.append()` to push `\"bypass_firewall\"` onto `action_stack`.\n4. Use `.append()` to push `\"extract_data\"` onto `action_stack`.\n5. Finally, use `print(action_stack)` to display the loaded stack.",
+    baseCode: "# TODO: Create action_stack and push the three actions using .append()\n",
+    hints: [
+      "Start by creating an empty list: action_stack = []",
+      "Call action_stack.append(\"scan_ports\"), then append \"bypass_firewall\" and \"extract_data\".",
+      "Finish by printing action_stack: print(action_stack)"
+    ],
+    solution: "action_stack = []\naction_stack.append(\"scan_ports\")\naction_stack.append(\"bypass_firewall\")\naction_stack.append(\"extract_data\")\nprint(action_stack)",
+    solutionRegex: [
+      /action_stack\s*=\s*\[\s*\]/,
+      /action_stack\.append\s*\(\s*['"]scan_ports['"]\s*\)/,
+      /action_stack\.append\s*\(\s*['"]bypass_firewall['"]\s*\)/,
+      /action_stack\.append\s*\(\s*['"]extract_data['"]\s*\)/,
+      /print\s*\(\s*action_stack\s*\)/
+    ]
+  },
+  {
+    id: "ds-stack-pop",
+    level: "data_structures",
+    title: "Pop Goes the Memory: LIFO Removal",
+    description: "Master the pop() operation to remove and retrieve the top item from a stack.",
+    headerPrefix: "STACK_POP",
+    missionPrefix: "LIFO_RETRIEVAL",
+    intro: "# Removing from the Top: The pop() Operation 💥\n\nNow that we know how to push items onto a stack, what happens when we need to take an item out?\n\nIf you have a 10-plate stack, you can't yank a plate from the very bottom—the whole tower would crash! You **must** take the item resting right on top.\n\nIn computer science, removing an item from the top of a stack is called **POP**.\nIn Python, calling **`stack.pop()`** removes the top item and hands it directly to you!",
+    technical: "### LIFO in Action (Last-In, First-Out) 🔄\n\nWatch how `.pop()` enforces the LIFO rule:\n```python\ncards = [\"Shield\", \"Laser\", \"Potion\"]\n# \"Potion\" was the LAST card added to the stack.\n\ndrawn_card = cards.pop()\nprint(drawn_card)  # Outputs: Potion (The LAST in is the FIRST out!)\nprint(cards)       # Outputs: ['Shield', 'Laser'] (Potion is now removed!)\n```\n\n### What `.pop()` Does:\n1. It **removes** the last element from the list.\n2. It **returns** the removed element so you can assign it to a variable or print it immediately!",
+    example: "browser_tabs = [\"home.html\", \"about.html\", \"dashboard.html\"]\nclosed_tab = browser_tabs.pop()\n\nprint(f\"Closed: {closed_tab}\")  # Closed: dashboard.html\nprint(browser_tabs)             # ['home.html', 'about.html']",
+    task: "### YOUR MISSION 🎯\n\nPop the most recent security key off the top of the decryption stack!\n\n1. You are given `keys = [\"Key_Alpha\", \"Key_Beta\", \"Key_Gamma\"]`.\n2. Call `keys.pop()` and store the returned value in a variable named `used_key`.\n3. Print `used_key` to see which key came out (it will be `\"Key_Gamma\"`!).\n4. Print `keys` to confirm the stack size decreased.",
+    baseCode: "keys = [\"Key_Alpha\", \"Key_Beta\", \"Key_Gamma\"]\n# TODO: Pop top key into used_key, print used_key, then print keys\n",
+    hints: [
+      "Use used_key = keys.pop() to pop the top item.",
+      "On the next lines, call print(used_key) and print(keys)."
+    ],
+    solution: "keys = [\"Key_Alpha\", \"Key_Beta\", \"Key_Gamma\"]\nused_key = keys.pop()\nprint(used_key)\nprint(keys)",
+    solutionRegex: [
+      /used_key\s*=\s*keys\.pop\s*\(\s*\)/,
+      /print\s*\(\s*used_key\s*\)/,
+      /print\s*\(\s*keys\s*\)/
+    ]
+  },
+  {
+    id: "ds-stack-peek",
+    level: "data_structures",
+    title: "Look But Don't Touch: Peeking at the Top",
+    description: "Inspect the top element of a stack without removing it using list index -1.",
+    headerPrefix: "STACK_PEEK",
+    missionPrefix: "PEEK_INSPECT",
+    intro: "# No Touching: Peeking at the Top Element 👁️\n\nSometimes you need to inspect what item is sitting on top of your stack, but you **don't want to remove it yet**!\n\nThink about:\n- In card games like Uno or Magic, checking the top card of the draw deck without discarding it.\n- In games, checking which weapon or ammo is currently chambered in your blaster.\n\nThis operation is called **PEEK** (or **TOP**)!",
+    technical: "### Peeking with Python's Negative Index [-1] 🔍\n\nWhile `.pop()` permanently removes an item from the stack, **Peek is non-destructive**. The stack remains completely unchanged.\n\nIn Python, negative index **`[-1]`** always points to the last element in a list (the top of our stack!):\n```python\nstack = [\"Bread\", \"Cheese\", \"Tomato\"]\ntop_item = stack[-1]  # PEEKING!\n\nprint(top_item)    # Tomato\nprint(len(stack))  # Still 3! Tomato was NOT removed!\n```\n\n| Operation | Action | Effect on Stack |\n|---|---|---|\n| `stack.pop()` | Removes & returns top item | Stack shrinks by 1 |\n| `stack[-1]` | Reads top item only | Stack stays same size |",
+    example: "amulet_stack = [\"Ruby\", \"Sapphire\", \"Diamond\"]\ntop_amulet = amulet_stack[-1]\n\nprint(f\"Equipped: {top_amulet}\")           # Equipped: Diamond\nprint(f\"Stack size: {len(amulet_stack)}\")  # Stack size: 3",
+    task: "### YOUR MISSION 🎯\n\nInspect the top weapon canister in the ammo hopper without firing it!\n\n1. You are given `ammo_rack = [\"AP_Rounds\", \"Incendiary\", \"Plasma_Core\"]`.\n2. Peek at the top ammo using `ammo_rack[-1]` and assign it to `ready_ammo`.\n3. Print `ready_ammo`.\n4. Print `len(ammo_rack)` to prove all 3 items remain intact in the hopper.",
+    baseCode: "ammo_rack = [\"AP_Rounds\", \"Incendiary\", \"Plasma_Core\"]\n# TODO: Peek at top into ready_ammo, print ready_ammo, and print len(ammo_rack)\n",
+    hints: [
+      "Assign ready_ammo = ammo_rack[-1]",
+      "Print ready_ammo: print(ready_ammo)",
+      "Print the length: print(len(ammo_rack))"
+    ],
+    solution: "ammo_rack = [\"AP_Rounds\", \"Incendiary\", \"Plasma_Core\"]\nready_ammo = ammo_rack[-1]\nprint(ready_ammo)\nprint(len(ammo_rack))",
+    solutionRegex: [
+      /ready_ammo\s*=\s*ammo_rack\s*\[\s*-1\s*\]/,
+      /print\s*\(\s*ready_ammo\s*\)/,
+      /print\s*\(\s*len\s*\(\s*ammo_rack\s*\)\s*\)/
+    ]
+  },
+  {
+    id: "ds-stack-empty",
+    level: "data_structures",
+    title: "The Void Hazard: Underflow & isEmpty",
+    description: "Guard against Stack Underflow errors by checking if a stack is empty before popping.",
+    headerPrefix: "UNDERFLOW_GUARD",
+    missionPrefix: "SAFE_POP",
+    intro: "# Grasping Thin Air: Stack Underflow ⚠️\n\nImagine reaching for a pancake from a plate stack, but the plate is completely empty! Your fork clatters against an empty table.\n\nIn Python, what happens if you try to call `.pop()` on an empty list?\n```python\nempty_box = []\nempty_box.pop()  # 💥 CRASH! IndexError: pop from empty list\n```\nIn computer science, attempting to remove an item from an empty data structure is called **Stack Underflow**.\n\nTo write robust, crash-proof programs, you must always check if the stack contains items before popping!",
+    technical: "### Checking if a Stack is Empty 🛡️\n\nYou can check if a stack has elements in two standard ways:\n\n1. **Using `len()`**:\n   ```python\n   if len(stack) == 0:\n       print(\"Stack Underflow: Stack is empty!\")\n   else:\n       item = stack.pop()\n       print(item)\n   ```\n\n2. **Pythonic Boolean Check**:\n   In Python, an empty list `[]` evaluates to `False`, while a list with elements evaluates to `True`:\n   ```python\n   if not stack:\n       print(\"Empty!\")\n   ```",
+    example: "potion_belt = []\n\nif len(potion_belt) == 0:\n    print(\"Cannot drink: Belt is empty!\")\nelse:\n    potion = potion_belt.pop()\n    print(f\"Drank {potion}\")",
+    task: "### YOUR MISSION 🎯\n\nProtect the neural cache from a Stack Underflow crash!\n\n1. You are given an empty cache: `cache = []`.\n2. Write an `if / else` condition:\n   - If `len(cache) == 0`: print `\"Stack Underflow\"`\n   - `else`: call `cache.pop()` and print the popped item.",
+    baseCode: "cache = []\n# TODO: Check if cache is empty before popping to prevent Underflow\n",
+    hints: [
+      "Write 'if len(cache) == 0:' on line 2.",
+      "Indented inside if: print(\"Stack Underflow\")",
+      "In the else branch: print(cache.pop())"
+    ],
+    solution: "cache = []\nif len(cache) == 0:\n    print(\"Stack Underflow\")\nelse:\n    print(cache.pop())",
+    solutionRegex: [
+      /if\s+(?:len\s*\(\s*cache\s*\)\s*==\s*0|not\s+cache)\s*:/,
+      /print\s*\(\s*['"]Stack Underflow['"]\s*\)/,
+      /else\s*:/
+    ]
+  },
+  {
+    id: "ds-queue-intro",
+    level: "data_structures",
+    title: "Waiting in Line: Queues & FIFO",
+    description: "Meet Queues and the First-In, First-Out (FIFO) principle with real-world line analogies.",
+    headerPrefix: "QUEUE_CORE",
+    missionPrefix: "FIFO_ENQUEUE",
+    intro: "# Meet the Queue: First-In, First-Out (FIFO) 🎟️\n\nNow meet the twin sibling of the Stack: **The Queue**!\n\nThink about whenever you've stood in line:\n- 🎢 Waiting in line for a roller coaster at a theme park\n- 🍿 Waiting in line at the movie theater ticket counter\n- 🖨️ Documents sent to a shared office printer\n- 🎮 Matchmaking lobbies in Fortnite, Valorant, or League of Legends\n\nWho gets served first? **The person who arrived first!**\nNo cutting allowed!\n\nThis fundamental principle is called **FIFO: First-In, First-Out**.",
+    technical: "### Stack vs. Queue: The Great Showdown 🥊\n\n| Feature | Stack 🥞 | Queue 🎟️ |\n|---|---|---|\n| **Rule** | **LIFO** (Last-In, First-Out) | **FIFO** (First-In, First-Out) |\n| **Add Item** | **Push** onto top (`.append()`) | **Enqueue** to the back (`.append()`) |\n| **Remove Item** | **Pop** from top (`.pop()`) | **Dequeue** from front (`.pop(0)`) |\n| **Real Life** | Stack of dishes | Line at grocery store |\n\n```text\n  DEQUEUE (Leaves Front)                                 ENQUEUE (Joins Back)\n  <--- [ Player 1 ]  <---  [ Player 2 ]  <---  [ Player 3 ]  <--- Newcomer\n            |\n      First-In (FIFO)\n```\n\nIn Python, adding someone to the end of the queue (Enqueue) is done with `.append()`!",
+    example: "boba_line = []\nboba_line.append(\"Alice\")\nboba_line.append(\"Bob\")\nboba_line.append(\"Charlie\")\n\nprint(boba_line)  # Output: ['Alice', 'Bob', 'Charlie']",
+    task: "### YOUR MISSION 🎯\n\nSet up a matchmaking queue for incoming multiplayer operatives!\n\n1. Create an empty list named `match_queue = []`.\n2. Use `.append()` to enqueue `\"Viper\"`.\n3. Use `.append()` to enqueue `\"Ghost\"`.\n4. Use `.append()` to enqueue `\"Phoenix\"`.\n5. Print `match_queue`.",
+    baseCode: "# TODO: Create match_queue and enqueue the three players using .append()\n",
+    hints: [
+      "Create match_queue = []",
+      "Call match_queue.append(\"Viper\"), then append \"Ghost\" and \"Phoenix\".",
+      "Print the queue with print(match_queue)"
+    ],
+    solution: "match_queue = []\nmatch_queue.append(\"Viper\")\nmatch_queue.append(\"Ghost\")\nmatch_queue.append(\"Phoenix\")\nprint(match_queue)",
+    solutionRegex: [
+      /match_queue\s*=\s*\[\s*\]/,
+      /match_queue\.append\s*\(\s*['"]Viper['"]\s*\)/,
+      /match_queue\.append\s*\(\s*['"]Ghost['"]\s*\)/,
+      /match_queue\.append\s*\(\s*['"]Phoenix['"]\s*\)/,
+      /print\s*\(\s*match_queue\s*\)/
+    ]
+  },
+  {
+    id: "ds-queue-dequeue",
+    level: "data_structures",
+    title: "Next in Line: Dequeuing with pop(0)",
+    description: "Learn how to remove from the front of a queue using pop(0) to enforce FIFO.",
+    headerPrefix: "QUEUE_DEQUEUE",
+    missionPrefix: "FIFO_SERVE",
+    intro: "# Serving the Front: The Dequeue Operation 🚪\n\nThe ride operator is ready to let people through the gate! Who goes first?\n\nIf you called `queue.pop()`, Python would pop the person at the very back of the line—the person who arrived 5 seconds ago! That would cause a riot! 😱\n\nTo uphold the **FIFO (First-In, First-Out)** rule, we must remove the item from position **0** (the very front of the line).\n\nIn computer science, this is called **DEQUEUE**.\nIn Python, we dequeue with: **`queue.pop(0)`**!",
+    technical: "### Why `pop(0)` is the Secret to FIFO 🔑\n\nNotice the critical distinction:\n- `stack.pop()` $\\rightarrow$ Takes from the **END** (index -1) $\\rightarrow$ **LIFO**\n- `queue.pop(0)` $\\rightarrow$ Takes from the **FRONT** (index 0) $\\rightarrow$ **FIFO**\n\nWhen you execute `queue.pop(0)`:\n1. Python removes and returns the first element.\n2. Every other element in the line shifts forward by one position!",
+    example: "drive_thru = [\"Red_Car\", \"Blue_Car\", \"Silver_Car\"]\n\nserved = drive_thru.pop(0)\nprint(f\"Served meal to: {served}\")    # Served meal to: Red_Car\nprint(f\"Next in line: {drive_thru}\")  # Next in line: ['Blue_Car', 'Silver_Car']",
+    task: "### YOUR MISSION 🎯\n\nProcess the oldest pending IT support ticket from the incoming queue!\n\n1. You are given `ticket_queue = [\"Ticket_101\", \"Ticket_102\", \"Ticket_103\"]`.\n2. Dequeue the first ticket using `ticket_queue.pop(0)` and assign it to `current_ticket`.\n3. Print `current_ticket` (it will be `\"Ticket_101\"`, FIFO in action!).\n4. Print `ticket_queue` to confirm the remaining tickets moved up.",
+    baseCode: "ticket_queue = [\"Ticket_101\", \"Ticket_102\", \"Ticket_103\"]\n# TODO: Dequeue first ticket into current_ticket, print current_ticket, and print ticket_queue\n",
+    hints: [
+      "Write current_ticket = ticket_queue.pop(0)",
+      "Print current_ticket: print(current_ticket)",
+      "Print the remaining queue: print(ticket_queue)"
+    ],
+    solution: "ticket_queue = [\"Ticket_101\", \"Ticket_102\", \"Ticket_103\"]\ncurrent_ticket = ticket_queue.pop(0)\nprint(current_ticket)\nprint(ticket_queue)",
+    solutionRegex: [
+      /current_ticket\s*=\s*ticket_queue\.pop\s*\(\s*0\s*\)/,
+      /print\s*\(\s*current_ticket\s*\)/,
+      /print\s*\(\s*ticket_queue\s*\)/
+    ]
+  },
+  {
+    id: "ds-queue-peek",
+    level: "data_structures",
+    title: "Front of the Line: Peeking at a Queue",
+    description: "Inspect the first item in a queue without dequeuing it using index 0.",
+    headerPrefix: "QUEUE_PEEK",
+    missionPrefix: "FRONT_INSPECT",
+    intro: "# Who's Up Next? Peeking at the Queue 📋\n\nWhat if a flight attendant wants to check who is next to board the plane, without actually scanning their boarding pass yet?\n\nJust like you peeked at the top of a stack, you can **peek at the front of a queue**!\n\nBecause the front of a queue is at the beginning of the list, we peek using index **`0`**:\n```python\nnext_person = queue[0]  # Peeks at front without removing!\n```",
+    technical: "### The Definitive Data Structure Cheat Sheet 📑\n\n| Concept | Stack (LIFO) | Queue (FIFO) |\n|---|---|---|\n| **Add Element** | `stack.append(x)` (Push) | `queue.append(x)` (Enqueue) |\n| **Remove Element** | `stack.pop()` (Pop from top) | `queue.pop(0)` (Dequeue from front) |\n| **Inspect Next Element** | `stack[-1]` (Peek at top) | `queue[0]` (Peek at front) |\n| **Mental Image** | Stack of plates 🍽️ | Line at cinema 🍿 |\n| **Priority** | Newest item first | Oldest item first |",
+    example: "printer_spool = [\"Homework.pdf\", \"Receipt.png\", \"Essay.docx\"]\nupcoming_job = printer_spool[0]\n\nprint(f\"Upcoming print: {upcoming_job}\")    # Upcoming print: Homework.pdf\nprint(f\"Queue length: {len(printer_spool)}\")  # Queue length: 3 (Untouched!)",
+    task: "### YOUR MISSION 🎯\n\nInspect the next passenger at the spaceport boarding gate without removing them!\n\n1. You are given `passengers = [\"Nova\", \"Orion\", \"Vega\"]`.\n2. Peek at the front passenger using `passengers[0]` and assign to `next_passenger`.\n3. Print `next_passenger`.\n4. Print `len(passengers)` to verify all 3 passengers remain in line.",
+    baseCode: "passengers = [\"Nova\", \"Orion\", \"Vega\"]\n# TODO: Peek at passengers[0] into next_passenger, print next_passenger, and print len(passengers)\n",
+    hints: [
+      "Assign next_passenger = passengers[0]",
+      "Print next_passenger: print(next_passenger)",
+      "Print length: print(len(passengers))"
+    ],
+    solution: "passengers = [\"Nova\", \"Orion\", \"Vega\"]\nnext_passenger = passengers[0]\nprint(next_passenger)\nprint(len(passengers))",
+    solutionRegex: [
+      /next_passenger\s*=\s*passengers\s*\[\s*0\s*\]/,
+      /print\s*\(\s*next_passenger\s*\)/,
+      /print\s*\(\s*len\s*\(\s*passengers\s*\)\s*\)/
+    ]
+  },
+  {
+    id: "ds-data-structures-mastery",
+    level: "data_structures",
+    title: "The Time Machine: Building an Undo Stack",
+    description: "Put your stack skills to the ultimate test by building a real-world software Undo engine!",
+    headerPrefix: "MASTERY_LAB",
+    missionPrefix: "UNDO_SYSTEM",
+    intro: "# Software Superpower: The Magic Undo Button ↩️\n\nEver wondered how every program in the world—from Microsoft Word to Photoshop, Minecraft, and code editors—builds the **Undo button (Ctrl+Z)**?\n\n**Every single Undo button in the world is powered by a Stack!**\n\nThink about how editing works:\n1. You type `\"Hello\"` $\\rightarrow$ PUSH onto undo stack\n2. You make it **Bold** $\\rightarrow$ PUSH onto undo stack\n3. You change color to 🔴 **Red** $\\rightarrow$ PUSH onto undo stack\n\nWhen you press **Ctrl+Z (Undo)**:\n- Which action gets reversed first? The LAST action you took (Red color)!\n- That is **LIFO (Last-In, First-Out)** in its purest, most useful real-world form!",
+    technical: "### How an Undo Engine Works ⚙️\n\n```python\nhistory = [\"draw_line\", \"fill_bucket\", \"add_sticker\"]\n\n# User presses Ctrl+Z:\nundone_action = history.pop()  # Removes \"add_sticker\"\nprint(f\"Undid: {undone_action}\")\nprint(history)  # [\"draw_line\", \"fill_bucket\"]\n```\nBy popping from the history stack, software can seamlessly step backward in time one action at a time!",
+    example: "code_edits = [\"def main():\", \"    x = 10\", \"    print(x)\"]\nreverted = code_edits.pop()\n\nprint(f\"Reverted step: {reverted}\")  # Reverted step:     print(x)\nprint(f\"Current code: {code_edits}\")  # Current code: ['def main():', '    x = 10']",
+    task: "### YOUR MISSION 🎯\n\nSimulate an Undo command inside our neural text editor!\n\n1. You are given `history = [\"open_doc\", \"type_paragraph\", \"delete_word\"]`.\n2. Pop the last action from `history` and store it in a variable named `undone`.\n3. Print the formatted message: `f\"Undone: {undone}\"`.\n4. Print `history` to verify the action was removed from memory.",
+    baseCode: "history = [\"open_doc\", \"type_paragraph\", \"delete_word\"]\n# TODO: Pop last action into undone, print f\"Undone: {undone}\", and print history\n",
+    hints: [
+      "Write undone = history.pop()",
+      "Print the formatted string: print(f\"Undone: {undone}\")",
+      "Print the remaining history stack: print(history)"
+    ],
+    solution: "history = [\"open_doc\", \"type_paragraph\", \"delete_word\"]\nundone = history.pop()\nprint(f\"Undone: {undone}\")\nprint(history)",
+    solutionRegex: [
+      /undone\s*=\s*history\.pop\s*\(\s*\)/,
+      /print\s*\(\s*(?:f['"]Undone:\s*\{undone\}['"]|['"]Undone:\s*['"]\s*,\s*undone|['"]Undone:\s*['"]\s*\+\s*undone)\s*\)/,
+      /print\s*\(\s*history\s*\)/
+    ]
   }
 ];

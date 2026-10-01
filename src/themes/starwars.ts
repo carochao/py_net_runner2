@@ -749,5 +749,93 @@ export const STARWARS_THEME: any = {
     ],
     solution: "class Starship:\n    faction = \"Rebel Alliance\"\n\nprint(Starship.faction)",
     solutionRegex: [/faction\s*=\s*['"]Rebel Alliance['"]/, /print\s*\(\s*Starship\.faction\s*\)/]
+  },
+  "ds-stack-intro": {
+    title: "Blaster Power Cells: Stacks & LIFO",
+    headerPrefix: "BLASTER_MAG",
+    missionPrefix: "CELL_PUSH",
+    intro: "# Blaster Power Cells: Last-In, First-Out ⚡\n\nWhen a Rebel soldier loads plasma cells into a blaster rifle magazine, the cells stack vertically! The last cell pushed into the magazine is the very first one chambered to fire (**LIFO: Last-In, First-Out**)!",
+    task: "### YOUR MISSION\n\n1. Create empty list `blaster_mag = []`.\n2. Use `.append()` to push `\"Standard_Cell\"`.\n3. Use `.append()` to push `\"Heavy_Cell\"`.\n4. Use `.append()` to push `\"Tibanna_Gas\"`.\n5. Print `blaster_mag`.",
+    baseCode: "# TODO: Create blaster_mag and append the power cells\n",
+    hints: ["blaster_mag = []", "blaster_mag.append(\"Standard_Cell\")", "print(blaster_mag)"],
+    solution: "blaster_mag = []\nblaster_mag.append(\"Standard_Cell\")\nblaster_mag.append(\"Heavy_Cell\")\nblaster_mag.append(\"Tibanna_Gas\")\nprint(blaster_mag)",
+    solutionRegex: [/blaster_mag\s*=\s*\[\s*\]/, /blaster_mag\.append\s*\(\s*['"]Standard_Cell['"]\s*\)/, /blaster_mag\.append\s*\(\s*['"]Heavy_Cell['"]\s*\)/, /blaster_mag\.append\s*\(\s*['"]Tibanna_Gas['"]\s*\)/, /print\s*\(\s*blaster_mag\s*\)/]
+  },
+  "ds-stack-pop": {
+    title: "Chamber Round: The pop() Discharge",
+    headerPrefix: "TURBO_BLASTER",
+    missionPrefix: "FIRE_POP",
+    intro: "# Blaster Fire: Chambering from the Top 💥\n\nPulling the trigger ejects and fires the top power cell from the magazine stack using `.pop()`!",
+    task: "### YOUR MISSION\n\n1. You have `blaster = [\"Standard_Cell\", \"Heavy_Cell\", \"Tibanna_Gas\"]`.\n2. Pop the top cell using `blaster.pop()` into `fired_round`.\n3. Print `fired_round` (Tibanna_Gas!).\n4. Print `blaster`.",
+    baseCode: "blaster = [\"Standard_Cell\", \"Heavy_Cell\", \"Tibanna_Gas\"]\n# TODO: Pop top cell into fired_round, print fired_round, and print blaster\n",
+    hints: ["fired_round = blaster.pop()", "print(fired_round)", "print(blaster)"],
+    solution: "blaster = [\"Standard_Cell\", \"Heavy_Cell\", \"Tibanna_Gas\"]\nfired_round = blaster.pop()\nprint(fired_round)\nprint(blaster)",
+    solutionRegex: [/fired_round\s*=\s*blaster\.pop\s*\(\s*\)/, /print\s*\(\s*fired_round\s*\)/, /print\s*\(\s*blaster\s*\)/]
+  },
+  "ds-stack-peek": {
+    title: "Chamber Inspection: Peeking [-1]",
+    headerPrefix: "TACTICAL_HUD",
+    missionPrefix: "PEEK_AMMO",
+    intro: "# HUD Ammo Check: Peeking at Top [-1] 🔍\n\nBefore engaging stormtroopers, Han Solo checks which ammunition type is loaded into the blaster chamber without discharging it! Peek using `blaster[-1]`.",
+    task: "### YOUR MISSION\n\n1. You have `rack = [\"Ion_Blast\", \"Stun_Beam\", \"Proton_Torpedo\"]`.\n2. Peek at the top round using `rack[-1]` into `chambered_round`.\n3. Print `chambered_round`.\n4. Print `len(rack)`.",
+    baseCode: "rack = [\"Ion_Blast\", \"Stun_Beam\", \"Proton_Torpedo\"]\n# TODO: Peek at rack[-1] into chambered_round, print chambered_round, and print len(rack)\n",
+    hints: ["chambered_round = rack[-1]", "print(chambered_round)", "print(len(rack))"],
+    solution: "rack = [\"Ion_Blast\", \"Stun_Beam\", \"Proton_Torpedo\"]\nchambered_round = rack[-1]\nprint(chambered_round)\nprint(len(rack))",
+    solutionRegex: [/chambered_round\s*=\s*rack\s*\[\s*-1\s*\]/, /print\s*\(\s*chambered_round\s*\)/, /print\s*\(\s*len\s*\(\s*rack\s*\)\s*\)/]
+  },
+  "ds-stack-empty": {
+    title: "Dry Fire: Guarding Blaster Underflow",
+    headerPrefix: "DRY_FIRE",
+    missionPrefix: "UNDERFLOW_LOCK",
+    intro: "# Blaster Empty: Underflow Hazard ⚠️\n\nAttempting to `.pop()` an empty magazine causes a dry-fire fault! Always check `len(magazine) == 0` first.",
+    task: "### YOUR MISSION\n\n1. Given empty `magazine = []`.\n2. If `len(magazine) == 0`: print `\"Stack Underflow\"`\n3. Else: print `magazine.pop()`.",
+    baseCode: "magazine = []\n# TODO: Check if magazine is empty before popping\n",
+    hints: ["if len(magazine) == 0:", "    print(\"Stack Underflow\")", "else:", "    print(magazine.pop())"],
+    solution: "magazine = []\nif len(magazine) == 0:\n    print(\"Stack Underflow\")\nelse:\n    print(magazine.pop())",
+    solutionRegex: [/if\s+(?:len\s*\(\s*magazine\s*\)\s*==\s*0|not\s+magazine)\s*:/, /print\s*\(\s*['"]Stack Underflow['"]\s*\)/, /else\s*:/]
+  },
+  "ds-queue-intro": {
+    title: "X-Wing Launch Bay: Queues & FIFO",
+    headerPrefix: "HANGAR_BAY",
+    missionPrefix: "LAUNCH_FIFO",
+    intro: "# Death Star Attack: Flight Launch Queue 🚀\n\nRebel starfighters line up inside the Yavin 4 temple hangar. The first fighter in line launches first down the runway: **FIFO (First-In, First-Out)**!",
+    task: "### YOUR MISSION\n\n1. Create `launch_queue = []`.\n2. Enqueue `\"Red_Leader\"` using `.append()`.\n3. Enqueue `\"Red_Five\"` using `.append()`.\n4. Enqueue `\"Gold_Leader\"` using `.append()`.\n5. Print `launch_queue`.",
+    baseCode: "# TODO: Create launch_queue and enqueue the starfighters\n",
+    hints: ["launch_queue = []", "launch_queue.append(\"Red_Leader\")", "print(launch_queue)"],
+    solution: "launch_queue = []\nlaunch_queue.append(\"Red_Leader\")\nlaunch_queue.append(\"Red_Five\")\nlaunch_queue.append(\"Gold_Leader\")\nprint(launch_queue)",
+    solutionRegex: [/launch_queue\s*=\s*\[\s*\]/, /launch_queue\.append\s*\(\s*['"]Red_Leader['"]\s*\)/, /launch_queue\.append\s*\(\s*['"]Red_Five['"]\s*\)/, /launch_queue\.append\s*\(\s*['"]Gold_Leader['"]\s*\)/, /print\s*\(\s*launch_queue\s*\)/]
+  },
+  "ds-queue-dequeue": {
+    title: "Launch Clearance: Dequeuing with pop(0)",
+    headerPrefix: "HANGAR_CLEARANCE",
+    missionPrefix: "LAUNCH_FIRST",
+    intro: "# Cleared for Takeoff: Dequeue from Front 🌌\n\nThe hangar shield drops! We launch the lead fighter from index 0 using `launch_queue.pop(0)`.",
+    task: "### YOUR MISSION\n\n1. You have `launch_queue = [\"Red_Leader\", \"Red_Five\", \"Gold_Leader\"]`.\n2. Dequeue the lead fighter using `launch_queue.pop(0)` into `cleared_fighter`.\n3. Print `cleared_fighter` (Red_Leader!).\n4. Print `launch_queue`.",
+    baseCode: "launch_queue = [\"Red_Leader\", \"Red_Five\", \"Gold_Leader\"]\n# TODO: Dequeue first ship into cleared_fighter, print cleared_fighter, and print launch_queue\n",
+    hints: ["cleared_fighter = launch_queue.pop(0)", "print(cleared_fighter)", "print(launch_queue)"],
+    solution: "launch_queue = [\"Red_Leader\", \"Red_Five\", \"Gold_Leader\"]\ncleared_fighter = launch_queue.pop(0)\nprint(cleared_fighter)\nprint(launch_queue)",
+    solutionRegex: [/cleared_fighter\s*=\s*launch_queue\.pop\s*\(\s*0\s*\)/, /print\s*\(\s*cleared_fighter\s*\)/, /print\s*\(\s*launch_queue\s*\)/]
+  },
+  "ds-queue-peek": {
+    title: "Tractor Beam Radar: Peeking Front [0]",
+    headerPrefix: "TRACTOR_BEAM",
+    missionPrefix: "RADAR_FRONT",
+    intro: "# Docking Bay Scanner: Peeking at the Front 📡\n\nScan the lead approaching transport in the docking corridor without docking it yet using `approaching_ships[0]`!",
+    task: "### YOUR MISSION\n\n1. You have `approaching_ships = [\"Millennium_Falcon\", \"Ghost\", \"Tantive_IV\"]`.\n2. Peek at the front ship using `approaching_ships[0]` into `lead_ship`.\n3. Print `lead_ship`.\n4. Print `len(approaching_ships)`.",
+    baseCode: "approaching_ships = [\"Millennium_Falcon\", \"Ghost\", \"Tantive_IV\"]\n# TODO: Peek at approaching_ships[0] into lead_ship, print lead_ship, and print len(approaching_ships)\n",
+    hints: ["lead_ship = approaching_ships[0]", "print(lead_ship)", "print(len(approaching_ships))"],
+    solution: "approaching_ships = [\"Millennium_Falcon\", \"Ghost\", \"Tantive_IV\"]\nlead_ship = approaching_ships[0]\nprint(lead_ship)\nprint(len(approaching_ships))",
+    solutionRegex: [/lead_ship\s*=\s*approaching_ships\s*\[\s*0\s*\]/, /print\s*\(\s*lead_ship\s*\)/, /print\s*\(\s*len\s*\(\s*approaching_ships\s*\)\s*\)/]
+  },
+  "ds-data-structures-mastery": {
+    title: "Navicomputer Undo: Reverting Jump Coordinates",
+    headerPrefix: "HYPERDRIVE_SYS",
+    missionPrefix: "UNDO_NAV",
+    intro: "# Hyperspace Coordinates Wrong? Undo Stack! 🌌\n\nPlotting a jump through an asteroid field? The Falcon's navicomputer stores navigational coordinates on a stack. Popping from the stack rolls back the latest calculation!",
+    task: "### YOUR MISSION\n\n1. You have `nav_coords = [\"jump_tatooine\", \"jump_kessel\", \"jump_hoth_danger\"]`.\n2. Pop the last coordinate using `nav_coords.pop()` into `undone_coord`.\n3. Print `f\"Undone: {undone_coord}\"`.\n4. Print `nav_coords`.",
+    baseCode: "nav_coords = [\"jump_tatooine\", \"jump_kessel\", \"jump_hoth_danger\"]\n# TODO: Pop last coordinate into undone_coord, print f\"Undone: {undone_coord}\", and print nav_coords\n",
+    hints: ["undone_coord = nav_coords.pop()", "print(f\"Undone: {undone_coord}\")", "print(nav_coords)"],
+    solution: "nav_coords = [\"jump_tatooine\", \"jump_kessel\", \"jump_hoth_danger\"]\nundone_coord = nav_coords.pop()\nprint(f\"Undone: {undone_coord}\")\nprint(nav_coords)",
+    solutionRegex: [/undone_coord\s*=\s*nav_coords\.pop\s*\(\s*\)/, /print\s*\(\s*(?:f['"]Undone:\s*\{undone_coord\}['"]|['"]Undone:\s*['"]\s*,\s*undone_coord|['"]Undone:\s*['"]\s*\+\s*undone_coord)\s*\)/, /print\s*\(\s*nav_coords\s*\)/]
   }
 };

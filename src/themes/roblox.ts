@@ -671,5 +671,93 @@ export const ROBLOX_THEME: any = {
     ],
     solution: "class RobloxPlayer:\n    platform = \"Roblox\"\n\nprint(RobloxPlayer.platform)",
     solutionRegex: [/platform\s*=\s*['"]Roblox['"]/, /print\s*\(\s*RobloxPlayer\.platform\s*\)/]
+  },
+  "ds-stack-intro": {
+    title: "Obby Tower: Stacking Blocks (LIFO)",
+    headerPrefix: "STUDIO_BUILD",
+    missionPrefix: "OBBY_STACK",
+    intro: "# Building Obby Pillars: Stacks & LIFO 🧱\n\nWhen building a tower obby in Roblox Studio, you place blocks directly on top of each other! The last part you place lands right at the peak of the tower (**LIFO: Last-In, First-Out**).",
+    task: "### YOUR MISSION\n\n1. Create empty list `tower_stack = []`.\n2. Use `.append()` to push `\"Base_Plate\"`.\n3. Use `.append()` to push `\"Neon_Truss\"`.\n4. Use `.append()` to push `\"Kill_Brick\"`.\n5. Print `tower_stack`.",
+    baseCode: "# TODO: Create tower_stack and append the blocks\n",
+    hints: ["tower_stack = []", "tower_stack.append(\"Base_Plate\")", "print(tower_stack)"],
+    solution: "tower_stack = []\ntower_stack.append(\"Base_Plate\")\ntower_stack.append(\"Neon_Truss\")\ntower_stack.append(\"Kill_Brick\")\nprint(tower_stack)",
+    solutionRegex: [/tower_stack\s*=\s*\[\s*\]/, /tower_stack\.append\s*\(\s*['"]Base_Plate['"]\s*\)/, /tower_stack\.append\s*\(\s*['"]Neon_Truss['"]\s*\)/, /tower_stack\.append\s*\(\s*['"]Kill_Brick['"]\s*\)/, /print\s*\(\s*tower_stack\s*\)/]
+  },
+  "ds-stack-pop": {
+    title: "Top Block Removal: The pop() Method",
+    headerPrefix: "STUDIO_EDIT",
+    missionPrefix: "POP_BLOCK",
+    intro: "# Tower Demolition: Popping from the Peak 💥\n\nWhen removing blocks from your obby tower, you must dismantle from the top down! `.pop()` grabs the top block and hands it to you.",
+    task: "### YOUR MISSION\n\n1. You have `tower = [\"Base_Plate\", \"Neon_Truss\", \"Kill_Brick\"]`.\n2. Pop the top part using `tower.pop()` into `removed_part`.\n3. Print `removed_part` (Kill_Brick!).\n4. Print `tower`.",
+    baseCode: "tower = [\"Base_Plate\", \"Neon_Truss\", \"Kill_Brick\"]\n# TODO: Pop top block into removed_part, print removed_part, and print tower\n",
+    hints: ["removed_part = tower.pop()", "print(removed_part)", "print(tower)"],
+    solution: "tower = [\"Base_Plate\", \"Neon_Truss\", \"Kill_Brick\"]\nremoved_part = tower.pop()\nprint(removed_part)\nprint(tower)",
+    solutionRegex: [/removed_part\s*=\s*tower\.pop\s*\(\s*\)/, /print\s*\(\s*removed_part\s*\)/, /print\s*\(\s*tower\s*\)/]
+  },
+  "ds-stack-peek": {
+    title: "Top Gear Inspection: Peeking [-1]",
+    headerPrefix: "AVATAR_LOADOUT",
+    missionPrefix: "PEEK_GEAR",
+    intro: "# Avatar Backpack: Peeking at Top Gear 🎒\n\nInspect the active tool at the top of your avatar's backpack without equipping it yet! Peek using `backpack[-1]`.",
+    task: "### YOUR MISSION\n\n1. You have `backpack = [\"Bloxy_Cola\", \"Grapple_Hook\", \"Speed_Coil\"]`.\n2. Peek at the top tool using `backpack[-1]` into `equipped_tool`.\n3. Print `equipped_tool`.\n4. Print `len(backpack)`.",
+    baseCode: "backpack = [\"Bloxy_Cola\", \"Grapple_Hook\", \"Speed_Coil\"]\n# TODO: Peek at backpack[-1] into equipped_tool, print equipped_tool, and print len(backpack)\n",
+    hints: ["equipped_tool = backpack[-1]", "print(equipped_tool)", "print(len(backpack))"],
+    solution: "backpack = [\"Bloxy_Cola\", \"Grapple_Hook\", \"Speed_Coil\"]\nequipped_tool = backpack[-1]\nprint(equipped_tool)\nprint(len(backpack))",
+    solutionRegex: [/equipped_tool\s*=\s*backpack\s*\[\s*-1\s*\]/, /print\s*\(\s*equipped_tool\s*\)/, /print\s*\(\s*len\s*\(\s*backpack\s*\)\s*\)/]
+  },
+  "ds-stack-empty": {
+    title: "Empty Inventory: Guarding Underflow",
+    headerPrefix: "SAFETY_CHECK",
+    missionPrefix: "UNDERFLOW_LOCK",
+    intro: "# Empty Backpack: Preventing Underflow ⚠️\n\nCalling `.pop()` on an empty backpack will crash your Lua/Python script! Always check `len(inventory) == 0` first.",
+    task: "### YOUR MISSION\n\n1. Given empty `inventory = []`.\n2. If `len(inventory) == 0`: print `\"Stack Underflow\"`\n3. Else: print `inventory.pop()`.",
+    baseCode: "inventory = []\n# TODO: Check if inventory is empty before popping\n",
+    hints: ["if len(inventory) == 0:", "    print(\"Stack Underflow\")", "else:", "    print(inventory.pop())"],
+    solution: "inventory = []\nif len(inventory) == 0:\n    print(\"Stack Underflow\")\nelse:\n    print(inventory.pop())",
+    solutionRegex: [/if\s+(?:len\s*\(\s*inventory\s*\)\s*==\s*0|not\s+inventory)\s*:/, /print\s*\(\s*['"]Stack Underflow['"]\s*\)/, /else\s*:/]
+  },
+  "ds-queue-intro": {
+    title: "Server Matchmaking: Queues & FIFO",
+    headerPrefix: "SERVER_MATCH",
+    missionPrefix: "FIFO_QUEUE",
+    intro: "# Server Lobby Queue: FIFO 🎮\n\nWhen a popular Roblox game fills up, incoming players wait in the teleport queue. The first player to join the queue enters the server first: **FIFO (First-In, First-Out)**!",
+    task: "### YOUR MISSION\n\n1. Create `server_queue = []`.\n2. Enqueue `\"Builderman\"` using `.append()`.\n3. Enqueue `\"Noob123\"` using `.append()`.\n4. Enqueue `\"ProGamer\"` using `.append()`.\n5. Print `server_queue`.",
+    baseCode: "# TODO: Create server_queue and enqueue the players\n",
+    hints: ["server_queue = []", "server_queue.append(\"Builderman\")", "print(server_queue)"],
+    solution: "server_queue = []\nserver_queue.append(\"Builderman\")\nserver_queue.append(\"Noob123\")\nserver_queue.append(\"ProGamer\")\nprint(server_queue)",
+    solutionRegex: [/server_queue\s*=\s*\[\s*\]/, /server_queue\.append\s*\(\s*['"]Builderman['"]\s*\)/, /server_queue\.append\s*\(\s*['"]Noob123['"]\s*\)/, /server_queue\.append\s*\(\s*['"]ProGamer['"]\s*\)/, /print\s*\(\s*server_queue\s*\)/]
+  },
+  "ds-queue-dequeue": {
+    title: "Teleport Player: Dequeuing with pop(0)",
+    headerPrefix: "SERVER_JOIN",
+    missionPrefix: "TELEPORT_FIRST",
+    intro: "# Teleport to Game: Dequeue from Front 🚀\n\nA server slot opened! We teleport the first player in line by popping index 0: `server_queue.pop(0)`. That's fair FIFO!",
+    task: "### YOUR MISSION\n\n1. You have `server_queue = [\"Builderman\", \"Noob123\", \"ProGamer\"]`.\n2. Dequeue the first player using `server_queue.pop(0)` into `joined_player`.\n3. Print `joined_player` (Builderman!).\n4. Print `server_queue`.",
+    baseCode: "server_queue = [\"Builderman\", \"Noob123\", \"ProGamer\"]\n# TODO: Dequeue first player into joined_player, print joined_player, and print server_queue\n",
+    hints: ["joined_player = server_queue.pop(0)", "print(joined_player)", "print(server_queue)"],
+    solution: "server_queue = [\"Builderman\", \"Noob123\", \"ProGamer\"]\njoined_player = server_queue.pop(0)\nprint(joined_player)\nprint(server_queue)",
+    solutionRegex: [/joined_player\s*=\s*server_queue\.pop\s*\(\s*0\s*\)/, /print\s*\(\s*joined_player\s*\)/, /print\s*\(\s*server_queue\s*\)/]
+  },
+  "ds-queue-peek": {
+    title: "VIP Line: Peeking at the Front [0]",
+    headerPrefix: "VIP_LOUNGE",
+    missionPrefix: "PEEK_VIP",
+    intro: "# VIP Lounge Gate: Peeking at the Front 🌟\n\nCheck which player is waiting at the VIP room gate without unlocking the door yet using `vip_line[0]`!",
+    task: "### YOUR MISSION\n\n1. You have `vip_line = [\"BloxyVIP\", \"GoldMember\", \"SilverGamer\"]`.\n2. Peek at the front player using `vip_line[0]` into `next_vip`.\n3. Print `next_vip`.\n4. Print `len(vip_line)`.",
+    baseCode: "vip_line = [\"BloxyVIP\", \"GoldMember\", \"SilverGamer\"]\n# TODO: Peek at vip_line[0] into next_vip, print next_vip, and print len(vip_line)\n",
+    hints: ["next_vip = vip_line[0]", "print(next_vip)", "print(len(vip_line))"],
+    solution: "vip_line = [\"BloxyVIP\", \"GoldMember\", \"SilverGamer\"]\nnext_vip = vip_line[0]\nprint(next_vip)\nprint(len(vip_line))",
+    solutionRegex: [/next_vip\s*=\s*vip_line\s*\[\s*0\s*\]/, /print\s*\(\s*next_vip\s*\)/, /print\s*\(\s*len\s*\(\s*vip_line\s*\)\s*\)/]
+  },
+  "ds-data-structures-mastery": {
+    title: "Studio Undo (Ctrl+Z): The Action Stack",
+    headerPrefix: "STUDIO_ENGINE",
+    missionPrefix: "UNDO_ACTION",
+    intro: "# Studio Ctrl+Z: The Builder's Lifesaver ↩️\n\nWhen editing in Roblox Studio, pressing Ctrl+Z undoes your last mistake! Studio stores every build step on a stack. Popping from the stack reverts the most recent action!",
+    task: "### YOUR MISSION\n\n1. You have `studio_history = [\"spawn_part\", \"scale_x10\", \"paint_neon_pink\"]`.\n2. Pop the last action using `studio_history.pop()` into `undone_step`.\n3. Print `f\"Undone: {undone_step}\"`.\n4. Print `studio_history`.",
+    baseCode: "studio_history = [\"spawn_part\", \"scale_x10\", \"paint_neon_pink\"]\n# TODO: Pop last action into undone_step, print f\"Undone: {undone_step}\", and print studio_history\n",
+    hints: ["undone_step = studio_history.pop()", "print(f\"Undone: {undone_step}\")", "print(studio_history)"],
+    solution: "studio_history = [\"spawn_part\", \"scale_x10\", \"paint_neon_pink\"]\nundone_step = studio_history.pop()\nprint(f\"Undone: {undone_step}\")\nprint(studio_history)",
+    solutionRegex: [/undone_step\s*=\s*studio_history\.pop\s*\(\s*\)/, /print\s*\(\s*(?:f['"]Undone:\s*\{undone_step\}['"]|['"]Undone:\s*['"]\s*,\s*undone_step|['"]Undone:\s*['"]\s*\+\s*undone_step)\s*\)/, /print\s*\(\s*studio_history\s*\)/]
   }
 };

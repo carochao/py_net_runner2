@@ -12,6 +12,7 @@ import {
   Cpu, 
   Layers, 
   Box, 
+  Boxes, 
   ChevronRight, 
   Play, 
   Lightbulb, 
@@ -4081,6 +4082,7 @@ export default function App() {
     { id: 'control_flow', icon: Cpu, label: 'Logic' },
     { id: 'functions', icon: Layers, label: 'Functions' },
     { id: 'oop', icon: Box, label: 'OOP' },
+    { id: 'data_structures', icon: Boxes, label: 'Stacks & Queues' },
   ];
 
   return (

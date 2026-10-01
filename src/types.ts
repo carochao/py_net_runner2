@@ -1,4 +1,4 @@
-export type Level = 'basics' | 'control_flow' | 'functions' | 'oop';
+export type Level = 'basics' | 'control_flow' | 'functions' | 'oop' | 'data_structures';
 
 export interface Lesson {
   id: string;

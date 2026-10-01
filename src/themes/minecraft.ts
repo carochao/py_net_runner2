@@ -680,5 +680,93 @@ export const MINECRAFT_THEME: any = {
     hints: ["game_engine = \"Minecraft\"","print(Block.game_engine)"],
     solution: "class Block:\n    game_engine = \"Minecraft\"\n\nprint(Block.game_engine)",
     solutionRegex: [/game_engine\s*=\s*['"]Minecraft['"]/, /print\s*\(\s*Block\.game_engine\s*\)/]
+  },
+  "ds-stack-intro": {
+    title: "Chest Inventory: Stacking Items (LIFO)",
+    headerPrefix: "CHEST_STACK",
+    missionPrefix: "STACK_PUSH",
+    intro: "# Item Stacks: Last-In, First-Out 🎒\n\nIn Minecraft, items stack on top of each other inside your inventory slots and wooden chests! When you place cobblestone or diamonds into a chest slot, new items pile directly on top.\n\nThis follows the **LIFO (Last-In, First-Out)** rule: the last item placed on top of the pile is the first one retrieved!",
+    task: "### YOUR MISSION\n\n1. Create an empty list `item_stack = []`.\n2. Use `.append()` to push `\"Cobblestone\"`.\n3. Use `.append()` to push `\"Iron_Ingot\"`.\n4. Use `.append()` to push `\"Diamond\"`.\n5. Print `item_stack`.",
+    baseCode: "# TODO: Create item_stack and append the items\n",
+    hints: ["item_stack = []", "item_stack.append(\"Cobblestone\")", "print(item_stack)"],
+    solution: "item_stack = []\nitem_stack.append(\"Cobblestone\")\nitem_stack.append(\"Iron_Ingot\")\nitem_stack.append(\"Diamond\")\nprint(item_stack)",
+    solutionRegex: [/item_stack\s*=\s*\[\s*\]/, /item_stack\.append\s*\(\s*['"]Cobblestone['"]\s*\)/, /item_stack\.append\s*\(\s*['"]Iron_Ingot['"]\s*\)/, /item_stack\.append\s*\(\s*['"]Diamond['"]\s*\)/, /print\s*\(\s*item_stack\s*\)/]
+  },
+  "ds-stack-pop": {
+    title: "Dispenser Ejection: The pop() Operation",
+    headerPrefix: "REDSTONE_DISPENSER",
+    missionPrefix: "DISPENSE_POP",
+    intro: "# Dispenser Fire: Popping from the Top 🏹\n\nA Redstone Dispenser holds a stack of munitions. When triggered by a redstone pulse, it fires the item sitting right at the top of the stack using `.pop()`!",
+    task: "### YOUR MISSION\n\n1. You have `dispenser = [\"Arrow\", \"Splash_Potion\", \"Fire_Charge\"]`.\n2. Call `dispenser.pop()` and store the ejected item in `fired_item`.\n3. Print `fired_item` (it will be `\"Fire_Charge\"`, the last one in!).\n4. Print `dispenser` to view remaining ammo.",
+    baseCode: "dispenser = [\"Arrow\", \"Splash_Potion\", \"Fire_Charge\"]\n# TODO: Pop top item into fired_item, print fired_item, and print dispenser\n",
+    hints: ["fired_item = dispenser.pop()", "print(fired_item)", "print(dispenser)"],
+    solution: "dispenser = [\"Arrow\", \"Splash_Potion\", \"Fire_Charge\"]\nfired_item = dispenser.pop()\nprint(fired_item)\nprint(dispenser)",
+    solutionRegex: [/fired_item\s*=\s*dispenser\.pop\s*\(\s*\)/, /print\s*\(\s*fired_item\s*\)/, /print\s*\(\s*dispenser\s*\)/]
+  },
+  "ds-stack-peek": {
+    title: "Hopper Inspection: Peeking with [-1]",
+    headerPrefix: "HOPPER_CHECK",
+    missionPrefix: "TOP_SLOT_PEEK",
+    intro: "# Inspecting the Hopper: Peeking 🔍\n\nBefore letting an item funnel into your furnace, you want to inspect what is on top of the hopper stack without withdrawing it! We peek using `hopper[-1]`.",
+    task: "### YOUR MISSION\n\n1. You have `hopper = [\"Raw_Porkchop\", \"Raw_Beef\", \"Raw_Iron\"]`.\n2. Peek at the top item using `hopper[-1]` and assign to `next_smelt`.\n3. Print `next_smelt`.\n4. Print `len(hopper)` to confirm nothing was removed.",
+    baseCode: "hopper = [\"Raw_Porkchop\", \"Raw_Beef\", \"Raw_Iron\"]\n# TODO: Peek at top into next_smelt, print next_smelt, and print len(hopper)\n",
+    hints: ["next_smelt = hopper[-1]", "print(next_smelt)", "print(len(hopper))"],
+    solution: "hopper = [\"Raw_Porkchop\", \"Raw_Beef\", \"Raw_Iron\"]\nnext_smelt = hopper[-1]\nprint(next_smelt)\nprint(len(hopper))",
+    solutionRegex: [/next_smelt\s*=\s*hopper\s*\[\s*-1\s*\]/, /print\s*\(\s*next_smelt\s*\)/, /print\s*\(\s*len\s*\(\s*hopper\s*\)\s*\)/]
+  },
+  "ds-stack-empty": {
+    title: "Empty Shulker: Guarding Against Underflow",
+    headerPrefix: "SHULKER_CHECK",
+    missionPrefix: "EMPTY_GUARD",
+    intro: "# The Empty Chest: Underflow 📦\n\nTrying to grab an item from an empty shulker box triggers a Stack Underflow! Guard your redstone sorter with a length check.",
+    task: "### YOUR MISSION\n\n1. Given empty `shulker = []`.\n2. If `len(shulker) == 0`: print `\"Stack Underflow\"`\n3. Else: print `shulker.pop()`.",
+    baseCode: "shulker = []\n# TODO: Check if shulker is empty before popping\n",
+    hints: ["if len(shulker) == 0:", "    print(\"Stack Underflow\")", "else:", "    print(shulker.pop())"],
+    solution: "shulker = []\nif len(shulker) == 0:\n    print(\"Stack Underflow\")\nelse:\n    print(shulker.pop())",
+    solutionRegex: [/if\s+(?:len\s*\(\s*shulker\s*\)\s*==\s*0|not\s+shulker)\s*:/, /print\s*\(\s*['"]Stack Underflow['"]\s*\)/, /else\s*:/]
+  },
+  "ds-queue-intro": {
+    title: "Villager Trading Post: Queues & FIFO",
+    headerPrefix: "TRADE_POST",
+    missionPrefix: "FIFO_VILLAGER",
+    intro: "# Waiting in Line: The Villager Queue 👨‍🌾\n\nVillagers line up at the lectern to trade emeralds for enchanted books! The first villager to step in line gets traded with first: **FIFO (First-In, First-Out)**!",
+    task: "### YOUR MISSION\n\n1. Create `trade_line = []`.\n2. Enqueue `\"Librarian\"` using `.append()`.\n3. Enqueue `\"Blacksmith\"` using `.append()`.\n4. Enqueue `\"Cleric\"` using `.append()`.\n5. Print `trade_line`.",
+    baseCode: "# TODO: Create trade_line and enqueue the villagers\n",
+    hints: ["trade_line = []", "trade_line.append(\"Librarian\")", "print(trade_line)"],
+    solution: "trade_line = []\ntrade_line.append(\"Librarian\")\ntrade_line.append(\"Blacksmith\")\ntrade_line.append(\"Cleric\")\nprint(trade_line)",
+    solutionRegex: [/trade_line\s*=\s*\[\s*\]/, /trade_line\.append\s*\(\s*['"]Librarian['"]\s*\)/, /trade_line\.append\s*\(\s*['"]Blacksmith['"]\s*\)/, /trade_line\.append\s*\(\s*['"]Cleric['"]\s*\)/, /print\s*\(\s*trade_line\s*\)/]
+  },
+  "ds-queue-dequeue": {
+    title: "Next Customer: Dequeuing with pop(0)",
+    headerPrefix: "VILLAGER_SERVE",
+    missionPrefix: "FIRST_SERVE",
+    intro: "# Emerald Trades: Serving the Front 💎\n\nTo trade with the first villager in line, we must dequeue from position 0 using `trade_line.pop(0)`. That's FIFO!",
+    task: "### YOUR MISSION\n\n1. You have `trade_line = [\"Librarian\", \"Blacksmith\", \"Cleric\"]`.\n2. Dequeue the first villager using `trade_line.pop(0)` into `current_trade`.\n3. Print `current_trade` (Librarian!).\n4. Print `trade_line`.",
+    baseCode: "trade_line = [\"Librarian\", \"Blacksmith\", \"Cleric\"]\n# TODO: Dequeue first villager into current_trade, print current_trade, and print trade_line\n",
+    hints: ["current_trade = trade_line.pop(0)", "print(current_trade)", "print(trade_line)"],
+    solution: "trade_line = [\"Librarian\", \"Blacksmith\", \"Cleric\"]\ncurrent_trade = trade_line.pop(0)\nprint(current_trade)\nprint(trade_line)",
+    solutionRegex: [/current_trade\s*=\s*trade_line\.pop\s*\(\s*0\s*\)/, /print\s*\(\s*current_trade\s*\)/, /print\s*\(\s*trade_line\s*\)/]
+  },
+  "ds-queue-peek": {
+    title: "Portal Line: Peeking at Front [0]",
+    headerPrefix: "NETHER_PORTAL",
+    missionPrefix: "FRONT_PEEK",
+    intro: "# Nether Portal Queue: Peeking at the Front 🌌\n\nCheck which player is waiting to enter the Nether portal next without teleporting them yet using `portal_queue[0]`!",
+    task: "### YOUR MISSION\n\n1. You have `portal_queue = [\"Steve\", \"Alex\", \"Creeper\"]`.\n2. Peek at the front traveller using `portal_queue[0]` into `next_traveller`.\n3. Print `next_traveller`.\n4. Print `len(portal_queue)`.",
+    baseCode: "portal_queue = [\"Steve\", \"Alex\", \"Creeper\"]\n# TODO: Peek at portal_queue[0] into next_traveller, print next_traveller, and print len(portal_queue)\n",
+    hints: ["next_traveller = portal_queue[0]", "print(next_traveller)", "print(len(portal_queue))"],
+    solution: "portal_queue = [\"Steve\", \"Alex\", \"Creeper\"]\nnext_traveller = portal_queue[0]\nprint(next_traveller)\nprint(len(portal_queue))",
+    solutionRegex: [/next_traveller\s*=\s*portal_queue\s*\[\s*0\s*\]/, /print\s*\(\s*next_traveller\s*\)/, /print\s*\(\s*len\s*\(\s*portal_queue\s*\)\s*\)/]
+  },
+  "ds-data-structures-mastery": {
+    title: "The Crafting Undo: Reverting Mis-Crafts",
+    headerPrefix: "CRAFTING_TABLE",
+    missionPrefix: "UNDO_CRAFT",
+    intro: "# Accidentally Crafted 64 Wood Doors? Undo Stack! 🚪\n\nEvery builder has accidentally crafted 64 wooden doors instead of planks! Stacks power the crafting table's Undo mechanism. Pop the last craft recipe to recover materials!",
+    task: "### YOUR MISSION\n\n1. You have `craft_history = [\"mine_wood\", \"craft_planks\", \"craft_doors\"]`.\n2. Pop the last recipe into `undone_craft` using `craft_history.pop()`.\n3. Print `f\"Undone: {undone_craft}\"`.\n4. Print `craft_history`.",
+    baseCode: "craft_history = [\"mine_wood\", \"craft_planks\", \"craft_doors\"]\n# TODO: Pop last craft into undone_craft, print f\"Undone: {undone_craft}\", and print craft_history\n",
+    hints: ["undone_craft = craft_history.pop()", "print(f\"Undone: {undone_craft}\")", "print(craft_history)"],
+    solution: "craft_history = [\"mine_wood\", \"craft_planks\", \"craft_doors\"]\nundone_craft = craft_history.pop()\nprint(f\"Undone: {undone_craft}\")\nprint(craft_history)",
+    solutionRegex: [/undone_craft\s*=\s*craft_history\.pop\s*\(\s*\)/, /print\s*\(\s*(?:f['"]Undone:\s*\{undone_craft\}['"]|['"]Undone:\s*['"]\s*,\s*undone_craft|['"]Undone:\s*['"]\s*\+\s*undone_craft)\s*\)/, /print\s*\(\s*craft_history\s*\)/]
   }
 };
