@@ -22,7 +22,17 @@ import {
   Pause,
   SkipBack,
   SkipForward,
-  Zap
+  Zap,
+  Eye,
+  EyeOff,
+  BookOpen,
+  Lightbulb,
+  Maximize2,
+  Minimize2,
+  X,
+  Search,
+  Table,
+  CheckCircle
 } from 'lucide-react';
 
 // Define block shapes and styles
@@ -55,6 +65,7 @@ export interface FlowchartChallenge {
   difficulty: 'Easy' | 'Medium' | 'Hard';
   creditsReward: number;
   description: string;
+  isUnassisted?: boolean;
   slots: FlowSlot[];
   blocksBank: FlowBlock[]; // list of available blocks
   distractors: FlowBlock[]; // extra wrong blocks to challenge them
@@ -298,6 +309,96 @@ while counter <= n:
     counter += 1
 
 print(f"Sum of natural numbers: {total_sum}")`
+  },
+  'cinema-ticket-gate': {
+    pseudocode: `START
+  INPUT Age
+  IF Age >= 18 THEN
+    Price = 12
+    OUTPUT "Adult: £12"
+  ELSE
+    Price = 6
+    OUTPUT "Child: £6"
+  ENDIF
+END`,
+    python: `# Python 3 Solution
+age = int(input("Enter Age: "))
+
+if age >= 18:
+    price = 12
+    print("Adult: £12")
+else:
+    price = 6
+    print("Child: £6")`
+  },
+  'atm-withdraw-validator': {
+    pseudocode: `START
+  INPUT Balance, Amount
+  IF Amount <= Balance THEN
+    Balance = Balance - Amount
+    OUTPUT "Cash Dispensed"
+  ELSE
+    OUTPUT "Insufficient Funds"
+  ENDIF
+  OUTPUT Balance
+END`,
+    python: `# Python 3 Solution
+balance = float(input("Enter Balance: "))
+amount = float(input("Enter Amount: "))
+
+if amount <= balance:
+    balance -= amount
+    print("Cash Dispensed")
+else:
+    print("Insufficient Funds")
+
+print(f"Current Balance: {balance}")`
+  },
+  'traffic-signal-cycle': {
+    pseudocode: `START
+  INPUT CarWaiting
+  IF CarWaiting == TRUE THEN
+    LightColor = "GREEN"
+    OUTPUT "GREEN: Proceed"
+  ELSE
+    LightColor = "RED"
+    OUTPUT "RED: Halt"
+  ENDIF
+  OUTPUT "Sensor Cycle Done"
+END`,
+    python: `# Python 3 Solution
+car_waiting = input("Car waiting? (True/False): ") == "True"
+
+if car_waiting:
+    light_color = "GREEN"
+    print("GREEN: Proceed")
+else:
+    light_color = "RED"
+    print("RED: Halt")
+
+print("Sensor Cycle Done")`
+  },
+  'exam-pass-counter': {
+    pseudocode: `START
+  INPUT Score
+  IF Score >= 50 THEN
+    OUTPUT "PASS"
+  ELSE
+    OUTPUT "FAIL"
+  ENDIF
+  Count = Count + 1
+  OUTPUT Count
+END`,
+    python: `# Python 3 Solution
+score = int(input("Enter Score: "))
+
+if score >= 50:
+    print("PASS")
+else:
+    print("FAIL")
+
+count = count + 1
+print(f"Total Reviewed: {count}")`
   }
 };
 
@@ -417,6 +518,47 @@ export const CHALLENGE_HIGHLIGHT_MAP: Record<string, Record<string, HighlightInf
     's6': { pseudo: [5], python: [7] },
     's7': { pseudo: [7], python: [9] },
     's8': { pseudo: [8], python: [] }
+  },
+  'cinema-ticket-gate': {
+    's1': { pseudo: [0], python: [0] },
+    's2': { pseudo: [1], python: [1] },
+    's3': { pseudo: [2], python: [3] },
+    's4': { pseudo: [3], python: [4] },
+    's5': { pseudo: [6], python: [7] },
+    's6': { pseudo: [4], python: [5] },
+    's7': { pseudo: [7], python: [8] },
+    's8': { pseudo: [9], python: [] }
+  },
+  'atm-withdraw-validator': {
+    's1': { pseudo: [0], python: [0] },
+    's2': { pseudo: [1], python: [1, 2] },
+    's3': { pseudo: [2], python: [4] },
+    's4': { pseudo: [3], python: [5] },
+    's5': { pseudo: [6], python: [8] },
+    's6': { pseudo: [4], python: [6] },
+    's7': { pseudo: [8], python: [10] },
+    's8': { pseudo: [9], python: [] }
+  },
+  'traffic-signal-cycle': {
+    's1': { pseudo: [0], python: [0] },
+    's2': { pseudo: [1], python: [1] },
+    's3': { pseudo: [2], python: [3] },
+    's4': { pseudo: [3], python: [4] },
+    's5': { pseudo: [6], python: [7] },
+    's6': { pseudo: [4], python: [5] },
+    's7': { pseudo: [7], python: [8] },
+    's8': { pseudo: [9], python: [10] },
+    's9': { pseudo: [10], python: [] }
+  },
+  'exam-pass-counter': {
+    's1': { pseudo: [0], python: [0] },
+    's2': { pseudo: [1], python: [1] },
+    's3': { pseudo: [2], python: [3] },
+    's4': { pseudo: [3], python: [4] },
+    's5': { pseudo: [5], python: [6] },
+    's6': { pseudo: [7], python: [8] },
+    's7': { pseudo: [8], python: [9] },
+    's8': { pseudo: [9], python: [] }
   }
 };
 
@@ -612,6 +754,81 @@ export const getChallengeSimSteps = (
       { slotId: 's6', log: `${getLabel('s6', 'Increment Counter')} (Counter becomes 2)` },
       { slotId: 's4', log: `${getLabel('s4', 'Is Counter <= N?')} (Evaluating subsequent increments ...)` },
       { slotId: 's7', log: `📺 CONSOLE FEED: Computed Sum = ${sum}` },
+      { slotId: 's8', log: `${getLabel('s8', 'End')}` }
+    );
+  }
+  else if (challengeId === 'cinema-ticket-gate') {
+    const age = inputs.a > 0 ? inputs.a : 19;
+    const isAdult = age >= 18;
+    const price = isAdult ? 12 : 6;
+    steps.push(
+      { slotId: 's1', log: `${getLabel('s1', 'Start')}` },
+      { slotId: 's2', log: `${getLabel('s2', 'Input Age')} (Customer Age = ${age})` },
+      { slotId: 's3', log: `${getLabel('s3', 'Is Age >= 18?')} (Evaluating: ${age} >= 18? -> ${isAdult ? 'YES' : 'NO'})` },
+      ...(isAdult
+        ? [
+            { slotId: 's4', log: `${getLabel('s4', 'Price = 12')} (Set Adult Price £12)` },
+            { slotId: 's6', log: `📺 CONSOLE FEED: "Adult: £${price}"` }
+          ]
+        : [
+            { slotId: 's5', log: `${getLabel('s5', 'Price = 6')} (Set Child Price £6)` },
+            { slotId: 's7', log: `📺 CONSOLE FEED: "Child: £${price}"` }
+          ]),
+      { slotId: 's8', log: `${getLabel('s8', 'End')}` }
+    );
+  }
+  else if (challengeId === 'atm-withdraw-validator') {
+    const balance = inputs.a >= 20 ? inputs.a : 50;
+    const amount = inputs.b >= 5 ? inputs.b : 20;
+    const canWithdraw = amount <= balance;
+    const remBalance = canWithdraw ? balance - amount : balance;
+    steps.push(
+      { slotId: 's1', log: `${getLabel('s1', 'Start')}` },
+      { slotId: 's2', log: `${getLabel('s2', 'Input Balance & Amount')} (Balance: £${balance}, Request: £${amount})` },
+      { slotId: 's3', log: `${getLabel('s3', 'Is Amount <= Balance?')} (Evaluating: £${amount} <= £${balance}? -> ${canWithdraw ? 'YES' : 'NO'})` },
+      ...(canWithdraw
+        ? [
+            { slotId: 's4', log: `${getLabel('s4', 'Deduct Balance')} (Updated Balance: £${remBalance})` },
+            { slotId: 's6', log: `📺 CONSOLE FEED: "Cash Dispensed"` }
+          ]
+        : [
+            { slotId: 's5', log: `📺 CONSOLE FEED: "Insufficient Funds"` }
+          ]),
+      { slotId: 's7', log: `📺 CONSOLE FEED: Balance: £${remBalance}` },
+      { slotId: 's8', log: `${getLabel('s8', 'End')}` }
+    );
+  }
+  else if (challengeId === 'traffic-signal-cycle') {
+    const carWaiting = inputs.c % 2 === 0;
+    steps.push(
+      { slotId: 's1', log: `${getLabel('s1', 'Start')}` },
+      { slotId: 's2', log: `${getLabel('s2', 'Input CarWaiting')} (Sensor State: ${carWaiting ? 'True' : 'False'})` },
+      { slotId: 's3', log: `${getLabel('s3', 'Is CarWaiting == True?')} (Evaluating: sensor active? -> ${carWaiting ? 'YES' : 'NO'})` },
+      ...(carWaiting
+        ? [
+            { slotId: 's4', log: `${getLabel('s4', 'Light = "GREEN"')} (Controller set GREEN)` },
+            { slotId: 's6', log: `📺 CONSOLE FEED: "GREEN: Proceed"` }
+          ]
+        : [
+            { slotId: 's5', log: `${getLabel('s5', 'Light = "RED"')} (Controller set RED)` },
+            { slotId: 's7', log: `📺 CONSOLE FEED: "RED: Halt"` }
+          ]),
+      { slotId: 's8', log: `📺 CONSOLE FEED: "Sensor Cycle Done"` },
+      { slotId: 's9', log: `${getLabel('s9', 'End')}` }
+    );
+  }
+  else if (challengeId === 'exam-pass-counter') {
+    const score = inputs.a > 0 ? inputs.a : 68;
+    const isPass = score >= 50;
+    steps.push(
+      { slotId: 's1', log: `${getLabel('s1', 'Start')}` },
+      { slotId: 's2', log: `${getLabel('s2', 'Input Score')} (Student Exam Score: ${score})` },
+      { slotId: 's3', log: `${getLabel('s3', 'Is Score >= 50?')} (Evaluating: ${score} >= 50? -> ${isPass ? 'YES' : 'NO'})` },
+      ...(isPass
+        ? [{ slotId: 's4', log: `📺 CONSOLE FEED: "PASS"` }]
+        : [{ slotId: 's5', log: `📺 CONSOLE FEED: "FAIL"` }]),
+      { slotId: 's6', log: `${getLabel('s6', 'Count = Count + 1')} (Incremented Audited Students Count)` },
+      { slotId: 's7', log: `📺 CONSOLE FEED: Count = 1` },
       { slotId: 's8', log: `${getLabel('s8', 'End')}` }
     );
   }
@@ -1267,6 +1484,566 @@ export const FLOWCHART_CHALLENGES: FlowchartChallenge[] = [
       logs.push("✓ Test simulation: N = 10 -> Computed sum = 55.");
       return { success: true, logs };
     }
+  },
+  {
+    id: 'cinema-ticket-gate',
+    title: 'Cinema Ticket Gate (Unassisted)',
+    subtitle: 'Zero visual shape hints! Determine correct symbols for I/O, decision, and calculation',
+    difficulty: 'Medium',
+    creditsReward: 240,
+    isUnassisted: true,
+    description: 'Students must determine all shapes independently! Read customer Age from input (Parallelogram). Test if Age >= 18 (Diamond). If Yes, calculate Price = 12 (Rectangle) and output "Adult: £12" (Parallelogram). If No, calculate Price = 6 (Rectangle) and output "Child: £6" (Parallelogram). Finish at End.',
+    initialVariables: { a: 19, b: 0, c: 0, result: 12 },
+    slots: [
+      { id: 's1', label: 'Trigger Event', type: 'start', x: 2, y: 0, connectsTo: ['s2'] },
+      { id: 's2', label: 'Input Age', type: 'io', x: 2, y: 1.2, connectsTo: ['s3'] },
+      { id: 's3', label: 'Age Check', type: 'decision', x: 2, y: 2.6, connectsTo: ['s4', 's5'] },
+      { id: 's4', label: 'Adult Pricing', type: 'process', x: 0.8, y: 4.0, branchLabel: 'Yes (>= 18)', connectsTo: ['s6'] },
+      { id: 's5', label: 'Child Pricing', type: 'process', x: 3.2, y: 4.0, branchLabel: 'No (< 18)', connectsTo: ['s7'] },
+      { id: 's6', label: 'Display Adult Ticket', type: 'io', x: 0.8, y: 5.4, connectsTo: ['s8'] },
+      { id: 's7', label: 'Display Child Ticket', type: 'io', x: 3.2, y: 5.4, connectsTo: ['s8'] },
+      { id: 's8', label: 'Process Terminus', type: 'end', x: 2, y: 6.8, connectsTo: [] }
+    ],
+    blocksBank: [
+      { id: 'b_start', type: 'start', label: 'Start' },
+      { id: 'b_input_age', type: 'io', label: 'Input Age' },
+      { id: 'b_check_age', type: 'decision', label: 'Is Age >= 18?' },
+      { id: 'b_set_adult_price', type: 'process', label: 'Calculate: Price = 12' },
+      { id: 'b_set_child_price', type: 'process', label: 'Calculate: Price = 6' },
+      { id: 'b_print_adult', type: 'io', label: 'Output "Adult: £12"' },
+      { id: 'b_print_child', type: 'io', label: 'Output "Child: £6"' },
+      { id: 'b_end', type: 'end', label: 'End' }
+    ],
+    distractors: [
+      { id: 'b_dist_proc_input', type: 'process', label: 'Input Age' }, // Shape trap: Process instead of IO!
+      { id: 'b_dist_io_price', type: 'io', label: 'Calculate: Price = 12' }, // Shape trap: IO instead of Process!
+      { id: 'b_dist_proc_print', type: 'process', label: 'Output "Adult: £12"' }, // Shape trap: Process instead of IO!
+      { id: 'b_dist_dec_inv', type: 'decision', label: 'Is Age < 18?' }
+    ],
+    verifyCode: (placedMap) => {
+      const logs = [];
+      logs.push(">>> Running unassisted schematic audit: Cinema Ticket Gate...");
+      if (placedMap['s1'] !== 'b_start') return { success: false, logs: [...logs, "❌ ERROR: Missing start anchor [Start]. Flowcharts must begin with an Oval Terminator!"] };
+      
+      if (placedMap['s2'] === 'b_dist_proc_input') {
+        return { success: false, logs: [...logs, "❌ SHAPE MISMATCH at Step 2: You placed a [Process - Rectangle] block for 'Input Age'! In computer science flowcharts, reading user input requires an [Input/Output - Parallelogram] shape."] };
+      }
+      if (placedMap['s2'] !== 'b_input_age') {
+        return { success: false, logs: [...logs, "❌ ERROR: Step 2 requires receiving user input for Age using a Parallelogram (Input/Output)."] };
+      }
+
+      if (placedMap['s3'] === 'b_dist_dec_inv') {
+        return { success: false, logs: [...logs, "❌ LOGIC ERROR at Decision: Your condition tests 'Is Age < 18?'. The standard gateway specifies 'Is Age >= 18?' so that the Yes branch flows to Adult."] };
+      }
+      if (placedMap['s3'] !== 'b_check_age') {
+        return { success: false, logs: [...logs, "❌ ERROR at Step 3: Conditional branch requires a Diamond (Decision) checking 'Is Age >= 18?'."] };
+      }
+
+      if (placedMap['s4'] === 'b_dist_io_price') {
+        return { success: false, logs: [...logs, "❌ SHAPE MISMATCH at Left Branch (Adult Pricing): You placed a [Parallelogram - I/O] block! Internal calculation and assigning 'Price = 12' is an internal machine computation, which requires a [Process - Rectangle] shape."] };
+      }
+      if (placedMap['s4'] !== 'b_set_adult_price') {
+        return { success: false, logs: [...logs, "❌ ERROR: Left branch (Age >= 18) must compute Price = 12 using a Process block."] };
+      }
+
+      if (placedMap['s5'] !== 'b_set_child_price') {
+        return { success: false, logs: [...logs, "❌ ERROR: Right branch (Age < 18) must compute Price = 6 using a Process block."] };
+      }
+
+      if (placedMap['s6'] === 'b_dist_proc_print') {
+        return { success: false, logs: [...logs, "❌ SHAPE MISMATCH at Adult Output: Displaying output to the screen requires an [Input/Output - Parallelogram] shape, but you placed a [Process - Rectangle] block!"] };
+      }
+      if (placedMap['s6'] !== 'b_print_adult') {
+        return { success: false, logs: [...logs, "❌ ERROR: Adult path must output 'Adult: £12' using an Input/Output parallelogram."] };
+      }
+
+      if (placedMap['s7'] !== 'b_print_child') {
+        return { success: false, logs: [...logs, "❌ ERROR: Child path must output 'Child: £6' using an Input/Output parallelogram."] };
+      }
+
+      if (placedMap['s8'] !== 'b_end') {
+        return { success: false, logs: [...logs, "❌ ERROR: Sequence must conclude with an [End] Terminator (Oval)."] };
+      }
+
+      logs.push("✓ All shapes correctly identified: Terminator, Parallelogram, Diamond, Rectangle!");
+      logs.push("✓ Verified Adult Branch: Age = 20 -> Price £12 -> Output 'Adult: £12'");
+      logs.push("✓ Verified Child Branch: Age = 14 -> Price £6 -> Output 'Child: £6'");
+      logs.push("✓ UNASSISTED MASTERY RECOGNIZED: Code passed with zero visual hints!");
+      return { success: true, logs };
+    }
+  },
+  {
+    id: 'atm-withdraw-validator',
+    title: 'ATM Cash Dispenser (Unassisted)',
+    subtitle: 'Zero visual shape hints! Determine symbols for banking registers, funds test, and dispense',
+    difficulty: 'Hard',
+    creditsReward: 270,
+    isUnassisted: true,
+    description: 'No visual hints! Read Balance and Amount from user input (Parallelogram). Test if Amount <= Balance (Diamond). If Yes, subtract Amount from Balance (Rectangle) and output "Cash Dispensed" (Parallelogram). If No, output "Insufficient Funds" (Parallelogram). Output updated Balance (Parallelogram) and End.',
+    initialVariables: { a: 80, b: 25, c: 0, result: 55 },
+    slots: [
+      { id: 's1', label: 'Trigger Event', type: 'start', x: 2, y: 0, connectsTo: ['s2'] },
+      { id: 's2', label: 'Input Funds', type: 'io', x: 2, y: 1.2, connectsTo: ['s3'] },
+      { id: 's3', label: 'Funds Check', type: 'decision', x: 2, y: 2.5, connectsTo: ['s4', 's5'] },
+      { id: 's4', label: 'Deduct Funds', type: 'process', x: 0.8, y: 3.9, branchLabel: 'Yes (<= Balance)', connectsTo: ['s6'] },
+      { id: 's5', label: 'Reject Funds', type: 'io', x: 3.2, y: 3.9, branchLabel: 'No (> Balance)', connectsTo: ['s7'] },
+      { id: 's6', label: 'Dispense Alert', type: 'io', x: 0.8, y: 5.2, connectsTo: ['s7'] },
+      { id: 's7', label: 'Display Balance', type: 'io', x: 2, y: 6.5, connectsTo: ['s8'] },
+      { id: 's8', label: 'Process Terminus', type: 'end', x: 2, y: 7.7, connectsTo: [] }
+    ],
+    blocksBank: [
+      { id: 'b_start', type: 'start', label: 'Start' },
+      { id: 'b_input_bank', type: 'io', label: 'Input Balance, Amount' },
+      { id: 'b_check_funds', type: 'decision', label: 'Is Amount <= Balance?' },
+      { id: 'b_deduct_bal', type: 'process', label: 'Deduct: Balance = Balance - Amount' },
+      { id: 'b_print_dispense', type: 'io', label: 'Output "Cash Dispensed"' },
+      { id: 'b_print_denied', type: 'io', label: 'Output "Insufficient Funds"' },
+      { id: 'b_print_bal', type: 'io', label: 'Output Balance' },
+      { id: 'b_end', type: 'end', label: 'End' }
+    ],
+    distractors: [
+      { id: 'b_dist_proc_bank', type: 'process', label: 'Input Balance, Amount' }, // Shape trap: Rectangle for input
+      { id: 'b_dist_io_calc', type: 'io', label: 'Deduct: Balance = Balance - Amount' }, // Shape trap: IO for calculation
+      { id: 'b_dist_wrong_cond', type: 'decision', label: 'Is Amount > Balance?' },
+      { id: 'b_dist_proc_out', type: 'process', label: 'Output "Cash Dispensed"' } // Shape trap: Rectangle for output
+    ],
+    verifyCode: (placedMap) => {
+      const logs = [];
+      logs.push(">>> Auditing unassisted banking flowchart logic...");
+      if (placedMap['s1'] !== 'b_start') return { success: false, logs: [...logs, "❌ ERROR: First block must be an Oval Terminator [Start]."] };
+
+      if (placedMap['s2'] === 'b_dist_proc_bank') {
+        return { success: false, logs: [...logs, "❌ SHAPE MISMATCH at Step 2: Reading 'Input Balance, Amount' requires an [Input/Output - Parallelogram] shape, but you placed a [Process - Rectangle]!"] };
+      }
+      if (placedMap['s2'] !== 'b_input_bank') {
+        return { success: false, logs: [...logs, "❌ ERROR: Input register missing. Read Balance and Amount with an Input/Output parallelogram."] };
+      }
+
+      if (placedMap['s3'] === 'b_dist_wrong_cond') {
+        return { success: false, logs: [...logs, "❌ LOGIC ERROR at Decision: Your test evaluates 'Is Amount > Balance?'. For the Yes branch to dispense cash, the condition must be 'Is Amount <= Balance?'."] };
+      }
+      if (placedMap['s3'] !== 'b_check_funds') {
+        return { success: false, logs: [...logs, "❌ ERROR: Conditional gate must use a Diamond checking 'Is Amount <= Balance?'."] };
+      }
+
+      if (placedMap['s4'] === 'b_dist_io_calc') {
+        return { success: false, logs: [...logs, "❌ SHAPE MISMATCH at Deduct Funds: Arithmetic subtraction 'Balance = Balance - Amount' must use a [Process - Rectangle] shape, not a Parallelogram!"] };
+      }
+      if (placedMap['s4'] !== 'b_deduct_bal') {
+        return { success: false, logs: [...logs, "❌ ERROR: Yes branch must subtract the withdrawal amount using a Process block (Balance = Balance - Amount)."] };
+      }
+
+      if (placedMap['s5'] !== 'b_print_denied') {
+        return { success: false, logs: [...logs, "❌ ERROR: No branch must output 'Insufficient Funds' using an Input/Output block."] };
+      }
+
+      if (placedMap['s6'] === 'b_dist_proc_out') {
+        return { success: false, logs: [...logs, "❌ SHAPE MISMATCH at Dispense Alert: Screen display output must use an [Input/Output - Parallelogram] shape, not a Rectangle!"] };
+      }
+      if (placedMap['s6'] !== 'b_print_dispense') {
+        return { success: false, logs: [...logs, "❌ ERROR: Left branch must output 'Cash Dispensed' upon successful fund deduction."] };
+      }
+
+      if (placedMap['s7'] !== 'b_print_bal') {
+        return { success: false, logs: [...logs, "❌ ERROR: Merged output must print updated 'Output Balance' with an Input/Output block."] };
+      }
+
+      if (placedMap['s8'] !== 'b_end') {
+        return { success: false, logs: [...logs, "❌ ERROR: Conclude process with an [End] Oval Terminator."] };
+      }
+
+      logs.push("✓ All banking shapes correctly applied without hints!");
+      logs.push("✓ Verified successful withdrawal: Balance £80, Request £25 -> Dispensed -> New Balance £55.");
+      logs.push("✓ Verified overdraft prevention: Balance £30, Request £50 -> Insufficient Funds -> Balance £30.");
+      logs.push("✓ UNASSISTED MASTERY: Full algorithmic integrity verified.");
+      return { success: true, logs };
+    }
+  },
+  {
+    id: 'traffic-signal-cycle',
+    title: 'Smart Traffic Junction (Unassisted)',
+    subtitle: 'Zero visual hints! Map car sensor input, signal calculations, and road driver alerts',
+    difficulty: 'Medium',
+    creditsReward: 220,
+    isUnassisted: true,
+    description: 'Mastery challenge without shape assistance! Read sensor CarWaiting (Parallelogram). Test if CarWaiting == True (Diamond). If Yes, set LightColor = "GREEN" (Rectangle) and output "GREEN: Proceed" (Parallelogram). If No, set LightColor = "RED" (Rectangle) and output "RED: Halt" (Parallelogram). Output "Sensor Cycle Done" (Parallelogram) and End.',
+    initialVariables: { a: 1, b: 0, c: 0, result: 0 },
+    slots: [
+      { id: 's1', label: 'Trigger Event', type: 'start', x: 2, y: 0, connectsTo: ['s2'] },
+      { id: 's2', label: 'Read Car Sensor', type: 'io', x: 2, y: 1.2, connectsTo: ['s3'] },
+      { id: 's3', label: 'Car Waiting Check', type: 'decision', x: 2, y: 2.5, connectsTo: ['s4', 's5'] },
+      { id: 's4', label: 'Set Green State', type: 'process', x: 0.8, y: 3.9, branchLabel: 'Yes (Car Waiting)', connectsTo: ['s6'] },
+      { id: 's5', label: 'Set Red State', type: 'process', x: 3.2, y: 3.9, branchLabel: 'No (No Car)', connectsTo: ['s7'] },
+      { id: 's6', label: 'Signal Green', type: 'io', x: 0.8, y: 5.2, connectsTo: ['s8'] },
+      { id: 's7', label: 'Signal Red', type: 'io', x: 3.2, y: 5.2, connectsTo: ['s8'] },
+      { id: 's8', label: 'Cycle Summary', type: 'io', x: 2, y: 6.5, connectsTo: ['s9'] },
+      { id: 's9', label: 'Process Terminus', type: 'end', x: 2, y: 7.7, connectsTo: [] }
+    ],
+    blocksBank: [
+      { id: 'b_start', type: 'start', label: 'Start' },
+      { id: 'b_read_sensor', type: 'io', label: 'Input CarWaiting' },
+      { id: 'b_check_car', type: 'decision', label: 'Is CarWaiting == True?' },
+      { id: 'b_set_green', type: 'process', label: 'Set LightColor = "GREEN"' },
+      { id: 'b_set_red', type: 'process', label: 'Set LightColor = "RED"' },
+      { id: 'b_print_green', type: 'io', label: 'Output "GREEN: Proceed"' },
+      { id: 'b_print_red', type: 'io', label: 'Output "RED: Halt"' },
+      { id: 'b_print_done', type: 'io', label: 'Output "Sensor Cycle Done"' },
+      { id: 'b_end', type: 'end', label: 'End' }
+    ],
+    distractors: [
+      { id: 'b_dist_proc_sensor', type: 'process', label: 'Input CarWaiting' }, // Shape trap: Rectangle for input!
+      { id: 'b_dist_io_green', type: 'io', label: 'Set LightColor = "GREEN"' }, // Shape trap: IO for variable state!
+      { id: 'b_dist_check_red', type: 'decision', label: 'Is LightColor == "RED"?' },
+      { id: 'b_dist_proc_green', type: 'process', label: 'Output "GREEN: Proceed"' } // Shape trap: Rectangle for output!
+    ],
+    verifyCode: (placedMap) => {
+      const logs = [];
+      logs.push(">>> Inspecting traffic light sensor controller...");
+      if (placedMap['s1'] !== 'b_start') return { success: false, logs: [...logs, "❌ ERROR: Missing start anchor [Start]. Flowcharts start with an Oval Terminator."] };
+
+      if (placedMap['s2'] === 'b_dist_proc_sensor') {
+        return { success: false, logs: [...logs, "❌ SHAPE MISMATCH at Step 2: Reading sensor input 'Input CarWaiting' must use an [Input/Output - Parallelogram] shape, but you placed a [Process - Rectangle]!"] };
+      }
+      if (placedMap['s2'] !== 'b_read_sensor') {
+        return { success: false, logs: [...logs, "❌ ERROR: Step 2 must read sensor data using an Input/Output block (Input CarWaiting)."] };
+      }
+
+      if (placedMap['s3'] !== 'b_check_car') {
+        return { success: false, logs: [...logs, "❌ ERROR at Decision: Expected Diamond node testing 'Is CarWaiting == True?'."] };
+      }
+
+      if (placedMap['s4'] === 'b_dist_io_green') {
+        return { success: false, logs: [...logs, "❌ SHAPE MISMATCH at Green State: Setting internal variable 'LightColor = \"GREEN\"' is an internal state update, which requires a [Process - Rectangle] block, not an I/O block!"] };
+      }
+      if (placedMap['s4'] !== 'b_set_green') {
+        return { success: false, logs: [...logs, "❌ ERROR: Yes branch must assign LightColor = 'GREEN' using a Process block."] };
+      }
+
+      if (placedMap['s5'] !== 'b_set_red') {
+        return { success: false, logs: [...logs, "❌ ERROR: No branch must assign LightColor = 'RED' using a Process block."] };
+      }
+
+      if (placedMap['s6'] === 'b_dist_proc_green') {
+        return { success: false, logs: [...logs, "❌ SHAPE MISMATCH at Signal Green: Outputting driver message 'GREEN: Proceed' requires an [Input/Output - Parallelogram] shape, not a Process rectangle!"] };
+      }
+      if (placedMap['s6'] !== 'b_print_green') {
+        return { success: false, logs: [...logs, "❌ ERROR: Left branch must output 'GREEN: Proceed' with an Input/Output parallelogram."] };
+      }
+
+      if (placedMap['s7'] !== 'b_print_red') {
+        return { success: false, logs: [...logs, "❌ ERROR: Right branch must output 'RED: Halt' with an Input/Output parallelogram."] };
+      }
+
+      if (placedMap['s8'] !== 'b_print_done') {
+        return { success: false, logs: [...logs, "❌ ERROR: Rejoined flow must output 'Sensor Cycle Done' with an Input/Output parallelogram."] };
+      }
+
+      if (placedMap['s9'] !== 'b_end') {
+        return { success: false, logs: [...logs, "❌ ERROR: Final node must be an Oval Terminator [End]."] };
+      }
+
+      logs.push("✓ All traffic controller shapes correctly mapped without visual hints!");
+      logs.push("✓ Verified Active Sensor: CarWaiting = True -> Green State -> Output 'GREEN: Proceed'");
+      logs.push("✓ Verified Idle Sensor: CarWaiting = False -> Red State -> Output 'RED: Halt'");
+      logs.push("✓ UNASSISTED MASTERY CONFIRMED!");
+      return { success: true, logs };
+    }
+  },
+  {
+    id: 'exam-pass-counter',
+    title: 'Exam Result & Auditor Counter (Unassisted)',
+    subtitle: 'Zero visual shape hints! Score assessment, dual output branching, and accumulator update',
+    difficulty: 'Hard',
+    creditsReward: 290,
+    isUnassisted: true,
+    description: 'Advanced unassisted challenge! Read Score from input (Parallelogram). Test if Score >= 50 (Diamond). If Yes, output "PASS" (Parallelogram). If No, output "FAIL" (Parallelogram). In either case, increment Count = Count + 1 (Rectangle), output Count (Parallelogram), and End (Terminator).',
+    initialVariables: { a: 72, b: 0, c: 0, result: 1 },
+    slots: [
+      { id: 's1', label: 'Trigger Event', type: 'start', x: 2, y: 0, connectsTo: ['s2'] },
+      { id: 's2', label: 'Read Student Score', type: 'io', x: 2, y: 1.2, connectsTo: ['s3'] },
+      { id: 's3', label: 'Pass Score Check', type: 'decision', x: 2, y: 2.5, connectsTo: ['s4', 's5'] },
+      { id: 's4', label: 'Pass Alert', type: 'io', x: 0.8, y: 3.9, branchLabel: 'Yes (>= 50)', connectsTo: ['s6'] },
+      { id: 's5', label: 'Fail Alert', type: 'io', x: 3.2, y: 3.9, branchLabel: 'No (< 50)', connectsTo: ['s6'] },
+      { id: 's6', label: 'Increment Counter', type: 'process', x: 2, y: 5.2, connectsTo: ['s7'] },
+      { id: 's7', label: 'Display Count', type: 'io', x: 2, y: 6.5, connectsTo: ['s8'] },
+      { id: 's8', label: 'Process Terminus', type: 'end', x: 2, y: 7.7, connectsTo: [] }
+    ],
+    blocksBank: [
+      { id: 'b_start', type: 'start', label: 'Start' },
+      { id: 'b_input_score', type: 'io', label: 'Input Score' },
+      { id: 'b_check_pass', type: 'decision', label: 'Is Score >= 50?' },
+      { id: 'b_print_pass', type: 'io', label: 'Output "PASS"' },
+      { id: 'b_print_fail', type: 'io', label: 'Output "FAIL"' },
+      { id: 'b_inc_count', type: 'process', label: 'Increment: Count = Count + 1' },
+      { id: 'b_print_count', type: 'io', label: 'Output Count' },
+      { id: 'b_end', type: 'end', label: 'End' }
+    ],
+    distractors: [
+      { id: 'b_dist_proc_score', type: 'process', label: 'Input Score' }, // Shape trap: Rectangle for input!
+      { id: 'b_dist_io_inc', type: 'io', label: 'Increment: Count = Count + 1' }, // Shape trap: IO for calculation!
+      { id: 'b_dist_proc_pass', type: 'process', label: 'Output "PASS"' }, // Shape trap: Rectangle for output!
+      { id: 'b_dist_check_zero', type: 'decision', label: 'Is Score == 0?' }
+    ],
+    verifyCode: (placedMap) => {
+      const logs = [];
+      logs.push(">>> Verifying unassisted exam auditor flowchart...");
+      if (placedMap['s1'] !== 'b_start') return { success: false, logs: [...logs, "❌ ERROR: Entry block must be an Oval Terminator [Start]."] };
+
+      if (placedMap['s2'] === 'b_dist_proc_score') {
+        return { success: false, logs: [...logs, "❌ SHAPE MISMATCH at Step 2: Reading 'Input Score' requires an [Input/Output - Parallelogram] shape, but you selected a [Process - Rectangle] block!"] };
+      }
+      if (placedMap['s2'] !== 'b_input_score') {
+        return { success: false, logs: [...logs, "❌ ERROR: Step 2 requires an Input Score parallelogram block."] };
+      }
+
+      if (placedMap['s3'] !== 'b_check_pass') {
+        return { success: false, logs: [...logs, "❌ ERROR at Decision: Expected Diamond block evaluating 'Is Score >= 50?'."] };
+      }
+
+      if (placedMap['s4'] === 'b_dist_proc_pass') {
+        return { success: false, logs: [...logs, "❌ SHAPE MISMATCH at Pass Output: Displaying 'Output \"PASS\"' to screen requires an [Input/Output - Parallelogram] shape, but you placed a [Process - Rectangle]!"] };
+      }
+      if (placedMap['s4'] !== 'b_print_pass') {
+        return { success: false, logs: [...logs, "❌ ERROR: Yes branch must output 'PASS' using an Input/Output parallelogram."] };
+      }
+
+      if (placedMap['s5'] !== 'b_print_fail') {
+        return { success: false, logs: [...logs, "❌ ERROR: No branch must output 'FAIL' using an Input/Output parallelogram."] };
+      }
+
+      if (placedMap['s6'] === 'b_dist_io_inc') {
+        return { success: false, logs: [...logs, "❌ SHAPE MISMATCH at Increment Counter: Mathematical accumulation 'Count = Count + 1' is an internal arithmetic operation, which must use a [Process - Rectangle] shape, not a Parallelogram!"] };
+      }
+      if (placedMap['s6'] !== 'b_inc_count') {
+        return { success: false, logs: [...logs, "❌ ERROR: Rejoined flow must increment Count using a Process block (Count = Count + 1)."] };
+      }
+
+      if (placedMap['s7'] !== 'b_print_count') {
+        return { success: false, logs: [...logs, "❌ ERROR: Step 7 must output the updated Count with an Input/Output parallelogram."] };
+      }
+
+      if (placedMap['s8'] !== 'b_end') {
+        return { success: false, logs: [...logs, "❌ ERROR: Flowchart must conclude with an Oval Terminator [End]."] };
+      }
+
+      logs.push("✓ All shapes correctly identified without visual assistance: Terminator, Parallelogram, Diamond, Rectangle!");
+      logs.push("✓ Verified Pass Pathway: Score = 75 -> Output PASS -> Count = 1 -> Output Count.");
+      logs.push("✓ Verified Fail Pathway: Score = 42 -> Output FAIL -> Count = 1 -> Output Count.");
+      logs.push("✓ UNASSISTED MASTERY: All shape types and branch logic completely verified!");
+      return { success: true, logs };
+    }
+  }
+];
+
+// Detailed Flowchart Shapes Guide Specification
+export interface FlowchartShapeGuide {
+  id: string;
+  name: string;
+  shapeCategory: string;
+  badge: string;
+  colorName: string;
+  borderColor: string;
+  bgColor: string;
+  textColor: string;
+  description: string;
+  whenToUse: string[];
+  rules: string[];
+  commonMistake: string;
+  pseudocodeExample: string;
+  pythonExample: string;
+}
+
+export const FLOWCHART_SHAPES_DATA: FlowchartShapeGuide[] = [
+  {
+    id: 'terminator',
+    name: 'Terminator (Start / End)',
+    shapeCategory: 'Oval / Rounded Capsule',
+    badge: 'BOUNDARY',
+    colorName: 'Emerald',
+    borderColor: 'border-emerald-400',
+    bgColor: 'bg-gradient-to-br from-emerald-950/90 to-emerald-900/60',
+    textColor: 'text-emerald-300',
+    description: 'Marks the exact starting boundary and exit terminus of every algorithm or procedure.',
+    whenToUse: [
+      'At the absolute top of the flowchart labeled "Start".',
+      'At any program exit point labeled "End" or "Stop".'
+    ],
+    rules: [
+      'Every valid flowchart MUST begin with exactly one Start terminator.',
+      'A Start node has OUTBOUND arrows only (no inbound arrows).',
+      'An End node has INBOUND arrows only (no outbound arrows).'
+    ],
+    commonMistake: 'Students sometimes try to start immediately with an Input block. Every standard algorithm requires an explicit Start terminator!',
+    pseudocodeExample: 'START\n  ...\nEND',
+    pythonExample: '# Program Entry\ndef main():\n    ...\n    return  # Exit'
+  },
+  {
+    id: 'io',
+    name: 'Input / Output (I/O)',
+    shapeCategory: 'Slanted Parallelogram',
+    badge: 'DATA TRANSFER',
+    colorName: 'Amber',
+    borderColor: 'border-amber-400',
+    bgColor: 'bg-gradient-to-br from-amber-950/90 to-amber-900/60',
+    textColor: 'text-amber-300',
+    description: 'Represents external data entering the program (keyboard/sensor input) OR data being presented to the user (screen display/printer/audio output).',
+    whenToUse: [
+      'Prompting the user for input: e.g. "Input Age", "Read Score".',
+      'Displaying results to the screen: e.g. "Output Result", "Print Message".',
+      'Reading from hardware sensors or network devices.'
+    ],
+    rules: [
+      'Has 1 inbound arrow and 1 outbound arrow.',
+      'Used ONLY when data crosses the boundary between the computer and the outside world.'
+    ],
+    commonMistake: '⚠️ #1 MOST COMMON MISTAKE: Using a rectangle for print() or input(). Remember: Print and Input are ALWAYS Parallelograms, NEVER Rectangles!',
+    pseudocodeExample: 'INPUT age\nOUTPUT "Welcome"',
+    pythonExample: 'age = int(input("Enter age: "))\nprint(f"Result: {result}")'
+  },
+  {
+    id: 'process',
+    name: 'Process (Calculation / Action)',
+    shapeCategory: 'Sharp Rectangle',
+    badge: 'ARITHMETIC & STATE',
+    colorName: 'Cyan',
+    borderColor: 'border-[#00f2ff]',
+    bgColor: 'bg-gradient-to-br from-[#0c315e]/90 to-slate-900/60',
+    textColor: 'text-cyan-300',
+    description: 'Performs internal computations, mathematical formulas, data manipulation, or variable assignments within the computer\'s CPU and memory.',
+    whenToUse: [
+      'Arithmetic calculations: Result = A - B - C, Area = Width * Height.',
+      'Modifying loop counters: Counter = Counter + 1.',
+      'Assigning internal default variables: Total = 0, Found = False.'
+    ],
+    rules: [
+      'Has 1 inbound arrow and 1 outbound arrow.',
+      'Internal operations only! No user input, no screen output, and no decision questions.'
+    ],
+    commonMistake: 'Writing "Print Result" inside a Process rectangle. Process blocks calculate the result, but printing it requires a Parallelogram!',
+    pseudocodeExample: 'Result = a - b - c\nCounter = Counter + 1',
+    pythonExample: 'result = a - b - c\ncounter += 1\ntotal = total + score'
+  },
+  {
+    id: 'decision',
+    name: 'Decision (Condition / Branch)',
+    shapeCategory: '45° Diamond (Rhombus)',
+    badge: 'LOGICAL BRANCH',
+    colorName: 'Purple',
+    borderColor: 'border-purple-400',
+    bgColor: 'bg-gradient-to-br from-purple-950/90 to-purple-900/60',
+    textColor: 'text-purple-300',
+    description: 'Evaluates a boolean condition or comparison (True/False, Yes/No). Divides the flowchart into two or more diverging execution pathways.',
+    whenToUse: [
+      'If/Else conditions: "Is Age >= 18?", "Is Score >= 50?".',
+      'Loop continuation checks: "Is Counter <= 100?".',
+      'Threshold comparisons: "Is Amount <= Balance?".'
+    ],
+    rules: [
+      'Has 1 inbound arrow.',
+      'ALWAYS has at least two outbound arrows, each clearly labeled with an outcome (e.g., "Yes" / "No" or "True" / "False").'
+    ],
+    commonMistake: 'Forgetting to label outbound arrows with "Yes" and "No". Without branch labels, the computer doesn\'t know which path to follow!',
+    pseudocodeExample: 'IF Result > 20 THEN\n  ...\nELSE\n  ...\nENDIF',
+    pythonExample: 'if result > 20:\n    # Yes path\nelse:\n    # No path'
+  },
+  {
+    id: 'arrow',
+    name: 'Flowline (Directional Arrow)',
+    shapeCategory: 'Vector Arrow Line',
+    badge: 'SEQUENCE',
+    colorName: 'Sky Blue',
+    borderColor: 'border-sky-400',
+    bgColor: 'bg-slate-900',
+    textColor: 'text-sky-300',
+    description: 'Connects blocks together, indicating the exact sequence and direction in which commands and processes are executed.',
+    whenToUse: [
+      'Between every consecutive step from Start to End.',
+      'Looping backwards from an increment step back to a Decision block to repeat an action.'
+    ],
+    rules: [
+      'Arrowheads must point in the direction of execution flow (usually top-to-bottom or left-to-right).',
+      'Lines should avoid crossing whenever possible.'
+    ],
+    commonMistake: 'Omitting arrowheads on lines. Straight lines without arrowheads do not show execution direction!',
+    pseudocodeExample: 'Line 1 ---> Line 2 ---> Line 3',
+    pythonExample: '# Sequential execution from top line to bottom line'
+  },
+  {
+    id: 'connector',
+    name: 'On-Page Connector (Junction)',
+    shapeCategory: 'Small Circle',
+    badge: 'JUNCTION / JUMP',
+    colorName: 'Indigo',
+    borderColor: 'border-indigo-400',
+    bgColor: 'bg-gradient-to-br from-indigo-950/90 to-indigo-900/60',
+    textColor: 'text-indigo-300',
+    description: 'Connects disjointed flowlines together or marks a junction point where multiple execution paths converge without cluttering the diagram.',
+    whenToUse: [
+      'Where two divergent branches (e.g., Yes and No) rejoin the main algorithm sequence.',
+      'Preventing long, tangled, or crossing arrows in complex nested logic.'
+    ],
+    rules: [
+      'Labeled with a letter or identifier (e.g. "A", "B") to match its paired destination node.',
+      'Has multiple incoming flowlines and exactly 1 outgoing flowline.'
+    ],
+    commonMistake: 'Using a connector to execute arithmetic or store variables. Connectors ONLY merge or jump flowlines!',
+    pseudocodeExample: '# Convergence point\nLabel A:\n  ...',
+    pythonExample: '# Continue loop or merge branches\ncontinue'
+  },
+  {
+    id: 'subroutine',
+    name: 'Predefined Process (Subroutine / Function)',
+    shapeCategory: 'Double-Bordered Rectangle',
+    badge: 'MODULAR FUNCTION',
+    colorName: 'Teal',
+    borderColor: 'border-teal-400',
+    bgColor: 'bg-gradient-to-br from-teal-950/90 to-teal-900/60',
+    textColor: 'text-teal-300',
+    description: 'Represents an invocation of an external function, method, procedure, or subroutine defined in another module or library.',
+    whenToUse: [
+      'Calling reusable helper functions: e.g. calculateTax(), validatePin(), sortScores().',
+      'Modular algorithm decomposition into reusable named functions.'
+    ],
+    rules: [
+      'Indicated by vertical double bars on both left and right edges.',
+      'Execution transfers to the subroutine and returns here once completed.'
+    ],
+    commonMistake: 'Writing low-level arithmetic inside a subroutine block instead of calling the function name with required arguments.',
+    pseudocodeExample: 'CALL calculateDiscount(price, voucher)\nRETURN',
+    pythonExample: 'total = calculate_discount(price, voucher)'
+  }
+];
+
+export const SHAPE_QUIZ_QUESTIONS = [
+  {
+    question: "You need to display 'Game Over' to the player's screen. Which flowchart shape must you use?",
+    options: ["Terminator (Oval)", "Process (Rectangle)", "Input / Output (Parallelogram)", "Decision (Diamond)"],
+    correctIdx: 2,
+    explanation: "Outputting or displaying text to the screen is an Output operation, which strictly requires a Parallelogram!"
+  },
+  {
+    question: "You want to check whether 'Score >= 100' to decide if the player leveled up. Which shape is required?",
+    options: ["Decision (Diamond)", "Process (Rectangle)", "Input / Output (Parallelogram)", "Terminator (Oval)"],
+    correctIdx: 0,
+    explanation: "Conditional tests and True/False branches always require a Diamond (Decision) block with labeled output paths!"
+  },
+  {
+    question: "You want to compute 'Total = Price * Quantity' in the computer's memory. Which shape must be used?",
+    options: ["Input / Output (Parallelogram)", "Process (Rectangle)", "Terminator (Oval)", "Decision (Diamond)"],
+    correctIdx: 1,
+    explanation: "Internal computations, mathematical formulas, and variable assignments are strictly Process operations (Rectangle)!"
+  },
+  {
+    question: "A program asks the user: 'Enter your password'. Which shape should represent this action?",
+    options: ["Terminator (Oval)", "Process (Rectangle)", "Decision (Diamond)", "Input / Output (Parallelogram)"],
+    correctIdx: 3,
+    explanation: "Receiving inbound data from the keyboard or user is an Input operation, which must use a Parallelogram!"
+  },
+  {
+    question: "What is the very first and very last block that must be present in every valid flowchart?",
+    options: ["Process (Rectangle)", "Decision (Diamond)", "Terminator (Oval / Capsule)", "Input / Output (Parallelogram)"],
+    correctIdx: 2,
+    explanation: "Every flowchart must start with a 'Start' Terminator (Oval) and terminate with an 'End' Terminator!"
   }
 ];
 
@@ -1572,7 +2349,45 @@ export default function FlowchartLab({ onBackToMain, onRewardCredits, currentCre
     } catch { return []; }
   });
 
-  const [activeCategory, setActiveCategory] = useState<'all' | 'unsolved' | 'solved'>('all');
+  const [activeCategory, setActiveCategory] = useState<'all' | 'unsolved' | 'solved' | 'unassisted'>('all');
+  const [sidePanelTab, setSidePanelTab] = useState<'pseudo' | 'python' | 'both'>('pseudo');
+  const [visualHintsEnabled, setVisualHintsEnabled] = useState<boolean>(!challenge.isUnassisted);
+  const [selectedShapeFilter, setSelectedShapeFilter] = useState<string>('all');
+  const [revealedCodeHints, setRevealedCodeHints] = useState<Record<string, boolean>>({});
+
+  // Quiz flashcard states for Shapes Reference
+  const [quizQuestionIdx, setQuizQuestionIdx] = useState<number>(0);
+  const [quizSelectedOption, setQuizSelectedOption] = useState<number | null>(null);
+  const [quizAnswered, setQuizAnswered] = useState<boolean>(false);
+
+  // Full-screen Shapes Codex Modal state
+  const [isShapesFullScreen, setIsShapesFullScreen] = useState<boolean>(false);
+  const [fullScreenTab, setFullScreenTab] = useState<'cards' | 'matrix' | 'quiz'>('cards');
+  const [fullScreenFilter, setFullScreenFilter] = useState<string>('all');
+  const [fullScreenSearch, setFullScreenSearch] = useState<string>('');
+  const [fullScreenCopied, setFullScreenCopied] = useState<string | null>(null);
+  const [sidePanelExpanded, setSidePanelExpanded] = useState<boolean>(false);
+
+  // Close full screen modal on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isShapesFullScreen) {
+        setIsShapesFullScreen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isShapesFullScreen]);
+
+  const handleCopyFullScreenCode = (text: string, id: string) => {
+    try {
+      navigator.clipboard.writeText(text);
+      setFullScreenCopied(id);
+      setTimeout(() => setFullScreenCopied(null), 1800);
+    } catch {
+      // ignore
+    }
+  };
 
   // Reset local challenge slots
   const resetChallenge = () => {
@@ -1591,6 +2406,11 @@ export default function FlowchartLab({ onBackToMain, onRewardCredits, currentCre
     resetChallenge();
     // Pre-calculate randomized inputs for simulations
     randomizeInputs();
+    if (challenge.isUnassisted) {
+      setVisualHintsEnabled(false);
+    } else {
+      setVisualHintsEnabled(true);
+    }
   }, [activeChallengeIdx]);
 
   const randomizeInputs = () => {
@@ -2027,6 +2847,7 @@ export default function FlowchartLab({ onBackToMain, onRewardCredits, currentCre
     const isCompleted = completedList.includes(c.id);
     if (activeCategory === 'solved') return isCompleted;
     if (activeCategory === 'unsolved') return !isCompleted;
+    if (activeCategory === 'unassisted') return c.isUnassisted === true;
     return true;
   });
 
@@ -2098,7 +2919,16 @@ export default function FlowchartLab({ onBackToMain, onRewardCredits, currentCre
         </div>
 
         {/* Level Controls & Stats */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setIsShapesFullScreen(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-[11px] font-mono font-bold transition-all cursor-pointer bg-emerald-950/60 border-emerald-500/50 hover:border-emerald-400 hover:bg-emerald-900/60 text-emerald-300 hover:text-emerald-100 shadow-[0_0_15px_rgba(16,185,129,0.25)] group"
+            title="Open Flowchart Shapes Guide Codex (Full Screen)"
+          >
+            <BookOpen className="w-3.5 h-3.5 text-emerald-400 group-hover:scale-110 transition-transform" />
+            <span>SHAPES GUIDE</span>
+          </button>
+
           <div className="flex items-center gap-1.5 bg-slate-900/40 px-3 py-1.5 rounded-lg border border-slate-900">
             <Layers className="w-3.5 h-3.5 text-cyber-pink" />
             <span className="text-[10px] font-mono text-slate-400 uppercase tracking-widest leading-none">FLOW LAB PROTOCOL</span>
@@ -2128,27 +2958,34 @@ export default function FlowchartLab({ onBackToMain, onRewardCredits, currentCre
           </div>
 
           {/* Filtering Tab Pills */}
-          <div className="grid grid-cols-3 gap-1 bg-[#12141d] p-1 rounded-xl border border-slate-900 shrink-0">
+          <div className="grid grid-cols-2 gap-1 bg-[#12141d] p-1 rounded-xl border border-slate-900 shrink-0">
             <button 
               onClick={() => setActiveCategory('all')}
-              className={`text-[9.5px] py-1.5 font-mono font-bold uppercase tracking-wider rounded-lg transition-all cursor-pointer
+              className={`text-[9px] py-1.5 font-mono font-bold uppercase tracking-wider rounded-lg transition-all cursor-pointer
                 ${activeCategory === 'all' ? 'bg-cyber-cyan/15 text-cyber-cyan border border-cyber-cyan/30' : 'text-slate-500 hover:text-slate-300 border border-transparent'}`}
             >
-              ALL
+              ALL ({FLOWCHART_CHALLENGES.length})
+            </button>
+            <button 
+              onClick={() => setActiveCategory('unassisted')}
+              className={`text-[9px] py-1.5 font-mono font-bold uppercase tracking-wider rounded-lg transition-all cursor-pointer flex items-center justify-center gap-1
+                ${activeCategory === 'unassisted' ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-sm' : 'text-slate-400 hover:text-amber-300 border border-transparent'}`}
+            >
+              <span>🎯 NO HINTS</span>
             </button>
             <button 
               onClick={() => setActiveCategory('unsolved')}
-              className={`text-[9.5px] py-1.5 font-mono font-bold uppercase tracking-wider rounded-lg transition-all cursor-pointer
+              className={`text-[9px] py-1.5 font-mono font-bold uppercase tracking-wider rounded-lg transition-all cursor-pointer
                 ${activeCategory === 'unsolved' ? 'bg-cyber-cyan/15 text-cyber-cyan border border-cyber-cyan/30' : 'text-slate-500 hover:text-slate-300 border border-transparent'}`}
             >
               UNSOLVED
             </button>
             <button 
               onClick={() => setActiveCategory('solved')}
-              className={`text-[9.5px] py-1.5 font-mono font-bold uppercase tracking-wider rounded-lg transition-all cursor-pointer
-                ${activeCategory === 'solved' ? 'bg-cyber-cyan/15 text-cyber-cyan border border-cyber-cyan/30' : 'text-slate-500 hover:text-slate-300 border border-transparent'}`}
+              className={`text-[9px] py-1.5 font-mono font-bold uppercase tracking-wider rounded-lg transition-all cursor-pointer
+                ${activeCategory === 'solved' ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30' : 'text-slate-500 hover:text-slate-300 border border-transparent'}`}
             >
-              SOLVED
+              SOLVED ({completedList.length})
             </button>
           </div>
 
@@ -2180,9 +3017,16 @@ export default function FlowchartLab({ onBackToMain, onRewardCredits, currentCre
                 >
                   <div className="flex items-center justify-between w-full">
                     <span className="text-[9px] font-mono text-slate-500 select-none">CODECHAMP_0{globalIdx + 1}</span>
-                    <span className={`text-[8px] font-mono font-black uppercase tracking-widest px-1.5 py-0.5 rounded border ${statusColor}`}>
-                      {isCompleted ? 'COMPLETE' : item.difficulty}
-                    </span>
+                    <div className="flex items-center gap-1">
+                      {item.isUnassisted && (
+                        <span className="text-[7.5px] font-mono font-black uppercase tracking-wider px-1 py-0.5 rounded border border-amber-500/40 bg-amber-500/10 text-amber-300">
+                          🎯 NO HINTS
+                        </span>
+                      )}
+                      <span className={`text-[8px] font-mono font-black uppercase tracking-widest px-1.5 py-0.5 rounded border ${statusColor}`}>
+                        {isCompleted ? 'COMPLETE' : item.difficulty}
+                      </span>
+                    </div>
                   </div>
 
                   <h3 className={`text-xs font-black uppercase tracking-tight leading-snug truncate ${isSelected ? 'text-white' : 'text-slate-400'}`}>
@@ -2248,115 +3092,205 @@ export default function FlowchartLab({ onBackToMain, onRewardCredits, currentCre
               <div className="w-full max-w-[800px] shrink-0 bg-slate-900/60 border border-slate-800/80 rounded-xl px-3 py-1.5 flex items-center justify-between text-[11px] text-slate-300 font-mono backdrop-blur-sm shadow-md">
                 <span className="flex items-center gap-2 text-left">
                   <span className="w-2 h-2 rounded-full bg-[#00f2ff] shrink-0 animate-pulse" />
-                  <span className="text-[11px]">💡 <span className="text-[#00f2ff] font-bold">PRO-TIP:</span> You can **drag and reposition** any slot node to clean up the layout or connections!</span>
+                  <span className="text-[11px]">💡 <span className="text-[#00f2ff] font-bold">PRO-TIP:</span> Reposition nodes or open the <span className="text-emerald-400 font-bold">Shapes Guide</span> for CS flowchart symbols!</span>
                 </span>
-                <button
-                  onClick={() => setSlotOffsets({})}
-                  disabled={Object.keys(slotOffsets).length === 0}
-                  className="bg-slate-950/80 border border-slate-800 hover:border-slate-700 disabled:opacity-40 disabled:hover:border-slate-800 hover:bg-slate-800 text-[#00f2ff] text-[10px] font-bold uppercase tracking-wider rounded-md px-2 py-1 transition-all cursor-pointer disabled:cursor-not-allowed ml-3 whitespace-nowrap"
-                >
-                  Reset Layout
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setIsShapesFullScreen(true)}
+                    className="bg-emerald-950/80 border border-emerald-600/50 hover:border-emerald-400 hover:bg-emerald-900/60 text-emerald-300 text-[10px] font-bold uppercase tracking-wider rounded-md px-2.5 py-1 transition-all cursor-pointer flex items-center gap-1.5 shadow-sm whitespace-nowrap group"
+                    title="Open Flowchart Shapes Guide in Full Screen"
+                  >
+                    <BookOpen className="w-3.5 h-3.5 text-emerald-400 group-hover:scale-110 transition-transform" />
+                    <span>Shapes Guide ⛶</span>
+                  </button>
+                  <button
+                    onClick={() => setVisualHintsEnabled(prev => !prev)}
+                    className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md border text-[10px] font-mono font-bold transition-all cursor-pointer whitespace-nowrap
+                      ${visualHintsEnabled 
+                        ? 'bg-cyan-500/10 border-cyan-500/30 text-cyan-300 hover:bg-cyan-500/20' 
+                        : 'bg-amber-500/20 border-amber-500/50 text-amber-300 shadow-[0_0_12px_rgba(245,158,11,0.2)] hover:bg-amber-500/30'}`}
+                    title={visualHintsEnabled ? "Click to disable visual shape hints (exam practice)" : "Click to enable visual shape hints"}
+                  >
+                    {visualHintsEnabled ? <Eye className="w-3.5 h-3.5 text-cyan-400" /> : <EyeOff className="w-3.5 h-3.5 text-amber-400" />}
+                    <span>{visualHintsEnabled ? 'HINTS: ON' : 'HINTS: OFF (EXAM)'}</span>
+                  </button>
+                  <button
+                    onClick={() => setSlotOffsets({})}
+                    disabled={Object.keys(slotOffsets).length === 0}
+                    className="bg-slate-950/80 border border-slate-800 hover:border-slate-700 disabled:opacity-40 disabled:hover:border-slate-800 hover:bg-slate-800 text-[#00f2ff] text-[10px] font-bold uppercase tracking-wider rounded-md px-2 py-1 transition-all cursor-pointer disabled:cursor-not-allowed whitespace-nowrap"
+                  >
+                    Reset Layout
+                  </button>
+                </div>
               </div>
 
               {/* Symmetrical Workshop Workspace Row: Column of cards on left, flowchart on right */}
-              <div className="flex flex-col lg:flex-row gap-6 items-start justify-center w-full max-w-[1160px] shrink-0 font-mono">
+              <div className="flex flex-col lg:flex-row gap-6 items-start justify-center w-full max-w-[1200px] shrink-0 font-mono">
                 
-                {/* Left Column: Translation Code Cards */}
-                <div className="w-full lg:w-[320px] shrink-0 flex flex-col gap-4 text-left">
-                  {/* Pseudocode Card */}
-                  <div className="bg-[#0b0c15]/90 border border-slate-800 rounded-2xl p-4 shadow-2xl relative overflow-hidden group">
-                    <div className="absolute top-0 left-0 w-1 h-full bg-[#00f2ff]/80" />
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="text-[11px] font-mono font-bold uppercase tracking-widest text-[#00f2ff] flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#00f2ff] animate-pulse" />
-                        Pseudocode Representation
-                      </h3>
+                {/* Left Column: Translation Code & Reference Cards */}
+                <div className={`w-full ${sidePanelExpanded ? 'lg:w-[480px]' : 'lg:w-[350px]'} shrink-0 flex flex-col gap-3 text-left transition-all duration-200`}>
+                  
+                  {/* Left Column Tab Navigation Bar */}
+                  <div className="flex items-center gap-1.5">
+                    <div className="grid grid-cols-3 gap-1 bg-[#0b0c15] p-1 rounded-xl border border-slate-800 shadow-md flex-1">
                       <button
-                        onClick={() => handleCopyCode(CHALLENGE_CODES[challenge.id]?.pseudocode || '', 'pseudo')}
-                        className="p-1.5 rounded-lg bg-slate-900/80 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-[#00f2ff] transition-all cursor-pointer flex items-center gap-1 text-[9px] font-mono font-bold"
+                        onClick={() => setSidePanelTab('pseudo')}
+                        className={`py-1.5 px-2 rounded-lg text-[9.5px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer text-center
+                          ${sidePanelTab === 'pseudo'
+                            ? 'bg-cyan-500/20 text-[#00f2ff] border border-cyan-500/40 shadow-[0_0_10px_rgba(0,242,255,0.2)]'
+                            : 'text-slate-400 hover:text-[#00f2ff] border border-transparent'}`}
+                        title="Pseudocode representation"
                       >
-                        {copiedType === 'pseudo' ? (
-                          <>
-                            <Check className="w-3.5 h-3.5 text-emerald-400" />
-                            <span className="text-emerald-400">COPIED!</span>
-                          </>
-                        ) : (
-                          <>
-                            <Copy className="w-3.5 h-3.5" />
-                            <span>COPY</span>
-                          </>
-                        )}
+                        <span>Pseudo</span>
+                      </button>
+                      <button
+                        onClick={() => setSidePanelTab('python')}
+                        className={`py-1.5 px-2 rounded-lg text-[9.5px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer text-center
+                          ${sidePanelTab === 'python'
+                            ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-[0_0_10px_rgba(245,158,11,0.2)]'
+                            : 'text-slate-400 hover:text-amber-300 border border-transparent'}`}
+                        title="Python 3 solution code"
+                      >
+                        <span>Python</span>
+                      </button>
+                      <button
+                        onClick={() => setSidePanelTab('both')}
+                        className={`py-1.5 px-2 rounded-lg text-[9.5px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer text-center
+                          ${sidePanelTab === 'both'
+                            ? 'bg-purple-500/20 text-purple-300 border border-purple-500/40 shadow-[0_0_10px_rgba(168,85,247,0.2)]'
+                            : 'text-slate-400 hover:text-purple-300 border border-transparent'}`}
+                        title="Stack both code views"
+                      >
+                        <span>Both</span>
                       </button>
                     </div>
-                    <div className="font-mono text-xs text-slate-300 bg-black/40 p-2.5 rounded-xl border border-slate-900 overflow-y-auto max-h-[220px] whitespace-pre leading-relaxed flex flex-col">
-                      {(CHALLENGE_CODES[challenge.id]?.pseudocode || '// Code format unavailable.')
-                        .split('\n')
-                        .map((line, idx) => {
-                          const isHighlighted = getHighlightedLines(challenge.id, executingSlotId).pseudo.includes(idx);
-                          return (
-                            <div
-                              key={idx}
-                              className={`px-2 py-0.5 rounded transition-all duration-200 flex items-start select-text
-                                ${isHighlighted 
-                                  ? 'bg-cyan-950/70 text-[#00f2ff] font-extrabold border-l-2 border-[#00f2ff] shadow-[0_0_12px_rgba(0,242,255,0.15)] scale-[1.02] translate-x-1 pl-1.5 z-10' 
-                                  : 'text-slate-400 opacity-60'
-                                }`}
-                            >
-                              <span className="w-5 text-slate-600 select-none text-right mr-3 text-[10px] shrink-0 mt-[2px]">{idx + 1}</span>
-                              <span className="break-all whitespace-pre">{line}</span>
-                            </div>
-                          );
-                        })}
-                    </div>
+
+                    {/* Dedicated Shapes Guide Button - Opens full screen modal on demand so space is not cluttered */}
+                    <button
+                      onClick={() => setIsShapesFullScreen(true)}
+                      className="py-1.5 px-2.5 rounded-xl bg-emerald-950/70 hover:bg-emerald-900/80 border border-emerald-500/40 hover:border-emerald-400 text-emerald-300 hover:text-white transition-all cursor-pointer shadow-md flex items-center gap-1.5 text-[9.5px] font-mono font-bold uppercase tracking-wider shrink-0 group"
+                      title="Open Flowchart Shapes Guide (Full Screen)"
+                    >
+                      <BookOpen className="w-3.5 h-3.5 text-emerald-400 group-hover:scale-110 transition-transform" />
+                      <span>Shapes Guide</span>
+                    </button>
                   </div>
 
-                  {/* Python Card */}
-                  <div className="bg-[#0b0c15]/90 border border-slate-800 rounded-2xl p-4 shadow-2xl relative overflow-hidden group">
-                     <div className="absolute top-0 left-0 w-1 h-full bg-amber-500/80" />
-                     <div className="flex items-center justify-between mb-2">
-                       <h3 className="text-[11px] font-mono font-bold uppercase tracking-widest text-amber-400 flex items-center gap-2">
-                         <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-                         Python 3 equivalence
-                       </h3>
-                       <button
-                         onClick={() => handleCopyCode(CHALLENGE_CODES[challenge.id]?.python || '', 'python')}
-                         className="p-1.5 rounded-lg bg-slate-900/80 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-amber-400 transition-all cursor-pointer flex items-center gap-1 text-[9px] font-mono font-bold"
-                       >
-                         {copiedType === 'python' ? (
-                           <>
-                             <Check className="w-3.5 h-3.5 text-emerald-400" />
-                             <span className="text-emerald-400">COPIED!</span>
-                           </>
-                         ) : (
-                           <>
-                             <Copy className="w-3.5 h-3.5" />
-                             <span>COPY</span>
-                           </>
-                         )}
-                       </button>
+                  {/* Unassisted Callout Helper */}
+                  {challenge.isUnassisted && (
+                    <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-2.5 flex items-center justify-between gap-2 shadow-sm">
+                      <div className="flex items-start gap-1.5">
+                        <Lightbulb className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
+                        <span className="text-[10px] text-amber-200/90 leading-tight">
+                          <strong className="text-amber-300">Unassisted Mission:</strong> Need flowchart shapes?
+                        </span>
+                      </div>
+                      <button
+                        onClick={() => setIsShapesFullScreen(true)}
+                        className="px-2 py-1 rounded-md bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 hover:text-white text-[9px] font-mono font-bold uppercase tracking-wider cursor-pointer whitespace-nowrap transition-all"
+                      >
+                        Shapes Guide 📖
+                      </button>
                     </div>
-                    <div className="font-mono text-xs text-slate-300 bg-black/40 p-2.5 rounded-xl border border-slate-900 overflow-y-auto max-h-[220px] whitespace-pre leading-relaxed flex flex-col">
-                      {(CHALLENGE_CODES[challenge.id]?.python || '# Code format unavailable.')
-                        .split('\n')
-                        .map((line, idx) => {
-                          const isHighlighted = getHighlightedLines(challenge.id, executingSlotId).python.includes(idx);
-                          return (
-                            <div
-                              key={idx}
-                              className={`px-2 py-0.5 rounded transition-all duration-200 flex items-start select-text
-                                ${isHighlighted 
-                                  ? 'bg-amber-950/70 text-amber-300 font-extrabold border-l-2 border-amber-500 shadow-[0_0_12px_rgba(245,158,11,0.15)] scale-[1.02] translate-x-1 pl-1.5 z-10' 
-                                  : 'text-slate-400 opacity-60'
-                                }`}
-                            >
-                              <span className="w-5 text-slate-600 select-none text-right mr-3 text-[10px] shrink-0 mt-[2px]">{idx + 1}</span>
-                              <span className="break-all whitespace-pre">{line}</span>
-                            </div>
-                          );
-                        })}
+                  )}
+
+                  {/* TAB 2 & 4: PSEUDOCODE CARD */}
+                  {(sidePanelTab === 'pseudo' || sidePanelTab === 'both') && (
+                    <div className="bg-[#0b0c15]/90 border border-slate-800 rounded-2xl p-4 shadow-2xl relative overflow-hidden group">
+                      <div className="absolute top-0 left-0 w-1 h-full bg-[#00f2ff]/80" />
+                      <div className="flex items-center justify-between mb-2">
+                        <h3 className="text-[11px] font-mono font-bold uppercase tracking-widest text-[#00f2ff] flex items-center gap-2">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#00f2ff] animate-pulse" />
+                          Pseudocode Representation
+                        </h3>
+                        <button
+                          onClick={() => handleCopyCode(CHALLENGE_CODES[challenge.id]?.pseudocode || '', 'pseudo')}
+                          className="p-1.5 rounded-lg bg-slate-900/80 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-[#00f2ff] transition-all cursor-pointer flex items-center gap-1 text-[9px] font-mono font-bold"
+                        >
+                          {copiedType === 'pseudo' ? (
+                            <>
+                              <Check className="w-3.5 h-3.5 text-emerald-400" />
+                              <span className="text-emerald-400">COPIED!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3.5 h-3.5" />
+                              <span>COPY</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <div className="font-mono text-xs text-slate-300 bg-black/40 p-2.5 rounded-xl border border-slate-900 overflow-y-auto max-h-[220px] whitespace-pre leading-relaxed flex flex-col">
+                        {(CHALLENGE_CODES[challenge.id]?.pseudocode || '// Code format unavailable.')
+                          .split('\n')
+                          .map((line, idx) => {
+                            const isHighlighted = getHighlightedLines(challenge.id, executingSlotId).pseudo.includes(idx);
+                            return (
+                              <div
+                                key={idx}
+                                className={`px-2 py-0.5 rounded transition-all duration-200 flex items-start select-text
+                                  ${isHighlighted 
+                                    ? 'bg-cyan-950/70 text-[#00f2ff] font-extrabold border-l-2 border-[#00f2ff] shadow-[0_0_12px_rgba(0,242,255,0.15)] scale-[1.02] translate-x-1 pl-1.5 z-10' 
+                                    : 'text-slate-400 opacity-60'
+                                  }`}
+                              >
+                                <span className="w-5 text-slate-600 select-none text-right mr-3 text-[10px] shrink-0 mt-[2px]">{idx + 1}</span>
+                                <span className="break-all whitespace-pre">{line}</span>
+                              </div>
+                            );
+                          })}
+                      </div>
                     </div>
-                  </div>
+                  )}
+
+                  {/* TAB 3 & 4: PYTHON CARD */}
+                  {(sidePanelTab === 'python' || sidePanelTab === 'both') && (
+                    <div className="bg-[#0b0c15]/90 border border-slate-800 rounded-2xl p-4 shadow-2xl relative overflow-hidden group">
+                      <div className="absolute top-0 left-0 w-1 h-full bg-amber-500/80" />
+                      <div className="flex items-center justify-between mb-2">
+                        <h3 className="text-[11px] font-mono font-bold uppercase tracking-widest text-amber-400 flex items-center gap-2">
+                          <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                          Python 3 equivalence
+                        </h3>
+                        <button
+                          onClick={() => handleCopyCode(CHALLENGE_CODES[challenge.id]?.python || '', 'python')}
+                          className="p-1.5 rounded-lg bg-slate-900/80 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-amber-400 transition-all cursor-pointer flex items-center gap-1 text-[9px] font-mono font-bold"
+                        >
+                          {copiedType === 'python' ? (
+                            <>
+                              <Check className="w-3.5 h-3.5 text-emerald-400" />
+                              <span className="text-emerald-400">COPIED!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3.5 h-3.5" />
+                              <span>COPY</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <div className="font-mono text-xs text-slate-300 bg-black/40 p-2.5 rounded-xl border border-slate-900 overflow-y-auto max-h-[220px] whitespace-pre leading-relaxed flex flex-col">
+                        {(CHALLENGE_CODES[challenge.id]?.python || '# Code format unavailable.')
+                          .split('\n')
+                          .map((line, idx) => {
+                            const isHighlighted = getHighlightedLines(challenge.id, executingSlotId).python.includes(idx);
+                            return (
+                              <div
+                                key={idx}
+                                className={`px-2 py-0.5 rounded transition-all duration-200 flex items-start select-text
+                                  ${isHighlighted 
+                                    ? 'bg-amber-950/70 text-amber-300 font-extrabold border-l-2 border-amber-500 shadow-[0_0_12px_rgba(245,158,11,0.15)] scale-[1.02] translate-x-1 pl-1.5 z-10' 
+                                    : 'text-slate-400 opacity-60'
+                                  }`}
+                              >
+                                <span className="w-5 text-slate-600 select-none text-right mr-3 text-[10px] shrink-0 mt-[2px]">{idx + 1}</span>
+                                <span className="break-all whitespace-pre">{line}</span>
+                              </div>
+                            );
+                          })}
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* Right Column: Flowchart Canvas & Simulator Playback Controls underneath */}
@@ -2518,25 +3452,31 @@ export default function FlowchartLab({ onBackToMain, onRewardCredits, currentCre
                   
                   const isExecuting = executingSlotId === slot.id;
                   const blockToPlace = allAvailableBlocks.find(b => b.id === selectedPaletteBlockId);
-                  const isTypeMatching = blockToPlace && blockToPlace.type === slot.type;
+                  const isTypeMatching = visualHintsEnabled && blockToPlace && blockToPlace.type === slot.type;
                   
                   // Style shapes according to type
                   let shapeStyles = 'rounded-xl';
                   let emptyBorderStyles = 'border-2 border-dashed';
-                  if (slot.type === 'start' || slot.type === 'end') {
-                    shapeStyles = 'rounded-[30px]';
-                    emptyBorderStyles += ' border-emerald-500/50 bg-emerald-500/5 hover:border-emerald-400 hover:bg-emerald-500/10 text-emerald-300';
-                  } else if (slot.type === 'decision') {
-                    // diamond approximation
-                    shapeStyles = 'rounded-2xl rotate-3';
-                    emptyBorderStyles += ' border-purple-500/50 bg-purple-500/5 hover:border-purple-400 hover:bg-purple-500/10 rotate-3 text-purple-300';
-                  } else if (slot.type === 'io') {
-                    // parallelogram approximation
-                    shapeStyles = 'skew-x-6';
-                    emptyBorderStyles += ' border-amber-500/50 bg-amber-500/5 hover:border-amber-400 hover:bg-amber-500/10 skew-x-6 text-amber-300';
-                  } else if (slot.type === 'process') {
-                    shapeStyles = 'rounded-md';
-                    emptyBorderStyles += ' border-cyan-500/50 bg-cyan-500/5 hover:border-cyan-400 hover:bg-cyan-500/10 text-cyan-300';
+                  if (visualHintsEnabled) {
+                    if (slot.type === 'start' || slot.type === 'end') {
+                      shapeStyles = 'rounded-[30px]';
+                      emptyBorderStyles += ' border-emerald-500/50 bg-emerald-500/5 hover:border-emerald-400 hover:bg-emerald-500/10 text-emerald-300';
+                    } else if (slot.type === 'decision') {
+                      // diamond approximation
+                      shapeStyles = 'rounded-2xl rotate-3';
+                      emptyBorderStyles += ' border-purple-500/50 bg-purple-500/5 hover:border-purple-400 hover:bg-purple-500/10 rotate-3 text-purple-300';
+                    } else if (slot.type === 'io') {
+                      // parallelogram approximation
+                      shapeStyles = 'skew-x-6';
+                      emptyBorderStyles += ' border-amber-500/50 bg-amber-500/5 hover:border-amber-400 hover:bg-amber-500/10 skew-x-6 text-amber-300';
+                    } else if (slot.type === 'process') {
+                      shapeStyles = 'rounded-md';
+                      emptyBorderStyles += ' border-cyan-500/50 bg-cyan-500/5 hover:border-cyan-400 hover:bg-cyan-500/10 text-cyan-300';
+                    }
+                  } else {
+                    // UNASSISTED / EXAM MODE: Neutral outline for all slots! The student must know which shape to choose!
+                    shapeStyles = 'rounded-xl';
+                    emptyBorderStyles += ' border-slate-700/80 bg-slate-900/40 hover:border-amber-400/60 hover:bg-slate-800/40 text-slate-300';
                   }
 
                   const coords = getSlotCoords(slot.id, slot.x, slot.y);
@@ -2657,25 +3597,37 @@ export default function FlowchartLab({ onBackToMain, onRewardCredits, currentCre
                           )
                         ) : (
                           // Unfilled empty Slot outline helper
-                          <div className={slot.type === 'io' ? 'transform -skew-x-6' : ''}>
-                            <span className={`text-[9.5px] font-mono font-black tracking-widest uppercase transition-colors
-                              ${isTypeMatching ? 'text-cyan-300 animate-pulse' : 'text-slate-400/90'}`}>
-                              {slot.type.toUpperCase()} SLOT
-                            </span>
-                            <span className="text-[12.5px] uppercase tracking-tight text-white font-extrabold font-mono mt-1 px-1 group-hover:text-cyan-200 transition-colors block">
-                              {slot.label}
-                            </span>
-                            {isTypeMatching ? (
-                              <span className="text-[9px] font-extrabold text-[#00f2ff] bg-[#00f2ff]/20 px-3 py-1 rounded-full mt-2 animate-bounce border border-[#00f2ff]/40 shadow-lg font-mono inline-block">
-                                PLACE BLOCK
-                              </span>
-                            ) : selectedPaletteBlockId ? (
-                              <span className="text-[8px] text-slate-400 font-bold font-mono mt-2 block">
-                                Requires {slot.type} block
+                          <div className={visualHintsEnabled && slot.type === 'io' ? 'transform -skew-x-6' : ''}>
+                            {visualHintsEnabled ? (
+                              <span className={`text-[9.5px] font-mono font-black tracking-widest uppercase transition-colors
+                                ${isTypeMatching ? 'text-cyan-300 animate-pulse' : 'text-slate-400/90'}`}>
+                                {slot.type.toUpperCase()} SLOT
                               </span>
                             ) : (
-                              <span className="text-[8px] text-slate-500 font-bold font-mono mt-2 uppercase tracking-wide opacity-80 block">
-                                Click or Drag to place
+                              <span className="text-[8.5px] font-mono font-black tracking-wider uppercase text-amber-400/90 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
+                                NODE #{challenge.slots.findIndex(s => s.id === slot.id) + 1}
+                              </span>
+                            )}
+                            <span className="text-[12px] uppercase tracking-tight text-white font-extrabold font-mono mt-1 px-1 group-hover:text-cyan-200 transition-colors block">
+                              {slot.label}
+                            </span>
+                            {visualHintsEnabled ? (
+                              isTypeMatching ? (
+                                <span className="text-[9px] font-extrabold text-[#00f2ff] bg-[#00f2ff]/20 px-3 py-1 rounded-full mt-2 animate-bounce border border-[#00f2ff]/40 shadow-lg font-mono inline-block">
+                                  PLACE BLOCK
+                                </span>
+                              ) : selectedPaletteBlockId ? (
+                                <span className="text-[8px] text-slate-400 font-bold font-mono mt-2 block">
+                                  Requires {slot.type} block
+                                </span>
+                              ) : (
+                                <span className="text-[8px] text-slate-500 font-bold font-mono mt-2 uppercase tracking-wide opacity-80 block">
+                                  Click or Drag to place
+                                </span>
+                              )
+                            ) : (
+                              <span className="text-[8px] text-slate-400 font-mono mt-1.5 block opacity-90">
+                                {selectedPaletteBlockId ? 'Click to assign selected block' : 'Select shape from bank'}
                               </span>
                             )}
                           </div>
@@ -2747,7 +3699,17 @@ export default function FlowchartLab({ onBackToMain, onRewardCredits, currentCre
                         </div>
                         
                         {/* Action trigger footer bar */}
-                        <div className="flex justify-end gap-2 mt-1.5 pt-2 border-t border-rose-950/30">
+                        <div className="flex justify-end items-center gap-2 mt-1.5 pt-2 border-t border-rose-950/30">
+                          <button
+                            onClick={() => {
+                              setShowErrorOverlay(false);
+                              setIsShapesFullScreen(true);
+                            }}
+                            className="px-3 py-2 bg-emerald-950/80 hover:bg-emerald-900 text-emerald-300 hover:text-white font-extrabold font-mono text-[9px] uppercase tracking-widest rounded-lg border border-emerald-500/50 hover:border-emerald-400 cursor-pointer transition-all flex items-center gap-1.5 shadow-sm group"
+                          >
+                            <BookOpen className="w-3.5 h-3.5 text-emerald-400 group-hover:scale-110 transition-transform" />
+                            <span>Shapes Guide (Full Screen)</span>
+                          </button>
                           <button
                             onClick={() => setShowErrorOverlay(false)}
                             className="px-4 py-2 bg-rose-950/60 hover:bg-rose-900 text-rose-300 hover:text-white font-extrabold font-mono text-[9px] uppercase tracking-widest rounded-lg border border-rose-500/50 hover:border-rose-400 cursor-pointer transition-all active:scale-[0.98]"
@@ -3076,6 +4038,597 @@ export default function FlowchartLab({ onBackToMain, onRewardCredits, currentCre
         </main>
 
       </div>
+
+      {/* FULLSCREEN SHAPES CODEX MODAL OVERLAY */}
+      <AnimatePresence>
+        {isShapesFullScreen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] bg-[#070913]/98 backdrop-blur-2xl flex flex-col font-mono text-slate-100 overflow-hidden"
+          >
+            {/* Top Navigation Bar */}
+            <header className="px-6 py-3.5 bg-[#0a0d18] border-b border-emerald-500/30 flex flex-wrap items-center justify-between gap-4 shrink-0 shadow-2xl">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 shadow-[0_0_15px_rgba(16,185,129,0.3)]">
+                  <BookOpen className="w-5 h-5 text-emerald-400" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-base font-black uppercase tracking-wider text-white">
+                      Flowchart Architecture & Symbols Codex
+                    </h2>
+                    <span className="text-[9px] font-mono font-bold uppercase px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                      Fullscreen View
+                    </span>
+                    <span className="hidden sm:inline-block text-[8.5px] font-mono text-slate-400">
+                      Standard ANSI / ISO 5807 & GCSE / AP CS
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-400">
+                    Geometric rules, directional logic, common student traps, and real-time Pseudocode / Python mappings
+                  </p>
+                </div>
+              </div>
+
+              {/* View Mode Switcher Pills */}
+              <div className="flex items-center gap-1.5 bg-[#04060d] p-1 rounded-xl border border-slate-800">
+                <button
+                  onClick={() => setFullScreenTab('cards')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1.5
+                    ${fullScreenTab === 'cards'
+                      ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/50 shadow-md'
+                      : 'text-slate-400 hover:text-white border border-transparent'}`}
+                >
+                  <Layers className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Symbol Cards</span>
+                </button>
+                <button
+                  onClick={() => setFullScreenTab('matrix')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1.5
+                    ${fullScreenTab === 'matrix'
+                      ? 'bg-cyan-500/20 text-[#00f2ff] border border-cyan-500/50 shadow-md'
+                      : 'text-slate-400 hover:text-white border border-transparent'}`}
+                >
+                  <Table className="w-3.5 h-3.5 text-cyan-400" />
+                  <span>Comparison Matrix</span>
+                </button>
+                <button
+                  onClick={() => setFullScreenTab('quiz')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1.5
+                    ${fullScreenTab === 'quiz'
+                      ? 'bg-purple-500/20 text-purple-300 border border-purple-500/50 shadow-md'
+                      : 'text-slate-400 hover:text-white border border-transparent'}`}
+                >
+                  <Zap className="w-3.5 h-3.5 text-purple-400" />
+                  <span>Knowledge Check</span>
+                </button>
+              </div>
+
+              {/* Exit Actions */}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setIsShapesFullScreen(false)}
+                  className="px-3.5 py-1.5 rounded-xl bg-slate-900/90 hover:bg-rose-950/50 border border-slate-700 hover:border-rose-500/50 text-slate-300 hover:text-rose-200 text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-sm group"
+                  title="Close Full Screen View (ESC)"
+                >
+                  <Minimize2 className="w-3.5 h-3.5 text-slate-400 group-hover:text-rose-400 transition-colors" />
+                  <span>Exit Full Screen</span>
+                  <kbd className="hidden md:inline-block ml-1 px-1.5 py-0.5 rounded bg-black/40 text-[9px] text-slate-400 border border-slate-800">ESC</kbd>
+                </button>
+                <button
+                  onClick={() => setIsShapesFullScreen(false)}
+                  className="p-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white border border-slate-800 transition-colors cursor-pointer"
+                  title="Close"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </header>
+
+            {/* Sub-bar with Filters and Search (When on cards or matrix) */}
+            {fullScreenTab !== 'quiz' && (
+              <div className="px-6 py-2.5 bg-[#080b14]/90 border-b border-slate-900 flex flex-wrap items-center justify-between gap-3 shrink-0">
+                {/* Shape Filter Pills */}
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <span className="text-[10px] font-mono font-black uppercase tracking-wider text-slate-400 mr-1 flex items-center gap-1">
+                    Filter:
+                  </span>
+                  {[
+                    { id: 'all', label: 'All Shapes' },
+                    { id: 'terminator', label: 'Oval (Terminator)' },
+                    { id: 'io', label: 'Parallelogram (I/O)' },
+                    { id: 'process', label: 'Rectangle (Process)' },
+                    { id: 'decision', label: 'Diamond (Decision)' },
+                    { id: 'arrow', label: 'Flowlines (Arrows)' },
+                    { id: 'connector', label: 'Connectors' },
+                    { id: 'subroutine', label: 'Subroutines' }
+                  ].map((filter) => (
+                    <button
+                      key={filter.id}
+                      onClick={() => setFullScreenFilter(filter.id)}
+                      className={`text-[10px] font-mono font-bold px-2.5 py-1 rounded-lg transition-all cursor-pointer
+                        ${fullScreenFilter === filter.id 
+                          ? 'bg-emerald-500 text-black font-black shadow-[0_0_10px_rgba(16,185,129,0.3)]' 
+                          : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700'}`}
+                    >
+                      {filter.label}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Search Bar */}
+                <div className="relative min-w-[240px]">
+                  <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    value={fullScreenSearch}
+                    onChange={(e) => setFullScreenSearch(e.target.value)}
+                    placeholder="Search shapes, keywords, rules..."
+                    className="w-full pl-8 pr-3 py-1 rounded-lg bg-black/50 border border-slate-800 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500/60 font-mono"
+                  />
+                  {fullScreenSearch && (
+                    <button
+                      onClick={() => setFullScreenSearch('')}
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs cursor-pointer"
+                    >
+                      ×
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Main Content Area */}
+            <div className="flex-1 overflow-y-auto p-6 md:p-8 scrollbar-thin scrollbar-thumb-emerald-900/60 bg-gradient-to-b from-[#090b16] to-[#04050a]">
+              
+              {/* TAB 1: VISUAL SYMBOL CARDS VIEW */}
+              {fullScreenTab === 'cards' && (
+                <div className="max-w-7xl mx-auto flex flex-col gap-6">
+                  {/* Informational Guidance Callout */}
+                  <div className="bg-gradient-to-r from-emerald-950/40 via-slate-900/40 to-cyan-950/30 border border-emerald-500/30 rounded-2xl p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-xl">
+                    <div className="flex items-start gap-3">
+                      <div className="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 shrink-0 mt-0.5">
+                        <Lightbulb className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h4 className="text-xs font-black uppercase tracking-wider text-emerald-300">
+                          Flowchart Syntax Discipline & Shape Rules
+                        </h4>
+                        <p className="text-[11.5px] text-slate-300 mt-0.5 leading-relaxed">
+                          In Computer Science, flowchart shapes represent fundamental hardware primitives. Rectangles are internal CPU operations; Parallelograms communicate with the external world; Diamonds diverge program branches; and Ovals bound algorithm scope.
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className="text-[10px] font-mono text-slate-400">Showing {
+                        FLOWCHART_SHAPES_DATA.filter(s => {
+                          const matchesFilter = fullScreenFilter === 'all' || s.id === fullScreenFilter;
+                          const matchesSearch = !fullScreenSearch || 
+                            s.name.toLowerCase().includes(fullScreenSearch.toLowerCase()) ||
+                            s.description.toLowerCase().includes(fullScreenSearch.toLowerCase()) ||
+                            s.whenToUse.some(u => u.toLowerCase().includes(fullScreenSearch.toLowerCase())) ||
+                            s.rules.some(r => r.toLowerCase().includes(fullScreenSearch.toLowerCase())) ||
+                            s.pseudocodeExample.toLowerCase().includes(fullScreenSearch.toLowerCase()) ||
+                            s.pythonExample.toLowerCase().includes(fullScreenSearch.toLowerCase());
+                          return matchesFilter && matchesSearch;
+                        }).length
+                      } notation symbols</span>
+                    </div>
+                  </div>
+
+                  {/* Shapes Cards Grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {FLOWCHART_SHAPES_DATA
+                      .filter(s => {
+                        const matchesFilter = fullScreenFilter === 'all' || s.id === fullScreenFilter;
+                        const matchesSearch = !fullScreenSearch || 
+                          s.name.toLowerCase().includes(fullScreenSearch.toLowerCase()) ||
+                          s.description.toLowerCase().includes(fullScreenSearch.toLowerCase()) ||
+                          s.whenToUse.some(u => u.toLowerCase().includes(fullScreenSearch.toLowerCase())) ||
+                          s.rules.some(r => r.toLowerCase().includes(fullScreenSearch.toLowerCase())) ||
+                          s.pseudocodeExample.toLowerCase().includes(fullScreenSearch.toLowerCase()) ||
+                          s.pythonExample.toLowerCase().includes(fullScreenSearch.toLowerCase());
+                        return matchesFilter && matchesSearch;
+                      })
+                      .map((shape) => (
+                        <div
+                          key={shape.id}
+                          className={`rounded-2xl border ${shape.borderColor} ${shape.bgColor} p-5 shadow-2xl flex flex-col justify-between gap-4 transition-all hover:scale-[1.01]`}
+                        >
+                          <div className="flex flex-col gap-3">
+                            {/* Card Header & Badges */}
+                            <div className="flex items-start justify-between gap-2 border-b border-white/10 pb-3">
+                              <div>
+                                <span className="text-[9px] font-mono font-bold tracking-widest uppercase text-slate-400 block mb-0.5">
+                                  {shape.shapeCategory}
+                                </span>
+                                <h3 className={`text-base font-black uppercase tracking-tight ${shape.textColor}`}>
+                                  {shape.name}
+                                </h3>
+                              </div>
+                              <span className="text-[8.5px] font-mono font-black uppercase px-2 py-1 rounded-md bg-black/60 border border-white/10 text-slate-200 shrink-0">
+                                {shape.badge}
+                              </span>
+                            </div>
+
+                            {/* Realistic Scaled Visual Rendering Diagram */}
+                            <div className="py-4 px-3 bg-black/50 rounded-xl border border-white/5 flex items-center justify-center min-h-[90px]">
+                              {shape.id === 'terminator' && (
+                                <div className="px-8 py-3 rounded-full border-2 border-emerald-400 bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 text-emerald-200 text-xs font-black uppercase tracking-widest shadow-[0_0_15px_rgba(16,185,129,0.3)] flex items-center gap-2">
+                                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                                  <span>START / END</span>
+                                </div>
+                              )}
+                              {shape.id === 'io' && (
+                                <div className="px-7 py-3 transform -skew-x-12 border-2 border-amber-400 bg-gradient-to-r from-amber-950 via-amber-900 to-amber-950 text-amber-200 text-xs font-black uppercase tracking-widest shadow-[0_0_15px_rgba(245,158,11,0.3)] rounded-sm">
+                                  <div className="transform skew-x-12 flex items-center gap-2">
+                                    <span>INPUT / OUTPUT</span>
+                                  </div>
+                                </div>
+                              )}
+                              {shape.id === 'process' && (
+                                <div className="px-7 py-3 rounded-md border-2 border-[#00f2ff] bg-gradient-to-r from-[#0c315e] via-[#082242] to-slate-900 text-cyan-200 text-xs font-black uppercase tracking-widest shadow-[0_0_15px_rgba(0,242,255,0.3)]">
+                                  CALCULATION / ASSIGNMENT
+                                </div>
+                              )}
+                              {shape.id === 'decision' && (
+                                <div className="relative flex items-center justify-center py-2">
+                                  <div
+                                    className="w-[150px] h-[64px] flex items-center justify-center relative shadow-lg"
+                                    style={{ clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' }}
+                                  >
+                                    <div className="absolute inset-0 bg-purple-400" style={{ clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' }} />
+                                    <div className="absolute inset-[2px] bg-purple-950 text-purple-200 text-[10px] font-black uppercase tracking-wider flex items-center justify-center text-center px-3" style={{ clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' }}>
+                                      BRANCH (YES / NO)
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
+                              {shape.id === 'arrow' && (
+                                <div className="flex items-center gap-3 text-sky-400 font-mono text-xs font-bold">
+                                  <span className="w-16 h-1 bg-sky-400 rounded-full" />
+                                  <span className="text-base">▶</span>
+                                  <span className="text-sky-200 uppercase tracking-wider">FLOWLINE DIRECTION</span>
+                                </div>
+                              )}
+                              {shape.id === 'connector' && (
+                                <div className="w-12 h-12 rounded-full border-2 border-indigo-400 bg-indigo-950 flex items-center justify-center text-indigo-200 text-sm font-black shadow-[0_0_15px_rgba(99,102,241,0.3)]">
+                                  A
+                                </div>
+                              )}
+                              {shape.id === 'subroutine' && (
+                                <div className="px-6 py-3 rounded-md border-2 border-teal-400 bg-teal-950 text-teal-200 text-xs font-black uppercase tracking-widest shadow-[0_0_15px_rgba(45,212,191,0.3)] relative">
+                                  <div className="absolute left-2.5 top-0 bottom-0 w-0.5 bg-teal-400" />
+                                  <div className="absolute right-2.5 top-0 bottom-0 w-0.5 bg-teal-400" />
+                                  <span className="px-2">CALL SUBROUTINE()</span>
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Description */}
+                            <p className="text-xs text-slate-200 leading-relaxed">
+                              {shape.description}
+                            </p>
+
+                            {/* When to use */}
+                            <div className="bg-black/40 p-3 rounded-xl border border-white/5 flex flex-col gap-1.5">
+                              <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
+                                <CheckCircle className="w-3 h-3 text-emerald-400" />
+                                When to use:
+                              </span>
+                              <ul className="text-[11px] text-slate-300 flex flex-col gap-1 list-disc pl-4 leading-normal">
+                                {shape.whenToUse.map((use, idx) => (
+                                  <li key={idx}>{use}</li>
+                                ))}
+                              </ul>
+                            </div>
+
+                            {/* Strict Rules */}
+                            <div className="bg-black/40 p-3 rounded-xl border border-white/5 flex flex-col gap-1.5">
+                              <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
+                                <Info className="w-3 h-3 text-cyan-400" />
+                                Strict Notation Rules:
+                              </span>
+                              <ul className="text-[11px] text-slate-300 flex flex-col gap-1 list-disc pl-4 leading-normal">
+                                {shape.rules.map((rule, idx) => (
+                                  <li key={idx}>{rule}</li>
+                                ))}
+                              </ul>
+                            </div>
+
+                            {/* Common Mistake Alert Box */}
+                            <div className="bg-rose-950/40 border border-rose-500/40 rounded-xl p-3 text-xs text-rose-200 leading-snug">
+                              <span className="font-bold text-rose-300 flex items-center gap-1.5 mb-1 text-[11px]">
+                                <AlertCircle className="w-3.5 h-3.5 text-rose-400 shrink-0" />
+                                Common Student Trap:
+                              </span>
+                              {shape.commonMistake}
+                            </div>
+                          </div>
+
+                          {/* Code Equivalents Footer */}
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[10px] font-mono mt-1 pt-3 border-t border-white/10">
+                            {/* Pseudocode snippet */}
+                            <div className="bg-black/50 p-2.5 rounded-xl border border-white/5 flex flex-col justify-between">
+                              <div className="flex items-center justify-between mb-1">
+                                <span className="text-[#00f2ff] font-bold">Pseudocode:</span>
+                                <button
+                                  onClick={() => handleCopyFullScreenCode(shape.pseudocodeExample, `${shape.id}-pseudo`)}
+                                  className="text-slate-400 hover:text-white p-1 rounded hover:bg-white/10 transition-colors cursor-pointer"
+                                  title="Copy Pseudocode"
+                                >
+                                  {fullScreenCopied === `${shape.id}-pseudo` ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                                </button>
+                              </div>
+                              <pre className="text-slate-300 whitespace-pre font-mono leading-tight overflow-x-auto text-[10px]">
+                                {shape.pseudocodeExample}
+                              </pre>
+                            </div>
+
+                            {/* Python 3 snippet */}
+                            <div className="bg-black/50 p-2.5 rounded-xl border border-white/5 flex flex-col justify-between">
+                              <div className="flex items-center justify-between mb-1">
+                                <span className="text-amber-400 font-bold">Python 3:</span>
+                                <button
+                                  onClick={() => handleCopyFullScreenCode(shape.pythonExample, `${shape.id}-py`)}
+                                  className="text-slate-400 hover:text-white p-1 rounded hover:bg-white/10 transition-colors cursor-pointer"
+                                  title="Copy Python"
+                                >
+                                  {fullScreenCopied === `${shape.id}-py` ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                                </button>
+                              </div>
+                              <pre className="text-slate-300 whitespace-pre font-mono leading-tight overflow-x-auto text-[10px]">
+                                {shape.pythonExample}
+                              </pre>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              )}
+
+              {/* TAB 2: CHEAT SHEET COMPARISON MATRIX VIEW */}
+              {fullScreenTab === 'matrix' && (
+                <div className="max-w-7xl mx-auto flex flex-col gap-6">
+                  <div className="bg-[#0b0e1b] border border-cyan-500/30 rounded-2xl p-5 shadow-2xl">
+                    <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+                      <div>
+                        <h3 className="text-base font-black uppercase tracking-wider text-cyan-300 flex items-center gap-2">
+                          <Table className="w-5 h-5 text-cyan-400" />
+                          Flowchart Comparison Matrix Cheat Sheet
+                        </h3>
+                        <p className="text-xs text-slate-400 mt-0.5">
+                          Direct side-by-side comparison for exam revision and code translation
+                        </p>
+                      </div>
+                      <span className="text-[10px] font-mono px-2.5 py-1 rounded-md bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 font-bold">
+                        IGCSE / GCSE / AP CS Standard
+                      </span>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left text-xs font-mono border-collapse">
+                        <thead>
+                          <tr className="border-b border-slate-800 bg-black/40 text-[10px] text-slate-400 uppercase tracking-wider">
+                            <th className="p-3">Symbol Visual</th>
+                            <th className="p-3">Standard Name</th>
+                            <th className="p-3">Primary Purpose</th>
+                            <th className="p-3">Arrow Degree (In / Out)</th>
+                            <th className="p-3">Standard Pseudocode</th>
+                            <th className="p-3">Python 3 Equivalent</th>
+                            <th className="p-3">Common Exam Trap</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-800/60">
+                          {FLOWCHART_SHAPES_DATA.map((s) => (
+                            <tr key={s.id} className="hover:bg-white/[0.02] transition-colors">
+                              <td className="p-3 shrink-0">
+                                <div className="w-24 flex items-center justify-center">
+                                  {s.id === 'terminator' && (
+                                    <div className="px-3 py-1 rounded-full border border-emerald-400 bg-emerald-950 text-emerald-300 text-[9px] font-bold">
+                                      START / END
+                                    </div>
+                                  )}
+                                  {s.id === 'io' && (
+                                    <div className="px-3 py-1 transform -skew-x-12 border border-amber-400 bg-amber-950 text-amber-300 text-[9px] font-bold">
+                                      <span className="inline-block transform skew-x-12">I / O</span>
+                                    </div>
+                                  )}
+                                  {s.id === 'process' && (
+                                    <div className="px-3 py-1 rounded border border-[#00f2ff] bg-cyan-950 text-cyan-300 text-[9px] font-bold">
+                                      PROCESS
+                                    </div>
+                                  )}
+                                  {s.id === 'decision' && (
+                                    <div 
+                                      className="w-14 h-7 flex items-center justify-center bg-purple-950 text-purple-200 border border-purple-400 text-[8px] font-bold"
+                                      style={{ clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' }}
+                                    >
+                                      DECIDE
+                                    </div>
+                                  )}
+                                  {s.id === 'arrow' && (
+                                    <div className="flex items-center gap-1 text-sky-400 text-[10px]">
+                                      <span className="w-8 h-0.5 bg-sky-400" />
+                                      <span>▶</span>
+                                    </div>
+                                  )}
+                                  {s.id === 'connector' && (
+                                    <div className="w-6 h-6 rounded-full border border-indigo-400 bg-indigo-950 text-indigo-300 flex items-center justify-center text-[9px] font-bold">
+                                      A
+                                    </div>
+                                  )}
+                                  {s.id === 'subroutine' && (
+                                    <div className="px-2 py-1 rounded border border-teal-400 bg-teal-950 text-teal-300 text-[8px] font-bold border-l-4 border-r-4">
+                                      SUBROUTINE
+                                    </div>
+                                  )}
+                                </div>
+                              </td>
+                              <td className="p-3 font-bold text-white">
+                                <div>{s.name}</div>
+                                <span className="text-[9px] text-slate-400 block">{s.shapeCategory}</span>
+                              </td>
+                              <td className="p-3 text-slate-300 max-w-[200px] leading-snug">
+                                {s.description}
+                              </td>
+                              <td className="p-3 text-cyan-300 font-bold whitespace-nowrap">
+                                {s.id === 'terminator' && 'Start: 0 In / 1 Out; End: 1 In / 0 Out'}
+                                {s.id === 'io' && '1 Inbound / 1 Outbound'}
+                                {s.id === 'process' && '1 Inbound / 1 Outbound'}
+                                {s.id === 'decision' && '1 Inbound / 2+ Outbound (Yes/No)'}
+                                {s.id === 'arrow' && 'Connects 1 Source to 1 Target'}
+                                {s.id === 'connector' && 'Multiple Inbound / 1 Outbound'}
+                                {s.id === 'subroutine' && '1 Inbound / 1 Outbound'}
+                              </td>
+                              <td className="p-3 text-slate-300 whitespace-pre font-mono bg-black/30 rounded p-1.5 text-[10px]">
+                                {s.pseudocodeExample}
+                              </td>
+                              <td className="p-3 text-amber-300 whitespace-pre font-mono bg-black/30 rounded p-1.5 text-[10px]">
+                                {s.pythonExample}
+                              </td>
+                              <td className="p-3 text-rose-300 text-[10.5px] max-w-[220px] leading-snug">
+                                {s.commonMistake}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* TAB 3: KNOWLEDGE CHECK QUIZ VIEW */}
+              {fullScreenTab === 'quiz' && (
+                <div className="max-w-3xl mx-auto flex flex-col gap-6">
+                  <div className="bg-[#0b0e1b] border border-purple-500/30 rounded-2xl p-6 shadow-2xl flex flex-col gap-4">
+                    <div className="flex items-center justify-between border-b border-purple-500/20 pb-3">
+                      <div>
+                        <h3 className="text-base font-black uppercase tracking-wider text-purple-300 flex items-center gap-2">
+                          <Zap className="w-5 h-5 text-purple-400" />
+                          Interactive Flowchart Shape Mastery Check
+                        </h3>
+                        <p className="text-xs text-slate-400 mt-0.5">
+                          Test your shape recognition skills before taking on unassisted challenges
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-xs font-mono font-bold text-purple-300 block">
+                          Question {quizQuestionIdx + 1} of {SHAPE_QUIZ_QUESTIONS.length}
+                        </span>
+                        <span className="text-[10px] text-slate-500">Instant Diagnostic Feedback</span>
+                      </div>
+                    </div>
+
+                    {/* Question Card */}
+                    <div className="bg-black/40 border border-purple-500/20 rounded-xl p-4">
+                      <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-purple-400 block mb-1">
+                        SCENARIO #{quizQuestionIdx + 1}
+                      </span>
+                      <h4 className="text-sm md:text-base font-bold text-white leading-relaxed">
+                        {SHAPE_QUIZ_QUESTIONS[quizQuestionIdx].question}
+                      </h4>
+                    </div>
+
+                    {/* Options List */}
+                    <div className="grid grid-cols-1 gap-2.5">
+                      {SHAPE_QUIZ_QUESTIONS[quizQuestionIdx].options.map((opt, optIdx) => {
+                        const isSelected = quizSelectedOption === optIdx;
+                        const isCorrect = optIdx === SHAPE_QUIZ_QUESTIONS[quizQuestionIdx].correctIdx;
+                        let btnStyle = 'bg-black/50 border-slate-800 text-slate-200 hover:border-purple-400 hover:bg-purple-950/20';
+                        
+                        if (quizAnswered) {
+                          if (isCorrect) {
+                            btnStyle = 'bg-emerald-950/90 border-emerald-500 text-emerald-100 font-bold shadow-[0_0_15px_rgba(16,185,129,0.3)]';
+                          } else if (isSelected && !isCorrect) {
+                            btnStyle = 'bg-rose-950/90 border-rose-500 text-rose-100 font-bold shadow-[0_0_15px_rgba(244,63,94,0.3)]';
+                          } else {
+                            btnStyle = 'bg-black/20 border-slate-900 text-slate-500 opacity-50';
+                          }
+                        }
+
+                        return (
+                          <button
+                            key={optIdx}
+                            disabled={quizAnswered}
+                            onClick={() => {
+                              setQuizSelectedOption(optIdx);
+                              setQuizAnswered(true);
+                            }}
+                            className={`p-3.5 rounded-xl border text-xs md:text-sm text-left transition-all cursor-pointer flex items-center justify-between ${btnStyle}`}
+                          >
+                            <span className="flex items-center gap-3">
+                              <span className="w-6 h-6 rounded-lg bg-black/40 border border-white/10 flex items-center justify-center font-bold text-xs shrink-0">
+                                {String.fromCharCode(65 + optIdx)}
+                              </span>
+                              <span>{opt}</span>
+                            </span>
+                            {quizAnswered && isCorrect && <Check className="w-5 h-5 text-emerald-400 shrink-0" />}
+                            {quizAnswered && isSelected && !isCorrect && <X className="w-5 h-5 text-rose-400 shrink-0" />}
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    {/* Feedback Explanation */}
+                    {quizAnswered && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="bg-purple-950/40 border border-purple-500/30 rounded-xl p-4 flex flex-col gap-3 mt-2"
+                      >
+                        <div className="flex items-start gap-2.5">
+                          <Info className="w-4 h-4 text-purple-300 shrink-0 mt-0.5" />
+                          <div>
+                            <span className="text-[10px] font-mono font-black uppercase tracking-wider text-purple-300 block mb-0.5">
+                              Computer Science Rule Explanation:
+                            </span>
+                            <p className="text-xs text-purple-100 leading-relaxed">
+                              {SHAPE_QUIZ_QUESTIONS[quizQuestionIdx].explanation}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center justify-between border-t border-purple-500/20 pt-3">
+                          <button
+                            onClick={() => {
+                              setQuizQuestionIdx((quizQuestionIdx + 1) % SHAPE_QUIZ_QUESTIONS.length);
+                              setQuizSelectedOption(null);
+                              setQuizAnswered(false);
+                            }}
+                            className="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-mono font-bold uppercase tracking-wider transition-all cursor-pointer shadow-lg ml-auto"
+                          >
+                            Next Challenge Question ▶
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+            </div>
+
+            {/* Fullscreen Bottom Footer */}
+            <footer className="px-6 py-3 bg-[#080a14] border-t border-slate-900 flex items-center justify-between text-xs text-slate-400 shrink-0">
+              <span className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span>Tip: Press <kbd className="px-1.5 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-300 font-mono text-[10px]">ESC</kbd> anytime to return to your Flowchart Lab mission canvas.</span>
+              </span>
+              <button
+                onClick={() => setIsShapesFullScreen(false)}
+                className="px-4 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-mono font-bold text-xs uppercase tracking-wider transition-all cursor-pointer shadow-md"
+              >
+                Return to Mission Canvas
+              </button>
+            </footer>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
