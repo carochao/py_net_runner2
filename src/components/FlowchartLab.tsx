@@ -32,7 +32,9 @@ import {
   X,
   Search,
   Table,
-  CheckCircle
+  CheckCircle,
+  GripVertical,
+  ChevronsLeftRight
 } from 'lucide-react';
 
 // Define block shapes and styles
@@ -2368,6 +2370,87 @@ export default function FlowchartLab({ onBackToMain, onRewardCredits, currentCre
   const [fullScreenCopied, setFullScreenCopied] = useState<string | null>(null);
   const [sidePanelExpanded, setSidePanelExpanded] = useState<boolean>(false);
 
+  // Adjustable Code Panel Width (resizable between code tabs and flowchart canvas)
+  const [codePanelWidth, setCodePanelWidth] = useState<number>(() => {
+    try {
+      const saved = localStorage.getItem('flowchart_code_panel_width');
+      if (saved) {
+        const parsed = parseInt(saved, 10);
+        if (!isNaN(parsed) && parsed >= 260 && parsed <= 780) {
+          return parsed;
+        }
+      }
+    } catch {
+      // ignore
+    }
+    return 440;
+  });
+  const [isResizingCodePanel, setIsResizingCodePanel] = useState<boolean>(false);
+  const resizeStartXRef = useRef<number>(0);
+  const resizeStartWidthRef = useRef<number>(440);
+
+  // Persist codePanelWidth
+  useEffect(() => {
+    try {
+      localStorage.setItem('flowchart_code_panel_width', String(codePanelWidth));
+    } catch {
+      // ignore
+    }
+  }, [codePanelWidth]);
+
+  // Window drag listeners for resizing code panel
+  useEffect(() => {
+    if (!isResizingCodePanel) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const deltaX = e.clientX - resizeStartXRef.current;
+      const nextWidth = Math.min(780, Math.max(260, resizeStartWidthRef.current + deltaX));
+      setCodePanelWidth(nextWidth);
+    };
+
+    const handleMouseUp = () => {
+      setIsResizingCodePanel(false);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (e.touches && e.touches.length > 0) {
+        const deltaX = e.touches[0].clientX - resizeStartXRef.current;
+        const nextWidth = Math.min(780, Math.max(260, resizeStartWidthRef.current + deltaX));
+        setCodePanelWidth(nextWidth);
+      }
+    };
+
+    const handleTouchEnd = () => {
+      setIsResizingCodePanel(false);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+    window.addEventListener('touchmove', handleTouchMove, { passive: true });
+    window.addEventListener('touchend', handleTouchEnd);
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handleTouchEnd);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    };
+  }, [isResizingCodePanel]);
+
+  const handleStartResize = (clientX: number) => {
+    setIsResizingCodePanel(true);
+    resizeStartXRef.current = clientX;
+    resizeStartWidthRef.current = codePanelWidth;
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+  };
+
   // Close full screen modal on Escape key
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -3086,13 +3169,13 @@ export default function FlowchartLab({ onBackToMain, onRewardCredits, currentCre
           <div className="flex-1 flex flex-col xl:flex-row overflow-hidden">
             
             {/* Visual Grid Canvas (Drag Slates) */}
-            <div className="flex-1 p-4 overflow-y-auto relative flex flex-col items-center justify-start gap-2.5 min-h-[500px]">
+            <div className="flex-1 p-3 md:p-4 overflow-x-auto overflow-y-auto relative flex flex-col items-center justify-start gap-2.5 min-h-[500px] w-full">
               
                {/* Floating Layout Assist Banner */}
-              <div className="w-full max-w-[800px] shrink-0 bg-slate-900/60 border border-slate-800/80 rounded-xl px-3 py-1.5 flex items-center justify-between text-[11px] text-slate-300 font-mono backdrop-blur-sm shadow-md">
+              <div className="w-full max-w-[1200px] 2xl:max-w-[1600px] shrink-0 bg-slate-900/60 border border-slate-800/80 rounded-xl px-3 py-1.5 flex items-center justify-between text-[11px] text-slate-300 font-mono backdrop-blur-sm shadow-md">
                 <span className="flex items-center gap-2 text-left">
                   <span className="w-2 h-2 rounded-full bg-[#00f2ff] shrink-0 animate-pulse" />
-                  <span className="text-[11px]">💡 <span className="text-[#00f2ff] font-bold">PRO-TIP:</span> Reposition nodes or open the <span className="text-emerald-400 font-bold">Shapes Guide</span> for CS flowchart symbols!</span>
+                  <span className="text-[11px]">💡 <span className="text-[#00f2ff] font-bold">PRO-TIP:</span> Resize tabs with the <span className="text-cyan-400 font-bold">draggable divider</span> or presets, or open the <span className="text-emerald-400 font-bold">Shapes Guide</span>!</span>
                 </span>
                 <div className="flex items-center gap-2">
                   <button
@@ -3124,56 +3207,107 @@ export default function FlowchartLab({ onBackToMain, onRewardCredits, currentCre
                 </div>
               </div>
 
-              {/* Symmetrical Workshop Workspace Row: Column of cards on left, flowchart on right */}
-              <div className="flex flex-col lg:flex-row gap-6 items-start justify-center w-full max-w-[1200px] shrink-0 font-mono">
+              {/* Symmetrical Workshop Workspace Row: Column of code cards on left, resizer, flowchart on right */}
+              <div className="flex flex-col lg:flex-row gap-2.5 xl:gap-4 items-start justify-center w-full max-w-none 2xl:max-w-[1700px] shrink-0 font-mono">
                 
-                {/* Left Column: Translation Code & Reference Cards */}
-                <div className={`w-full ${sidePanelExpanded ? 'lg:w-[480px]' : 'lg:w-[350px]'} shrink-0 flex flex-col gap-3 text-left transition-all duration-200`}>
+                {/* Left Column: Translation Code & Reference Cards (User Resizable) */}
+                <div 
+                  style={{ width: `${codePanelWidth}px` }}
+                  className="w-full max-w-full lg:max-w-none shrink-0 flex flex-col gap-2.5 text-left transition-all duration-75 select-text"
+                >
                   
-                  {/* Left Column Tab Navigation Bar */}
-                  <div className="flex items-center gap-1.5">
-                    <div className="grid grid-cols-3 gap-1 bg-[#0b0c15] p-1 rounded-xl border border-slate-800 shadow-md flex-1">
+                  {/* Left Column Tab Navigation Bar & Quick Sizing Presets */}
+                  <div className="flex flex-col gap-1.5 w-full">
+                    <div className="flex items-center gap-1.5">
+                      <div className="grid grid-cols-3 gap-1 bg-[#0b0c15] p-1 rounded-xl border border-slate-800 shadow-md flex-1">
+                        <button
+                          onClick={() => setSidePanelTab('pseudo')}
+                          className={`py-1.5 px-2 rounded-lg text-[9.5px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer text-center
+                            ${sidePanelTab === 'pseudo'
+                              ? 'bg-cyan-500/20 text-[#00f2ff] border border-cyan-500/40 shadow-[0_0_10px_rgba(0,242,255,0.2)]'
+                              : 'text-slate-400 hover:text-[#00f2ff] border border-transparent'}`}
+                          title="Pseudocode representation"
+                        >
+                          <span>Pseudo</span>
+                        </button>
+                        <button
+                          onClick={() => setSidePanelTab('python')}
+                          className={`py-1.5 px-2 rounded-lg text-[9.5px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer text-center
+                            ${sidePanelTab === 'python'
+                              ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-[0_0_10px_rgba(245,158,11,0.2)]'
+                              : 'text-slate-400 hover:text-amber-300 border border-transparent'}`}
+                          title="Python 3 solution code"
+                        >
+                          <span>Python</span>
+                        </button>
+                        <button
+                          onClick={() => setSidePanelTab('both')}
+                          className={`py-1.5 px-2 rounded-lg text-[9.5px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer text-center
+                            ${sidePanelTab === 'both'
+                              ? 'bg-purple-500/20 text-purple-300 border border-purple-500/40 shadow-[0_0_10px_rgba(168,85,247,0.2)]'
+                              : 'text-slate-400 hover:text-purple-300 border border-transparent'}`}
+                          title="Stack both code views"
+                        >
+                          <span>Both</span>
+                        </button>
+                      </div>
+
+                      {/* Dedicated Shapes Guide Button - Opens full screen modal on demand so space is not cluttered */}
                       <button
-                        onClick={() => setSidePanelTab('pseudo')}
-                        className={`py-1.5 px-2 rounded-lg text-[9.5px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer text-center
-                          ${sidePanelTab === 'pseudo'
-                            ? 'bg-cyan-500/20 text-[#00f2ff] border border-cyan-500/40 shadow-[0_0_10px_rgba(0,242,255,0.2)]'
-                            : 'text-slate-400 hover:text-[#00f2ff] border border-transparent'}`}
-                        title="Pseudocode representation"
+                        onClick={() => setIsShapesFullScreen(true)}
+                        className="py-1.5 px-2.5 rounded-xl bg-emerald-950/70 hover:bg-emerald-900/80 border border-emerald-500/40 hover:border-emerald-400 text-emerald-300 hover:text-white transition-all cursor-pointer shadow-md flex items-center gap-1.5 text-[9.5px] font-mono font-bold uppercase tracking-wider shrink-0 group"
+                        title="Open Flowchart Shapes Guide (Full Screen)"
                       >
-                        <span>Pseudo</span>
-                      </button>
-                      <button
-                        onClick={() => setSidePanelTab('python')}
-                        className={`py-1.5 px-2 rounded-lg text-[9.5px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer text-center
-                          ${sidePanelTab === 'python'
-                            ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-[0_0_10px_rgba(245,158,11,0.2)]'
-                            : 'text-slate-400 hover:text-amber-300 border border-transparent'}`}
-                        title="Python 3 solution code"
-                      >
-                        <span>Python</span>
-                      </button>
-                      <button
-                        onClick={() => setSidePanelTab('both')}
-                        className={`py-1.5 px-2 rounded-lg text-[9.5px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer text-center
-                          ${sidePanelTab === 'both'
-                            ? 'bg-purple-500/20 text-purple-300 border border-purple-500/40 shadow-[0_0_10px_rgba(168,85,247,0.2)]'
-                            : 'text-slate-400 hover:text-purple-300 border border-transparent'}`}
-                        title="Stack both code views"
-                      >
-                        <span>Both</span>
+                        <BookOpen className="w-3.5 h-3.5 text-emerald-400 group-hover:scale-110 transition-transform" />
+                        <span>Shapes Guide</span>
                       </button>
                     </div>
 
-                    {/* Dedicated Shapes Guide Button - Opens full screen modal on demand so space is not cluttered */}
-                    <button
-                      onClick={() => setIsShapesFullScreen(true)}
-                      className="py-1.5 px-2.5 rounded-xl bg-emerald-950/70 hover:bg-emerald-900/80 border border-emerald-500/40 hover:border-emerald-400 text-emerald-300 hover:text-white transition-all cursor-pointer shadow-md flex items-center gap-1.5 text-[9.5px] font-mono font-bold uppercase tracking-wider shrink-0 group"
-                      title="Open Flowchart Shapes Guide (Full Screen)"
-                    >
-                      <BookOpen className="w-3.5 h-3.5 text-emerald-400 group-hover:scale-110 transition-transform" />
-                      <span>Shapes Guide</span>
-                    </button>
+                    {/* Width Adjustment HUD: Displays current width + instant preset buttons */}
+                    <div className="flex items-center justify-between px-2 py-1 rounded-lg bg-black/40 border border-slate-900/80 text-[9.5px] text-slate-400 font-mono">
+                      <div className="flex items-center gap-1.5">
+                        <ChevronsLeftRight className="w-3 h-3 text-[#00f2ff]/70" />
+                        <span className="text-slate-500 font-bold uppercase text-[8.5px]">Tab Width:</span>
+                        <span className="text-[#00f2ff] font-bold">{codePanelWidth}px</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={() => setCodePanelWidth(prev => Math.max(260, prev - 40))}
+                          className="px-1.5 py-0.5 rounded bg-slate-900/90 border border-slate-800 hover:border-slate-700 hover:text-[#00f2ff] text-slate-400 text-[8.5px] font-bold cursor-pointer transition-colors"
+                          title="Shrink code tabs (-40px)"
+                        >
+                          ◀
+                        </button>
+                        <button
+                          onClick={() => setCodePanelWidth(320)}
+                          className={`px-1.5 py-0.5 rounded text-[8.5px] font-bold border cursor-pointer transition-colors ${codePanelWidth === 320 ? 'bg-cyan-500/20 border-cyan-500/50 text-[#00f2ff]' : 'bg-slate-900/70 border-slate-800 text-slate-400 hover:text-white'}`}
+                          title="Compact width (320px)"
+                        >
+                          320px
+                        </button>
+                        <button
+                          onClick={() => setCodePanelWidth(440)}
+                          className={`px-1.5 py-0.5 rounded text-[8.5px] font-bold border cursor-pointer transition-colors ${codePanelWidth === 440 ? 'bg-cyan-500/20 border-cyan-500/50 text-[#00f2ff]' : 'bg-slate-900/70 border-slate-800 text-slate-400 hover:text-white'}`}
+                          title="Default balanced width (440px)"
+                        >
+                          440px
+                        </button>
+                        <button
+                          onClick={() => setCodePanelWidth(600)}
+                          className={`px-1.5 py-0.5 rounded text-[8.5px] font-bold border cursor-pointer transition-colors ${codePanelWidth === 600 ? 'bg-cyan-500/20 border-cyan-500/50 text-[#00f2ff]' : 'bg-slate-900/70 border-slate-800 text-slate-400 hover:text-white'}`}
+                          title="Wide width (600px)"
+                        >
+                          600px
+                        </button>
+                        <button
+                          onClick={() => setCodePanelWidth(prev => Math.min(780, prev + 40))}
+                          className="px-1.5 py-0.5 rounded bg-slate-900/90 border border-slate-800 hover:border-slate-700 hover:text-[#00f2ff] text-slate-400 text-[8.5px] font-bold cursor-pointer transition-colors"
+                          title="Expand code tabs (+40px)"
+                        >
+                          ▶
+                        </button>
+                      </div>
+                    </div>
                   </div>
 
                   {/* Unassisted Callout Helper */}
@@ -3220,7 +3354,7 @@ export default function FlowchartLab({ onBackToMain, onRewardCredits, currentCre
                           )}
                         </button>
                       </div>
-                      <div className="font-mono text-xs text-slate-300 bg-black/40 p-2.5 rounded-xl border border-slate-900 overflow-y-auto max-h-[220px] whitespace-pre leading-relaxed flex flex-col">
+                      <div className={`font-mono text-xs text-slate-300 bg-black/40 p-2.5 rounded-xl border border-slate-900 overflow-y-auto overflow-x-auto ${sidePanelTab === 'both' ? 'max-h-[200px]' : 'max-h-[360px] xl:max-h-[440px]'} whitespace-pre leading-relaxed flex flex-col`}>
                         {(CHALLENGE_CODES[challenge.id]?.pseudocode || '// Code format unavailable.')
                           .split('\n')
                           .map((line, idx) => {
@@ -3235,7 +3369,7 @@ export default function FlowchartLab({ onBackToMain, onRewardCredits, currentCre
                                   }`}
                               >
                                 <span className="w-5 text-slate-600 select-none text-right mr-3 text-[10px] shrink-0 mt-[2px]">{idx + 1}</span>
-                                <span className="break-all whitespace-pre">{line}</span>
+                                <span className="break-words whitespace-pre">{line}</span>
                               </div>
                             );
                           })}
@@ -3269,7 +3403,7 @@ export default function FlowchartLab({ onBackToMain, onRewardCredits, currentCre
                           )}
                         </button>
                       </div>
-                      <div className="font-mono text-xs text-slate-300 bg-black/40 p-2.5 rounded-xl border border-slate-900 overflow-y-auto max-h-[220px] whitespace-pre leading-relaxed flex flex-col">
+                      <div className={`font-mono text-xs text-slate-300 bg-black/40 p-2.5 rounded-xl border border-slate-900 overflow-y-auto overflow-x-auto ${sidePanelTab === 'both' ? 'max-h-[200px]' : 'max-h-[360px] xl:max-h-[440px]'} whitespace-pre leading-relaxed flex flex-col`}>
                         {(CHALLENGE_CODES[challenge.id]?.python || '# Code format unavailable.')
                           .split('\n')
                           .map((line, idx) => {
@@ -3284,7 +3418,7 @@ export default function FlowchartLab({ onBackToMain, onRewardCredits, currentCre
                                   }`}
                               >
                                 <span className="w-5 text-slate-600 select-none text-right mr-3 text-[10px] shrink-0 mt-[2px]">{idx + 1}</span>
-                                <span className="break-all whitespace-pre">{line}</span>
+                                <span className="break-words whitespace-pre">{line}</span>
                               </div>
                             );
                           })}
@@ -3293,8 +3427,43 @@ export default function FlowchartLab({ onBackToMain, onRewardCredits, currentCre
                   )}
                 </div>
 
+                {/* Interactive Draggable Splitter Divider between Code Tabs & Flowchart Canvas */}
+                <div
+                  onMouseDown={(e) => handleStartResize(e.clientX)}
+                  onTouchStart={(e) => e.touches?.[0] && handleStartResize(e.touches[0].clientX)}
+                  onDoubleClick={() => setCodePanelWidth(440)}
+                  className={`hidden lg:flex flex-col items-center justify-center w-5 cursor-col-resize select-none group relative z-20 self-stretch shrink-0 py-6 touch-none transition-colors
+                    ${isResizingCodePanel ? 'text-[#00f2ff]' : 'text-slate-600 hover:text-[#00f2ff]'}`}
+                  title="Drag left/right to adjust Code & Flowchart tab sizes. Double-click to reset (440px)."
+                >
+                  {/* Subtle vertical rule line */}
+                  <div 
+                    className={`w-1 h-full rounded-full transition-all duration-150 
+                      ${isResizingCodePanel 
+                        ? 'bg-[#00f2ff] shadow-[0_0_12px_rgba(0,242,255,0.9)] scale-x-125' 
+                        : 'bg-slate-800/80 group-hover:bg-[#00f2ff]/60 group-hover:shadow-[0_0_8px_rgba(0,242,255,0.4)]'}`} 
+                  />
+
+                  {/* Tactile draggable handle pill */}
+                  <div 
+                    className={`absolute top-1/3 -translate-y-1/2 w-6 h-12 rounded-xl flex flex-col items-center justify-center transition-all shadow-md
+                      ${isResizingCodePanel 
+                        ? 'bg-cyan-500 text-slate-950 scale-110 shadow-[0_0_15px_rgba(0,242,255,0.6)] ring-2 ring-[#00f2ff]' 
+                        : 'bg-[#0e111a] border border-slate-700/80 text-slate-400 group-hover:border-[#00f2ff]/70 group-hover:text-[#00f2ff] group-hover:scale-105'}`}
+                  >
+                    <GripVertical className="w-3.5 h-3.5" />
+                  </div>
+
+                  {/* Floating tooltip badge when active */}
+                  {isResizingCodePanel && (
+                    <div className="absolute top-1/4 -translate-y-1/2 bg-slate-900 border border-cyan-500 text-[#00f2ff] text-[9px] font-mono font-bold px-2 py-0.5 rounded shadow-xl whitespace-nowrap pointer-events-none z-30">
+                      {codePanelWidth}px
+                    </div>
+                  )}
+                </div>
+
                 {/* Right Column: Flowchart Canvas & Simulator Playback Controls underneath */}
-                <div className="flex-1 flex flex-col gap-4 items-center justify-start min-w-[800px]">
+                <div className="flex-1 flex flex-col gap-4 items-center justify-start min-w-[750px] overflow-x-auto">
                   
                   {/* Symmetrical Canvas Frame that guarantees identical coordinates mapping */}
                   <div 
