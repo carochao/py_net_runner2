@@ -69,6 +69,7 @@ import { checkCodeWithAI, rethemeLessons, validateCodeLocally } from './services
 import HackArena from './components/HackArena';
 import CreativeChallenges from './components/CreativeChallenges';
 import FlowchartLab from './components/FlowchartLab';
+import AlgorithmLab from './components/AlgorithmLab';
 
 // Firebase Sync System Imports
 import { 
@@ -1379,10 +1380,10 @@ export default function App() {
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const dbCreatedAtRef = useRef<any>(null);
 
-  const [view, setView] = useState<'landing' | 'app' | 'hack-arena' | 'creative-challenges' | 'flowchart-lab'>(() => {
+  const [view, setView] = useState<'landing' | 'app' | 'hack-arena' | 'creative-challenges' | 'flowchart-lab' | 'algo-lab'>(() => {
     try {
       const saved = localStorage.getItem('py-runner-view');
-      return (saved === 'landing' || saved === 'app' || saved === 'hack-arena' || saved === 'creative-challenges' || saved === 'flowchart-lab') ? saved : 'landing';
+      return (saved === 'landing' || saved === 'app' || saved === 'hack-arena' || saved === 'creative-challenges' || saved === 'flowchart-lab' || saved === 'algo-lab') ? saved : 'landing';
     } catch (e) { return 'landing'; }
   });
 
@@ -3906,7 +3907,7 @@ export default function App() {
         </main>
 
         {/* CHALLENGE GATEWAYS */}
-        <div className="mb-8 max-w-5xl lg:max-w-6xl xl:max-w-7xl 2xl:max-w-[1440px] w-full mx-auto px-6 relative z-10 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="mb-8 max-w-5xl lg:max-w-6xl xl:max-w-7xl 2xl:max-w-[1440px] w-full mx-auto px-6 relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
           {/* DEBUG ARENA CARD */}
           <div className="w-full flex relative group/arena">
             <div className={`bg-amber-500/5 border border-amber-500/20 rounded-3xl p-6 relative overflow-hidden backdrop-blur-md text-left flex flex-col justify-between gap-6 hover:border-amber-500/40 hover:shadow-[0_0_24px_rgba(245,158,11,0.08)] transition-all duration-700 w-full ${!hasCompletedTutorial ? 'blur-[5px] opacity-30 pointer-events-none select-none' : ''}`}>
@@ -4020,6 +4021,44 @@ export default function App() {
               </div>
             )}
           </div>
+
+          {/* ALGORITHM VISUALIZER & SIMULATOR CARD */}
+          <div className="w-full flex relative group/algo">
+            <div className={`bg-violet-500/5 border border-violet-500/20 rounded-3xl p-6 relative overflow-hidden backdrop-blur-md text-left flex flex-col justify-between gap-6 hover:border-violet-500/40 hover:shadow-[0_0_24px_rgba(139,92,246,0.12)] transition-all duration-700 w-full ${!hasCompletedTutorial ? 'blur-[5px] opacity-30 pointer-events-none select-none' : ''}`}>
+               <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
+                 <Zap className="w-24 h-24 text-violet-400" />
+               </div>
+               
+               <div className="space-y-2">
+                 <h2 className="text-base md:text-lg font-black text-violet-400 uppercase tracking-tight leading-tight">
+                   THE ALGORITHM LAB
+                   <span className="block text-[10px] text-slate-400 font-bold tracking-wider mt-1">(SEARCH & SORT ENGINE)</span>
+                 </h2>
+                 <p className="text-[11px] text-slate-300 leading-relaxed font-medium">
+                   Animated visual execution. Watch Linear Search, Binary Search, Bubble Sort, and Merge Sort step-by-step with synchronized pseudocode & Python line highlighting!
+                 </p>
+               </div>
+
+               <button
+                 onClick={() => setView('algo-lab')}
+                 className="w-full sm:w-auto px-6 py-3 bg-violet-500 hover:bg-violet-400 text-black font-black text-xs uppercase tracking-widest rounded-xl transition-all border-2 border-white/20 cursor-pointer text-center"
+               >
+                 LAUNCH ALGO LAB
+               </button>
+            </div>
+
+            {!hasCompletedTutorial && (
+              <div className="absolute inset-0 bg-black/10 z-20 flex flex-col items-center justify-center p-4 text-center pointer-events-none">
+                <div className="p-4 bg-slate-950/95 rounded-2xl border border-slate-800/80 shadow-[0_0_25px_rgba(0,0,0,0.8)] flex flex-col items-center gap-1.5 max-w-[210px] animate-fade-in-up">
+                  <div className="p-2.5 bg-slate-900 rounded-xl border border-slate-800 text-slate-500 shadow-[0_0_10px_rgba(0,0,0,0.5)]">
+                    <Lock className="w-4 h-4" />
+                  </div>
+                  <span className="font-mono text-[9px] font-black tracking-widest text-slate-400 uppercase">ALGO LAB LOCKED</span>
+                  <p className="text-[9px] text-slate-500 leading-normal font-sans">Initialize system via onboarding step 3 to unlock the Algorithm Lab.</p>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
         <footer className="p-6 border-t border-slate-900 flex justify-between items-center relative z-10">
@@ -4067,6 +4106,20 @@ export default function App() {
   if (view === 'flowchart-lab') {
     return (
       <FlowchartLab
+        onBackToMain={() => setView('landing')}
+        onRewardCredits={(credits) => {
+          setBonusCredits(prev => prev + credits);
+        }}
+        currentCredits={currentCredits}
+        userInterest={userInterest}
+        activeTheme={activeTheme}
+      />
+    );
+  }
+
+  if (view === 'algo-lab') {
+    return (
+      <AlgorithmLab
         onBackToMain={() => setView('landing')}
         onRewardCredits={(credits) => {
           setBonusCredits(prev => prev + credits);
