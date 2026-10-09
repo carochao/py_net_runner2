@@ -34,7 +34,13 @@ import {
   Table,
   CheckCircle,
   GripVertical,
-  ChevronsLeftRight
+  ChevronsLeftRight,
+  PanelLeftClose,
+  PanelLeftOpen,
+  PanelRightClose,
+  PanelRightOpen,
+  ZoomIn,
+  ZoomOut
 } from 'lucide-react';
 
 // Define block shapes and styles
@@ -2370,6 +2376,25 @@ export default function FlowchartLab({ onBackToMain, onRewardCredits, currentCre
   const [fullScreenCopied, setFullScreenCopied] = useState<string | null>(null);
   const [sidePanelExpanded, setSidePanelExpanded] = useState<boolean>(false);
 
+  // Responsive Layout Panes & Viewport Adaptability
+  const [isMissionsSidebarOpen, setIsMissionsSidebarOpen] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth >= 1600;
+    }
+    return true;
+  });
+  const [isBlockBankOpen, setIsBlockBankOpen] = useState<boolean>(true);
+  const [showCodePanel, setShowCodePanel] = useState<boolean>(true);
+  const [codeFontSize, setCodeFontSize] = useState<'normal' | 'large'>('normal');
+
+  // Canvas Zoom / Fit State (allows users to scale the 800px schematic without zooming out their entire browser)
+  const [canvasZoom, setCanvasZoom] = useState<number>(() => {
+    if (typeof window !== 'undefined' && window.innerWidth < 1440) {
+      return 0.85;
+    }
+    return 1.0;
+  });
+
   // Adjustable Code Panel Width (resizable between code tabs and flowchart canvas)
   const [codePanelWidth, setCodePanelWidth] = useState<number>(() => {
     try {
@@ -2383,11 +2408,11 @@ export default function FlowchartLab({ onBackToMain, onRewardCredits, currentCre
     } catch {
       // ignore
     }
-    return 440;
+    return 340;
   });
   const [isResizingCodePanel, setIsResizingCodePanel] = useState<boolean>(false);
   const resizeStartXRef = useRef<number>(0);
-  const resizeStartWidthRef = useRef<number>(440);
+  const resizeStartWidthRef = useRef<number>(340);
 
   // Persist codePanelWidth
   useEffect(() => {
@@ -3001,26 +3026,58 @@ export default function FlowchartLab({ onBackToMain, onRewardCredits, currentCre
           </div>
         </div>
 
-        {/* Level Controls & Stats */}
-        <div className="flex items-center gap-3">
+        {/* Level Controls & Stats & Layout Toggles */}
+        <div className="flex items-center gap-2 sm:gap-2.5 flex-wrap justify-end">
+          {/* Panel layout toggles so user can maximize canvas at 100% zoom */}
+          <button
+            onClick={() => setIsMissionsSidebarOpen(prev => !prev)}
+            className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg border text-[10px] font-mono font-bold transition-all cursor-pointer shadow-sm
+              ${isMissionsSidebarOpen 
+                ? 'bg-cyan-500/15 border-cyan-500/40 text-cyan-300' 
+                : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white hover:border-slate-700'}`}
+            title={isMissionsSidebarOpen ? "Hide Challenges list to free up 300px" : "Show Challenges list"}
+          >
+            {isMissionsSidebarOpen ? <PanelLeftClose className="w-3.5 h-3.5" /> : <PanelLeftOpen className="w-3.5 h-3.5" />}
+            <span className="hidden md:inline">CHALLENGES</span>
+          </button>
+
+          <button
+            onClick={() => setShowCodePanel(prev => !prev)}
+            className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg border text-[10px] font-mono font-bold transition-all cursor-pointer shadow-sm
+              ${showCodePanel 
+                ? 'bg-purple-500/15 border-purple-500/40 text-purple-300' 
+                : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white hover:border-slate-700'}`}
+            title={showCodePanel ? "Hide Code Tabs panel" : "Show Code Tabs panel"}
+          >
+            <ChevronsLeftRight className="w-3.5 h-3.5" />
+            <span className="hidden md:inline">CODE TABS</span>
+          </button>
+
+          <button
+            onClick={() => setIsBlockBankOpen(prev => !prev)}
+            className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg border text-[10px] font-mono font-bold transition-all cursor-pointer shadow-sm
+              ${isBlockBankOpen 
+                ? 'bg-amber-500/15 border-amber-500/40 text-amber-300' 
+                : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white hover:border-slate-700'}`}
+            title={isBlockBankOpen ? "Hide Block Bank to maximize canvas" : "Show Block Bank"}
+          >
+            {isBlockBankOpen ? <PanelRightClose className="w-3.5 h-3.5" /> : <PanelRightOpen className="w-3.5 h-3.5" />}
+            <span className="hidden md:inline">BLOCK BANK</span>
+          </button>
+
           <button
             onClick={() => setIsShapesFullScreen(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-[11px] font-mono font-bold transition-all cursor-pointer bg-emerald-950/60 border-emerald-500/50 hover:border-emerald-400 hover:bg-emerald-900/60 text-emerald-300 hover:text-emerald-100 shadow-[0_0_15px_rgba(16,185,129,0.25)] group"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-[10px] font-mono font-bold transition-all cursor-pointer bg-emerald-950/60 border-emerald-500/50 hover:border-emerald-400 hover:bg-emerald-900/60 text-emerald-300 hover:text-emerald-100 shadow-[0_0_15px_rgba(16,185,129,0.25)] group"
             title="Open Flowchart Shapes Guide Codex (Full Screen)"
           >
             <BookOpen className="w-3.5 h-3.5 text-emerald-400 group-hover:scale-110 transition-transform" />
             <span>SHAPES GUIDE</span>
           </button>
 
-          <div className="flex items-center gap-1.5 bg-slate-900/40 px-3 py-1.5 rounded-lg border border-slate-900">
-            <Layers className="w-3.5 h-3.5 text-cyber-pink" />
-            <span className="text-[10px] font-mono text-slate-400 uppercase tracking-widest leading-none">FLOW LAB PROTOCOL</span>
-          </div>
-
-          <div className="flex items-center gap-1.5 bg-cyber-cyan/10 border border-cyber-cyan/30 px-3 py-1.5 rounded-lg">
+          <div className="flex items-center gap-1.5 bg-cyber-cyan/10 border border-cyber-cyan/30 px-2.5 py-1.5 rounded-lg">
             <Coins className="w-3.5 h-3.5 text-[var(--primary)]" />
             <span className="text-xs font-black font-mono text-[var(--primary)]">{currentCredits}</span>
-            <span className="text-[8px] font-mono text-[var(--primary)]/60 uppercase tracking-widest">CREDITS</span>
+            <span className="text-[8px] font-mono text-[var(--primary)]/60 uppercase tracking-widest hidden sm:inline">CREDITS</span>
           </div>
         </div>
       </header>
@@ -3029,16 +3086,26 @@ export default function FlowchartLab({ onBackToMain, onRewardCredits, currentCre
       <div className="flex-1 flex flex-col md:flex-row overflow-hidden relative z-10">
         
         {/* Left Side: Challenge Listing / Objective Selector */}
-        <aside className="w-full md:w-80 border-r border-slate-900 bg-[#0c0e15] p-5 flex flex-col gap-4 overflow-hidden shrink-0">
-          <div>
-            <h2 className="text-white font-black text-[13px] uppercase tracking-wider mb-1 flex items-center gap-1.5 font-mono">
-              <span className="w-1.5 h-1.5 rounded-full bg-cyber-pink" />
-              {themeDetails.badge}
-            </h2>
-            <p className="text-[11px] text-slate-400 leading-normal">
-              Instead of writing raw code, map the logic pathways! Arrange the logical operations in the proper order to guide compiler routines successfully.
-            </p>
-          </div>
+        {isMissionsSidebarOpen ? (
+          <aside className="w-full md:w-72 lg:w-80 border-r border-slate-900 bg-[#0c0e15] p-4 md:p-5 flex flex-col gap-3.5 overflow-hidden shrink-0 transition-all duration-200">
+            <div className="flex items-start justify-between gap-2">
+              <div>
+                <h2 className="text-white font-black text-[13px] uppercase tracking-wider mb-0.5 flex items-center gap-1.5 font-mono">
+                  <span className="w-1.5 h-1.5 rounded-full bg-cyber-pink" />
+                  {themeDetails.badge}
+                </h2>
+                <p className="text-[10.5px] text-slate-400 leading-normal">
+                  Arrange logic operations in sequence to build the algorithm.
+                </p>
+              </div>
+              <button
+                onClick={() => setIsMissionsSidebarOpen(false)}
+                className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-900 border border-transparent hover:border-slate-800 transition-colors cursor-pointer shrink-0"
+                title="Collapse sidebar to maximize canvas space"
+              >
+                <PanelLeftClose className="w-4 h-4" />
+              </button>
+            </div>
 
           {/* Filtering Tab Pills */}
           <div className="grid grid-cols-2 gap-1 bg-[#12141d] p-1 rounded-xl border border-slate-900 shrink-0">
@@ -3149,6 +3216,24 @@ export default function FlowchartLab({ onBackToMain, onRewardCredits, currentCre
             </ul>
           </div>
         </aside>
+      ) : (
+        <div className="hidden md:flex flex-col items-center py-4 px-2 bg-[#090b12] border-r border-slate-900 shrink-0 gap-3 z-20">
+          <button
+            onClick={() => setIsMissionsSidebarOpen(true)}
+            className="p-2 rounded-xl bg-slate-900 border border-slate-800 hover:border-cyan-500/50 text-slate-400 hover:text-cyan-300 cursor-pointer transition-all flex flex-col items-center gap-1.5 group shadow-sm"
+            title="Expand Challenges list"
+          >
+            <PanelLeftOpen className="w-4 h-4 text-cyan-400 group-hover:scale-110 transition-transform" />
+            <span className="text-[8px] font-mono font-bold uppercase [writing-mode:vertical-lr] tracking-widest text-slate-400 group-hover:text-cyan-300">
+              CHALLENGES
+            </span>
+          </button>
+          <div className="w-4 h-px bg-slate-800 my-1" />
+          <span className="text-[8.5px] font-mono font-black text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/20" title={`Current: ${challenge.title}`}>
+            #{activeChallengeIdx + 1}
+          </span>
+        </div>
+      )}
 
         {/* Central Workspace Canvas Area */}
         <main className="flex-1 flex flex-col overflow-hidden bg-[#090a10]">
@@ -3172,12 +3257,48 @@ export default function FlowchartLab({ onBackToMain, onRewardCredits, currentCre
             <div className="flex-1 p-3 md:p-4 overflow-x-auto overflow-y-auto relative flex flex-col items-center justify-start gap-2.5 min-h-[500px] w-full">
               
                {/* Floating Layout Assist Banner */}
-              <div className="w-full max-w-[1200px] 2xl:max-w-[1600px] shrink-0 bg-slate-900/60 border border-slate-800/80 rounded-xl px-3 py-1.5 flex items-center justify-between text-[11px] text-slate-300 font-mono backdrop-blur-sm shadow-md">
+              <div className="w-full max-w-[1200px] 2xl:max-w-[1600px] shrink-0 bg-slate-900/60 border border-slate-800/80 rounded-xl px-3 py-1.5 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-300 font-mono backdrop-blur-sm shadow-md">
                 <span className="flex items-center gap-2 text-left">
                   <span className="w-2 h-2 rounded-full bg-[#00f2ff] shrink-0 animate-pulse" />
-                  <span className="text-[11px]">💡 <span className="text-[#00f2ff] font-bold">PRO-TIP:</span> Resize tabs with the <span className="text-cyan-400 font-bold">draggable divider</span> or presets, or open the <span className="text-emerald-400 font-bold">Shapes Guide</span>!</span>
+                  <span className="text-[11px]">💡 <span className="text-[#00f2ff] font-bold">CANVAS CONTROLS:</span> Adjust scale, resize tabs, or open the <span className="text-emerald-400 font-bold">Shapes Guide</span>!</span>
                 </span>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
+                  {/* Canvas Zoom & Scale Controller (Solves need to zoom out page) */}
+                  <div className="flex items-center gap-1 bg-black/60 border border-slate-800 rounded-lg p-0.5 text-[9.5px] font-mono shadow-sm">
+                    <span className="text-slate-500 text-[8.5px] font-bold pl-1.5 uppercase select-none">Canvas:</span>
+                    <button
+                      onClick={() => setCanvasZoom(z => Math.max(0.65, Number((z - 0.1).toFixed(2))))}
+                      className="p-1 hover:text-white text-slate-400 hover:bg-slate-800 rounded transition-colors cursor-pointer"
+                      title="Zoom Out Canvas (-10%)"
+                    >
+                      <ZoomOut className="w-3 h-3" />
+                    </button>
+                    <span className="px-1 text-[#00f2ff] font-bold min-w-[34px] text-center select-none">
+                      {Math.round(canvasZoom * 100)}%
+                    </span>
+                    <button
+                      onClick={() => setCanvasZoom(z => Math.min(1.25, Number((z + 0.1).toFixed(2))))}
+                      className="p-1 hover:text-white text-slate-400 hover:bg-slate-800 rounded transition-colors cursor-pointer"
+                      title="Zoom In Canvas (+10%)"
+                    >
+                      <ZoomIn className="w-3 h-3" />
+                    </button>
+                    <button
+                      onClick={() => setCanvasZoom(1.0)}
+                      className={`px-1.5 py-0.5 rounded text-[8.5px] font-bold border cursor-pointer transition-colors ${canvasZoom === 1.0 ? 'bg-cyan-500/20 border-cyan-500/50 text-[#00f2ff]' : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white'}`}
+                      title="Reset to 100% Zoom"
+                    >
+                      100%
+                    </button>
+                    <button
+                      onClick={() => setCanvasZoom(0.85)}
+                      className={`px-1.5 py-0.5 rounded text-[8.5px] font-bold border cursor-pointer transition-colors ${canvasZoom === 0.85 ? 'bg-cyan-500/20 border-cyan-500/50 text-[#00f2ff]' : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white'}`}
+                      title="Fit to Screen (85% scale - ideal for laptops)"
+                    >
+                      Fit (85%)
+                    </button>
+                  </div>
+
                   <button
                     onClick={() => setIsShapesFullScreen(true)}
                     className="bg-emerald-950/80 border border-emerald-600/50 hover:border-emerald-400 hover:bg-emerald-900/60 text-emerald-300 text-[10px] font-bold uppercase tracking-wider rounded-md px-2.5 py-1 transition-all cursor-pointer flex items-center gap-1.5 shadow-sm whitespace-nowrap group"
@@ -3195,7 +3316,7 @@ export default function FlowchartLab({ onBackToMain, onRewardCredits, currentCre
                     title={visualHintsEnabled ? "Click to disable visual shape hints (exam practice)" : "Click to enable visual shape hints"}
                   >
                     {visualHintsEnabled ? <Eye className="w-3.5 h-3.5 text-cyan-400" /> : <EyeOff className="w-3.5 h-3.5 text-amber-400" />}
-                    <span>{visualHintsEnabled ? 'HINTS: ON' : 'HINTS: OFF (EXAM)'}</span>
+                    <span>{visualHintsEnabled ? 'HINTS: ON' : 'HINTS: OFF'}</span>
                   </button>
                   <button
                     onClick={() => setSlotOffsets({})}
@@ -3210,264 +3331,298 @@ export default function FlowchartLab({ onBackToMain, onRewardCredits, currentCre
               {/* Symmetrical Workshop Workspace Row: Column of code cards on left, resizer, flowchart on right */}
               <div className="flex flex-col lg:flex-row gap-2.5 xl:gap-4 items-start justify-center w-full max-w-none 2xl:max-w-[1700px] shrink-0 font-mono">
                 
-                {/* Left Column: Translation Code & Reference Cards (User Resizable) */}
-                <div 
-                  style={{ width: `${codePanelWidth}px` }}
-                  className="w-full max-w-full lg:max-w-none shrink-0 flex flex-col gap-2.5 text-left transition-all duration-75 select-text"
-                >
-                  
-                  {/* Left Column Tab Navigation Bar & Quick Sizing Presets */}
-                  <div className="flex flex-col gap-1.5 w-full">
-                    <div className="flex items-center gap-1.5">
-                      <div className="grid grid-cols-3 gap-1 bg-[#0b0c15] p-1 rounded-xl border border-slate-800 shadow-md flex-1">
-                        <button
-                          onClick={() => setSidePanelTab('pseudo')}
-                          className={`py-1.5 px-2 rounded-lg text-[9.5px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer text-center
-                            ${sidePanelTab === 'pseudo'
-                              ? 'bg-cyan-500/20 text-[#00f2ff] border border-cyan-500/40 shadow-[0_0_10px_rgba(0,242,255,0.2)]'
-                              : 'text-slate-400 hover:text-[#00f2ff] border border-transparent'}`}
-                          title="Pseudocode representation"
-                        >
-                          <span>Pseudo</span>
-                        </button>
-                        <button
-                          onClick={() => setSidePanelTab('python')}
-                          className={`py-1.5 px-2 rounded-lg text-[9.5px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer text-center
-                            ${sidePanelTab === 'python'
-                              ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-[0_0_10px_rgba(245,158,11,0.2)]'
-                              : 'text-slate-400 hover:text-amber-300 border border-transparent'}`}
-                          title="Python 3 solution code"
-                        >
-                          <span>Python</span>
-                        </button>
-                        <button
-                          onClick={() => setSidePanelTab('both')}
-                          className={`py-1.5 px-2 rounded-lg text-[9.5px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer text-center
-                            ${sidePanelTab === 'both'
-                              ? 'bg-purple-500/20 text-purple-300 border border-purple-500/40 shadow-[0_0_10px_rgba(168,85,247,0.2)]'
-                              : 'text-slate-400 hover:text-purple-300 border border-transparent'}`}
-                          title="Stack both code views"
-                        >
-                          <span>Both</span>
-                        </button>
-                      </div>
-
-                      {/* Dedicated Shapes Guide Button - Opens full screen modal on demand so space is not cluttered */}
-                      <button
-                        onClick={() => setIsShapesFullScreen(true)}
-                        className="py-1.5 px-2.5 rounded-xl bg-emerald-950/70 hover:bg-emerald-900/80 border border-emerald-500/40 hover:border-emerald-400 text-emerald-300 hover:text-white transition-all cursor-pointer shadow-md flex items-center gap-1.5 text-[9.5px] font-mono font-bold uppercase tracking-wider shrink-0 group"
-                        title="Open Flowchart Shapes Guide (Full Screen)"
-                      >
-                        <BookOpen className="w-3.5 h-3.5 text-emerald-400 group-hover:scale-110 transition-transform" />
-                        <span>Shapes Guide</span>
-                      </button>
-                    </div>
-
-                    {/* Width Adjustment HUD: Displays current width + instant preset buttons */}
-                    <div className="flex items-center justify-between px-2 py-1 rounded-lg bg-black/40 border border-slate-900/80 text-[9.5px] text-slate-400 font-mono">
+                {/* Left Column: Translation Code & Reference Cards (User Resizable & Collapsible) */}
+                {showCodePanel ? (
+                  <div 
+                    style={{ width: `${codePanelWidth}px` }}
+                    className="w-full max-w-full lg:max-w-none shrink-0 flex flex-col gap-2.5 text-left transition-all duration-75 select-text"
+                  >
+                    
+                    {/* Left Column Tab Navigation Bar & Quick Sizing Presets */}
+                    <div className="flex flex-col gap-1.5 w-full">
                       <div className="flex items-center gap-1.5">
-                        <ChevronsLeftRight className="w-3 h-3 text-[#00f2ff]/70" />
-                        <span className="text-slate-500 font-bold uppercase text-[8.5px]">Tab Width:</span>
-                        <span className="text-[#00f2ff] font-bold">{codePanelWidth}px</span>
+                        <div className="grid grid-cols-3 gap-1 bg-[#0b0c15] p-1 rounded-xl border border-slate-800 shadow-md flex-1">
+                          <button
+                            onClick={() => setSidePanelTab('pseudo')}
+                            className={`py-1.5 px-2 rounded-lg text-[9.5px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer text-center
+                              ${sidePanelTab === 'pseudo'
+                                ? 'bg-cyan-500/20 text-[#00f2ff] border border-cyan-500/40 shadow-[0_0_10px_rgba(0,242,255,0.2)]'
+                                : 'text-slate-400 hover:text-[#00f2ff] border border-transparent'}`}
+                            title="Pseudocode representation"
+                          >
+                            <span>Pseudo</span>
+                          </button>
+                          <button
+                            onClick={() => setSidePanelTab('python')}
+                            className={`py-1.5 px-2 rounded-lg text-[9.5px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer text-center
+                              ${sidePanelTab === 'python'
+                                ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-[0_0_10px_rgba(245,158,11,0.2)]'
+                                : 'text-slate-400 hover:text-amber-300 border border-transparent'}`}
+                            title="Python 3 solution code"
+                          >
+                            <span>Python</span>
+                          </button>
+                          <button
+                            onClick={() => setSidePanelTab('both')}
+                            className={`py-1.5 px-2 rounded-lg text-[9.5px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer text-center
+                              ${sidePanelTab === 'both'
+                                ? 'bg-purple-500/20 text-purple-300 border border-purple-500/40 shadow-[0_0_10px_rgba(168,85,247,0.2)]'
+                                : 'text-slate-400 hover:text-purple-300 border border-transparent'}`}
+                            title="Stack both code views"
+                          >
+                            <span>Both</span>
+                          </button>
+                        </div>
+
+                        {/* Dedicated Shapes Guide Button */}
+                        <button
+                          onClick={() => setIsShapesFullScreen(true)}
+                          className="py-1.5 px-2.5 rounded-xl bg-emerald-950/70 hover:bg-emerald-900/80 border border-emerald-500/40 hover:border-emerald-400 text-emerald-300 hover:text-white transition-all cursor-pointer shadow-md flex items-center gap-1.5 text-[9.5px] font-mono font-bold uppercase tracking-wider shrink-0 group"
+                          title="Open Flowchart Shapes Guide (Full Screen)"
+                        >
+                          <BookOpen className="w-3.5 h-3.5 text-emerald-400 group-hover:scale-110 transition-transform" />
+                          <span>Shapes Guide</span>
+                        </button>
                       </div>
-                      <div className="flex items-center gap-1">
-                        <button
-                          onClick={() => setCodePanelWidth(prev => Math.max(260, prev - 40))}
-                          className="px-1.5 py-0.5 rounded bg-slate-900/90 border border-slate-800 hover:border-slate-700 hover:text-[#00f2ff] text-slate-400 text-[8.5px] font-bold cursor-pointer transition-colors"
-                          title="Shrink code tabs (-40px)"
-                        >
-                          ◀
-                        </button>
-                        <button
-                          onClick={() => setCodePanelWidth(320)}
-                          className={`px-1.5 py-0.5 rounded text-[8.5px] font-bold border cursor-pointer transition-colors ${codePanelWidth === 320 ? 'bg-cyan-500/20 border-cyan-500/50 text-[#00f2ff]' : 'bg-slate-900/70 border-slate-800 text-slate-400 hover:text-white'}`}
-                          title="Compact width (320px)"
-                        >
-                          320px
-                        </button>
-                        <button
-                          onClick={() => setCodePanelWidth(440)}
-                          className={`px-1.5 py-0.5 rounded text-[8.5px] font-bold border cursor-pointer transition-colors ${codePanelWidth === 440 ? 'bg-cyan-500/20 border-cyan-500/50 text-[#00f2ff]' : 'bg-slate-900/70 border-slate-800 text-slate-400 hover:text-white'}`}
-                          title="Default balanced width (440px)"
-                        >
-                          440px
-                        </button>
-                        <button
-                          onClick={() => setCodePanelWidth(600)}
-                          className={`px-1.5 py-0.5 rounded text-[8.5px] font-bold border cursor-pointer transition-colors ${codePanelWidth === 600 ? 'bg-cyan-500/20 border-cyan-500/50 text-[#00f2ff]' : 'bg-slate-900/70 border-slate-800 text-slate-400 hover:text-white'}`}
-                          title="Wide width (600px)"
-                        >
-                          600px
-                        </button>
-                        <button
-                          onClick={() => setCodePanelWidth(prev => Math.min(780, prev + 40))}
-                          className="px-1.5 py-0.5 rounded bg-slate-900/90 border border-slate-800 hover:border-slate-700 hover:text-[#00f2ff] text-slate-400 text-[8.5px] font-bold cursor-pointer transition-colors"
-                          title="Expand code tabs (+40px)"
-                        >
-                          ▶
-                        </button>
+
+                      {/* Width & Font Size Adjustment HUD */}
+                      <div className="flex items-center justify-between px-2 py-1 rounded-lg bg-black/40 border border-slate-900/80 text-[9.5px] text-slate-400 font-mono">
+                        <div className="flex items-center gap-1.5">
+                          <ChevronsLeftRight className="w-3 h-3 text-[#00f2ff]/70" />
+                          <span className="text-[#00f2ff] font-bold">{codePanelWidth}px</span>
+                          {/* Font size toggle */}
+                          <div className="flex items-center border-l border-slate-800 pl-1.5 ml-1 gap-1">
+                            <button
+                              onClick={() => setCodeFontSize(codeFontSize === 'normal' ? 'large' : 'normal')}
+                              className={`px-1.5 py-0.5 rounded text-[8px] font-bold border transition-colors cursor-pointer ${codeFontSize === 'large' ? 'bg-purple-500/20 border-purple-500/40 text-purple-300' : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white'}`}
+                              title={codeFontSize === 'large' ? "Code font size: Large (click for Normal)" : "Code font size: Normal (click for Large)"}
+                            >
+                              {codeFontSize === 'large' ? 'A+ (13px)' : 'A (11px)'}
+                            </button>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <button
+                            onClick={() => setCodePanelWidth(prev => Math.max(260, prev - 30))}
+                            className="px-1.5 py-0.5 rounded bg-slate-900/90 border border-slate-800 hover:border-slate-700 hover:text-[#00f2ff] text-slate-400 text-[8.5px] font-bold cursor-pointer transition-colors"
+                            title="Shrink code tabs width"
+                          >
+                            ◀
+                          </button>
+                          <button
+                            onClick={() => setCodePanelWidth(300)}
+                            className={`px-1.5 py-0.5 rounded text-[8.5px] font-bold border cursor-pointer transition-colors ${codePanelWidth === 300 ? 'bg-cyan-500/20 border-cyan-500/50 text-[#00f2ff]' : 'bg-slate-900/70 border-slate-800 text-slate-400 hover:text-white'}`}
+                            title="Compact width (300px)"
+                          >
+                            300px
+                          </button>
+                          <button
+                            onClick={() => setCodePanelWidth(360)}
+                            className={`px-1.5 py-0.5 rounded text-[8.5px] font-bold border cursor-pointer transition-colors ${codePanelWidth === 360 ? 'bg-cyan-500/20 border-cyan-500/50 text-[#00f2ff]' : 'bg-slate-900/70 border-slate-800 text-slate-400 hover:text-white'}`}
+                            title="Balanced width (360px)"
+                          >
+                            360px
+                          </button>
+                          <button
+                            onClick={() => setCodePanelWidth(440)}
+                            className={`px-1.5 py-0.5 rounded text-[8.5px] font-bold border cursor-pointer transition-colors ${codePanelWidth === 440 ? 'bg-cyan-500/20 border-cyan-500/50 text-[#00f2ff]' : 'bg-slate-900/70 border-slate-800 text-slate-400 hover:text-white'}`}
+                            title="Wide width (440px)"
+                          >
+                            440px
+                          </button>
+                          <button
+                            onClick={() => setCodePanelWidth(prev => Math.min(780, prev + 30))}
+                            className="px-1.5 py-0.5 rounded bg-slate-900/90 border border-slate-800 hover:border-slate-700 hover:text-[#00f2ff] text-slate-400 text-[8.5px] font-bold cursor-pointer transition-colors"
+                            title="Expand code tabs width"
+                          >
+                            ▶
+                          </button>
+                          <button
+                            onClick={() => setShowCodePanel(false)}
+                            className="ml-1 p-0.5 text-slate-500 hover:text-rose-400 hover:bg-slate-900 rounded cursor-pointer transition-colors"
+                            title="Hide Code Tabs panel to give 100% width to Flowchart"
+                          >
+                            <X className="w-3 h-3" />
+                          </button>
+                        </div>
                       </div>
                     </div>
+
+                    {/* Unassisted Callout Helper */}
+                    {challenge.isUnassisted && (
+                      <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-2.5 flex items-center justify-between gap-2 shadow-sm">
+                        <div className="flex items-start gap-1.5">
+                          <Lightbulb className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
+                          <span className="text-[10px] text-amber-200/90 leading-tight">
+                            <strong className="text-amber-300">Unassisted Mission:</strong> Need flowchart shapes?
+                          </span>
+                        </div>
+                        <button
+                          onClick={() => setIsShapesFullScreen(true)}
+                          className="px-2 py-1 rounded-md bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 hover:text-white text-[9px] font-mono font-bold uppercase tracking-wider cursor-pointer whitespace-nowrap transition-all"
+                        >
+                          Shapes Guide 📖
+                        </button>
+                      </div>
+                    )}
+
+                    {/* TAB 2 & 4: PSEUDOCODE CARD */}
+                    {(sidePanelTab === 'pseudo' || sidePanelTab === 'both') && (
+                      <div className="bg-[#0b0c15]/90 border border-slate-800 rounded-2xl p-4 shadow-2xl relative overflow-hidden group">
+                        <div className="absolute top-0 left-0 w-1 h-full bg-[#00f2ff]/80" />
+                        <div className="flex items-center justify-between mb-2">
+                          <h3 className="text-[11px] font-mono font-bold uppercase tracking-widest text-[#00f2ff] flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#00f2ff] animate-pulse" />
+                            Pseudocode Representation
+                          </h3>
+                          <button
+                            onClick={() => handleCopyCode(CHALLENGE_CODES[challenge.id]?.pseudocode || '', 'pseudo')}
+                            className="p-1.5 rounded-lg bg-slate-900/80 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-[#00f2ff] transition-all cursor-pointer flex items-center gap-1 text-[9px] font-mono font-bold"
+                          >
+                            {copiedType === 'pseudo' ? (
+                              <>
+                                <Check className="w-3.5 h-3.5 text-emerald-400" />
+                                <span className="text-emerald-400">COPIED!</span>
+                              </>
+                            ) : (
+                              <>
+                                <Copy className="w-3.5 h-3.5" />
+                                <span>COPY</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
+                        <div className={`font-mono ${codeFontSize === 'large' ? 'text-[13px]' : 'text-xs'} text-slate-300 bg-black/40 p-2.5 rounded-xl border border-slate-900 overflow-y-auto overflow-x-auto ${sidePanelTab === 'both' ? 'max-h-[200px]' : 'max-h-[360px] xl:max-h-[440px]'} whitespace-pre leading-relaxed flex flex-col`}>
+                          {(CHALLENGE_CODES[challenge.id]?.pseudocode || '// Code format unavailable.')
+                            .split('\n')
+                            .map((line, idx) => {
+                              const isHighlighted = getHighlightedLines(challenge.id, executingSlotId).pseudo.includes(idx);
+                              return (
+                                <div
+                                  key={idx}
+                                  className={`px-2 py-0.5 rounded transition-all duration-200 flex items-start select-text
+                                    ${isHighlighted 
+                                      ? 'bg-cyan-950/70 text-[#00f2ff] font-extrabold border-l-2 border-[#00f2ff] shadow-[0_0_12px_rgba(0,242,255,0.15)] scale-[1.02] translate-x-1 pl-1.5 z-10' 
+                                      : 'text-slate-400 opacity-60'
+                                    }`}
+                                >
+                                  <span className="w-5 text-slate-600 select-none text-right mr-3 text-[10px] shrink-0 mt-[2px]">{idx + 1}</span>
+                                  <span className="break-words whitespace-pre">{line}</span>
+                                </div>
+                              );
+                            })}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* TAB 3 & 4: PYTHON CARD */}
+                    {(sidePanelTab === 'python' || sidePanelTab === 'both') && (
+                      <div className="bg-[#0b0c15]/90 border border-slate-800 rounded-2xl p-4 shadow-2xl relative overflow-hidden group">
+                        <div className="absolute top-0 left-0 w-1 h-full bg-amber-500/80" />
+                        <div className="flex items-center justify-between mb-2">
+                          <h3 className="text-[11px] font-mono font-bold uppercase tracking-widest text-amber-400 flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                            Python 3 equivalence
+                          </h3>
+                          <button
+                            onClick={() => handleCopyCode(CHALLENGE_CODES[challenge.id]?.python || '', 'python')}
+                            className="p-1.5 rounded-lg bg-slate-900/80 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-amber-400 transition-all cursor-pointer flex items-center gap-1 text-[9px] font-mono font-bold"
+                          >
+                            {copiedType === 'python' ? (
+                              <>
+                                <Check className="w-3.5 h-3.5 text-emerald-400" />
+                                <span className="text-emerald-400">COPIED!</span>
+                              </>
+                            ) : (
+                              <>
+                                <Copy className="w-3.5 h-3.5" />
+                                <span>COPY</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
+                        <div className={`font-mono ${codeFontSize === 'large' ? 'text-[13px]' : 'text-xs'} text-slate-300 bg-black/40 p-2.5 rounded-xl border border-slate-900 overflow-y-auto overflow-x-auto ${sidePanelTab === 'both' ? 'max-h-[200px]' : 'max-h-[360px] xl:max-h-[440px]'} whitespace-pre leading-relaxed flex flex-col`}>
+                          {(CHALLENGE_CODES[challenge.id]?.python || '# Code format unavailable.')
+                            .split('\n')
+                            .map((line, idx) => {
+                              const isHighlighted = getHighlightedLines(challenge.id, executingSlotId).python.includes(idx);
+                              return (
+                                <div
+                                  key={idx}
+                                  className={`px-2 py-0.5 rounded transition-all duration-200 flex items-start select-text
+                                    ${isHighlighted 
+                                      ? 'bg-amber-950/70 text-amber-300 font-extrabold border-l-2 border-amber-500 shadow-[0_0_12px_rgba(245,158,11,0.15)] scale-[1.02] translate-x-1 pl-1.5 z-10' 
+                                      : 'text-slate-400 opacity-60'
+                                    }`}
+                                >
+                                  <span className="w-5 text-slate-600 select-none text-right mr-3 text-[10px] shrink-0 mt-[2px]">{idx + 1}</span>
+                                  <span className="break-words whitespace-pre">{line}</span>
+                                </div>
+                              );
+                            })}
+                        </div>
+                      </div>
+                    )}
                   </div>
-
-                  {/* Unassisted Callout Helper */}
-                  {challenge.isUnassisted && (
-                    <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-2.5 flex items-center justify-between gap-2 shadow-sm">
-                      <div className="flex items-start gap-1.5">
-                        <Lightbulb className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
-                        <span className="text-[10px] text-amber-200/90 leading-tight">
-                          <strong className="text-amber-300">Unassisted Mission:</strong> Need flowchart shapes?
-                        </span>
-                      </div>
-                      <button
-                        onClick={() => setIsShapesFullScreen(true)}
-                        className="px-2 py-1 rounded-md bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 hover:text-white text-[9px] font-mono font-bold uppercase tracking-wider cursor-pointer whitespace-nowrap transition-all"
-                      >
-                        Shapes Guide 📖
-                      </button>
-                    </div>
-                  )}
-
-                  {/* TAB 2 & 4: PSEUDOCODE CARD */}
-                  {(sidePanelTab === 'pseudo' || sidePanelTab === 'both') && (
-                    <div className="bg-[#0b0c15]/90 border border-slate-800 rounded-2xl p-4 shadow-2xl relative overflow-hidden group">
-                      <div className="absolute top-0 left-0 w-1 h-full bg-[#00f2ff]/80" />
-                      <div className="flex items-center justify-between mb-2">
-                        <h3 className="text-[11px] font-mono font-bold uppercase tracking-widest text-[#00f2ff] flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#00f2ff] animate-pulse" />
-                          Pseudocode Representation
-                        </h3>
-                        <button
-                          onClick={() => handleCopyCode(CHALLENGE_CODES[challenge.id]?.pseudocode || '', 'pseudo')}
-                          className="p-1.5 rounded-lg bg-slate-900/80 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-[#00f2ff] transition-all cursor-pointer flex items-center gap-1 text-[9px] font-mono font-bold"
-                        >
-                          {copiedType === 'pseudo' ? (
-                            <>
-                              <Check className="w-3.5 h-3.5 text-emerald-400" />
-                              <span className="text-emerald-400">COPIED!</span>
-                            </>
-                          ) : (
-                            <>
-                              <Copy className="w-3.5 h-3.5" />
-                              <span>COPY</span>
-                            </>
-                          )}
-                        </button>
-                      </div>
-                      <div className={`font-mono text-xs text-slate-300 bg-black/40 p-2.5 rounded-xl border border-slate-900 overflow-y-auto overflow-x-auto ${sidePanelTab === 'both' ? 'max-h-[200px]' : 'max-h-[360px] xl:max-h-[440px]'} whitespace-pre leading-relaxed flex flex-col`}>
-                        {(CHALLENGE_CODES[challenge.id]?.pseudocode || '// Code format unavailable.')
-                          .split('\n')
-                          .map((line, idx) => {
-                            const isHighlighted = getHighlightedLines(challenge.id, executingSlotId).pseudo.includes(idx);
-                            return (
-                              <div
-                                key={idx}
-                                className={`px-2 py-0.5 rounded transition-all duration-200 flex items-start select-text
-                                  ${isHighlighted 
-                                    ? 'bg-cyan-950/70 text-[#00f2ff] font-extrabold border-l-2 border-[#00f2ff] shadow-[0_0_12px_rgba(0,242,255,0.15)] scale-[1.02] translate-x-1 pl-1.5 z-10' 
-                                    : 'text-slate-400 opacity-60'
-                                  }`}
-                              >
-                                <span className="w-5 text-slate-600 select-none text-right mr-3 text-[10px] shrink-0 mt-[2px]">{idx + 1}</span>
-                                <span className="break-words whitespace-pre">{line}</span>
-                              </div>
-                            );
-                          })}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* TAB 3 & 4: PYTHON CARD */}
-                  {(sidePanelTab === 'python' || sidePanelTab === 'both') && (
-                    <div className="bg-[#0b0c15]/90 border border-slate-800 rounded-2xl p-4 shadow-2xl relative overflow-hidden group">
-                      <div className="absolute top-0 left-0 w-1 h-full bg-amber-500/80" />
-                      <div className="flex items-center justify-between mb-2">
-                        <h3 className="text-[11px] font-mono font-bold uppercase tracking-widest text-amber-400 flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-                          Python 3 equivalence
-                        </h3>
-                        <button
-                          onClick={() => handleCopyCode(CHALLENGE_CODES[challenge.id]?.python || '', 'python')}
-                          className="p-1.5 rounded-lg bg-slate-900/80 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-amber-400 transition-all cursor-pointer flex items-center gap-1 text-[9px] font-mono font-bold"
-                        >
-                          {copiedType === 'python' ? (
-                            <>
-                              <Check className="w-3.5 h-3.5 text-emerald-400" />
-                              <span className="text-emerald-400">COPIED!</span>
-                            </>
-                          ) : (
-                            <>
-                              <Copy className="w-3.5 h-3.5" />
-                              <span>COPY</span>
-                            </>
-                          )}
-                        </button>
-                      </div>
-                      <div className={`font-mono text-xs text-slate-300 bg-black/40 p-2.5 rounded-xl border border-slate-900 overflow-y-auto overflow-x-auto ${sidePanelTab === 'both' ? 'max-h-[200px]' : 'max-h-[360px] xl:max-h-[440px]'} whitespace-pre leading-relaxed flex flex-col`}>
-                        {(CHALLENGE_CODES[challenge.id]?.python || '# Code format unavailable.')
-                          .split('\n')
-                          .map((line, idx) => {
-                            const isHighlighted = getHighlightedLines(challenge.id, executingSlotId).python.includes(idx);
-                            return (
-                              <div
-                                key={idx}
-                                className={`px-2 py-0.5 rounded transition-all duration-200 flex items-start select-text
-                                  ${isHighlighted 
-                                    ? 'bg-amber-950/70 text-amber-300 font-extrabold border-l-2 border-amber-500 shadow-[0_0_12px_rgba(245,158,11,0.15)] scale-[1.02] translate-x-1 pl-1.5 z-10' 
-                                    : 'text-slate-400 opacity-60'
-                                  }`}
-                              >
-                                <span className="w-5 text-slate-600 select-none text-right mr-3 text-[10px] shrink-0 mt-[2px]">{idx + 1}</span>
-                                <span className="break-words whitespace-pre">{line}</span>
-                              </div>
-                            );
-                          })}
-                      </div>
-                    </div>
-                  )}
-                </div>
+                ) : (
+                  <button
+                    onClick={() => setShowCodePanel(true)}
+                    className="hidden lg:flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#0b0d18] border border-slate-800 hover:border-purple-500/50 text-purple-300 hover:text-purple-200 text-[10px] font-mono font-bold uppercase cursor-pointer shadow-sm transition-all self-start"
+                    title="Show Code Tabs Panel"
+                  >
+                    <ChevronsLeftRight className="w-3.5 h-3.5 text-purple-400" />
+                    <span>SHOW CODE TABS</span>
+                  </button>
+                )}
 
                 {/* Interactive Draggable Splitter Divider between Code Tabs & Flowchart Canvas */}
-                <div
-                  onMouseDown={(e) => handleStartResize(e.clientX)}
-                  onTouchStart={(e) => e.touches?.[0] && handleStartResize(e.touches[0].clientX)}
-                  onDoubleClick={() => setCodePanelWidth(440)}
-                  className={`hidden lg:flex flex-col items-center justify-center w-5 cursor-col-resize select-none group relative z-20 self-stretch shrink-0 py-6 touch-none transition-colors
-                    ${isResizingCodePanel ? 'text-[#00f2ff]' : 'text-slate-600 hover:text-[#00f2ff]'}`}
-                  title="Drag left/right to adjust Code & Flowchart tab sizes. Double-click to reset (440px)."
-                >
-                  {/* Subtle vertical rule line */}
-                  <div 
-                    className={`w-1 h-full rounded-full transition-all duration-150 
-                      ${isResizingCodePanel 
-                        ? 'bg-[#00f2ff] shadow-[0_0_12px_rgba(0,242,255,0.9)] scale-x-125' 
-                        : 'bg-slate-800/80 group-hover:bg-[#00f2ff]/60 group-hover:shadow-[0_0_8px_rgba(0,242,255,0.4)]'}`} 
-                  />
-
-                  {/* Tactile draggable handle pill */}
-                  <div 
-                    className={`absolute top-1/3 -translate-y-1/2 w-6 h-12 rounded-xl flex flex-col items-center justify-center transition-all shadow-md
-                      ${isResizingCodePanel 
-                        ? 'bg-cyan-500 text-slate-950 scale-110 shadow-[0_0_15px_rgba(0,242,255,0.6)] ring-2 ring-[#00f2ff]' 
-                        : 'bg-[#0e111a] border border-slate-700/80 text-slate-400 group-hover:border-[#00f2ff]/70 group-hover:text-[#00f2ff] group-hover:scale-105'}`}
+                {showCodePanel && (
+                  <div
+                    onMouseDown={(e) => handleStartResize(e.clientX)}
+                    onTouchStart={(e) => e.touches?.[0] && handleStartResize(e.touches[0].clientX)}
+                    onDoubleClick={() => setCodePanelWidth(360)}
+                    className={`hidden lg:flex flex-col items-center justify-center w-5 cursor-col-resize select-none group relative z-20 self-stretch shrink-0 py-6 touch-none transition-colors
+                      ${isResizingCodePanel ? 'text-[#00f2ff]' : 'text-slate-600 hover:text-[#00f2ff]'}`}
+                    title="Drag left/right to adjust Code & Flowchart tab sizes. Double-click to reset (360px)."
                   >
-                    <GripVertical className="w-3.5 h-3.5" />
-                  </div>
+                    {/* Subtle vertical rule line */}
+                    <div 
+                      className={`w-1 h-full rounded-full transition-all duration-150 
+                        ${isResizingCodePanel 
+                          ? 'bg-[#00f2ff] shadow-[0_0_12px_rgba(0,242,255,0.9)] scale-x-125' 
+                          : 'bg-slate-800/80 group-hover:bg-[#00f2ff]/60 group-hover:shadow-[0_0_8px_rgba(0,242,255,0.4)]'}`} 
+                    />
 
-                  {/* Floating tooltip badge when active */}
-                  {isResizingCodePanel && (
-                    <div className="absolute top-1/4 -translate-y-1/2 bg-slate-900 border border-cyan-500 text-[#00f2ff] text-[9px] font-mono font-bold px-2 py-0.5 rounded shadow-xl whitespace-nowrap pointer-events-none z-30">
-                      {codePanelWidth}px
+                    {/* Tactile draggable handle pill */}
+                    <div 
+                      className={`absolute top-1/3 -translate-y-1/2 w-6 h-12 rounded-xl flex flex-col items-center justify-center transition-all shadow-md
+                        ${isResizingCodePanel 
+                          ? 'bg-cyan-500 text-slate-950 scale-110 shadow-[0_0_15px_rgba(0,242,255,0.6)] ring-2 ring-[#00f2ff]' 
+                          : 'bg-[#0e111a] border border-slate-700/80 text-slate-400 group-hover:border-[#00f2ff]/70 group-hover:text-[#00f2ff] group-hover:scale-105'}`}
+                    >
+                      <GripVertical className="w-3.5 h-3.5" />
                     </div>
-                  )}
-                </div>
+
+                    {/* Floating tooltip badge when active */}
+                    {isResizingCodePanel && (
+                      <div className="absolute top-1/4 -translate-y-1/2 bg-slate-900 border border-cyan-500 text-[#00f2ff] text-[9px] font-mono font-bold px-2 py-0.5 rounded shadow-xl whitespace-nowrap pointer-events-none z-30">
+                        {codePanelWidth}px
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 {/* Right Column: Flowchart Canvas & Simulator Playback Controls underneath */}
-                <div className="flex-1 flex flex-col gap-4 items-center justify-start min-w-[750px] overflow-x-auto">
+                <div className="flex-1 flex flex-col gap-4 items-center justify-start min-w-[500px] overflow-x-auto">
                   
                   {/* Symmetrical Canvas Frame that guarantees identical coordinates mapping */}
                   <div 
                     id="flowchart-canvas-container" 
+                    style={{
+                      transform: canvasZoom !== 1 ? `scale(${canvasZoom})` : undefined,
+                      transformOrigin: 'top center',
+                      marginBottom: canvasZoom < 1 ? `-${Math.round((1 - canvasZoom) * 550)}px` : undefined
+                    }}
                     className={`relative w-[800px] h-[550px] shrink-0 border rounded-2xl p-4 shadow-[inset_0_0_40px_rgba(0,242,255,0.02)] backdrop-blur-sm transition-all duration-300 ${
                     shakeCanvas 
                       ? 'animate-shake border-rose-500/80 ring-4 ring-rose-500/50 shadow-[0_0_30px_rgba(244,63,94,0.35)] bg-[#0d070b]/90' 
@@ -3894,7 +4049,14 @@ export default function FlowchartLab({ onBackToMain, onRewardCredits, currentCre
 
               {/* Horizontal Interactive Simulator Control Card placed under the Canvas of size exactly w-[800px] */}
               {simulationSteps.length > 0 && (
-                <div className="w-[800px] bg-[#0a0b14]/95 border border-slate-850 shadow-lg text-left flex flex-row items-center justify-between gap-4 p-3 rounded-2xl relative overflow-hidden transition-all duration-300">
+                <div 
+                  style={{
+                    transform: canvasZoom !== 1 ? `scale(${canvasZoom})` : undefined,
+                    transformOrigin: 'top center',
+                    marginBottom: canvasZoom < 1 ? `-${Math.round((1 - canvasZoom) * 70)}px` : undefined
+                  }}
+                  className="w-[800px] bg-[#0a0b14]/95 border border-slate-850 shadow-lg text-left flex flex-row items-center justify-between gap-4 p-3 rounded-2xl relative overflow-hidden transition-all duration-300"
+                >
                   <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-[#00f2ff] via-indigo-500 to-[#ff007f]" />
                   
                   {/* Left Side: Step Indicator */}
@@ -4023,25 +4185,35 @@ export default function FlowchartLab({ onBackToMain, onRewardCredits, currentCre
           </div>
 
             {/* Right Panel: Block BANK and Active Output logs terminal */}
-            <aside className="w-full xl:w-96 border-t xl:border-t-0 xl:border-l border-slate-900 bg-[#07090e] p-3 flex flex-col gap-2.5 overflow-y-auto shrink-0 text-left">
-              
-              {/* Highly Pronounced Block Bank Container Card */}
-              <div className="p-3 rounded-xl bg-gradient-to-b from-[#0d1322] to-[#05070e] border-2 border-cyan-500/35 shadow-[0_0_30px_rgba(0,242,255,0.12)] flex flex-col gap-2">
-                {/* Block Bank Title Block */}
-                <div>
-                  <h3 className="text-white font-extrabold text-[11px] uppercase tracking-wider mb-0.5 font-mono flex items-center justify-between">
-                    <span className="text-cyan-400 flex items-center gap-1.5 animate-pulse">
-                      <span className="w-2 h-2 rounded-full bg-cyan-400"></span>
-                      DEPLOYABLE BLOCK BANK
-                    </span>
-                    <span className="text-[8px] text-[#00f2ff] font-extrabold leading-none bg-[#00f2ff]/10 px-1.5 py-0.5 rounded border border-[#00f2ff]/20">
-                      BANK: ONLINE
-                    </span>
-                  </h3>
-                  <p className="text-[9.5px] text-slate-300 leading-relaxed font-medium">
-                    Select a core logic block below, then choose an empty matching slot on the flowchart schematic to connect it.
-                  </p>
-                </div>
+            {isBlockBankOpen ? (
+              <aside className="w-full xl:w-80 2xl:w-88 border-t xl:border-t-0 xl:border-l border-slate-900 bg-[#07090e] p-3 flex flex-col gap-2.5 overflow-y-auto shrink-0 text-left transition-all duration-200">
+                
+                {/* Highly Pronounced Block Bank Container Card */}
+                <div className="p-3 rounded-xl bg-gradient-to-b from-[#0d1322] to-[#05070e] border-2 border-cyan-500/35 shadow-[0_0_30px_rgba(0,242,255,0.12)] flex flex-col gap-2">
+                  {/* Block Bank Title Block */}
+                  <div>
+                    <h3 className="text-white font-extrabold text-[11px] uppercase tracking-wider mb-0.5 font-mono flex items-center justify-between">
+                      <span className="text-cyan-400 flex items-center gap-1.5 animate-pulse">
+                        <span className="w-2 h-2 rounded-full bg-cyan-400"></span>
+                        DEPLOYABLE BLOCK BANK
+                      </span>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[8px] text-[#00f2ff] font-extrabold leading-none bg-[#00f2ff]/10 px-1.5 py-0.5 rounded border border-[#00f2ff]/20">
+                          BANK: ONLINE
+                        </span>
+                        <button
+                          onClick={() => setIsBlockBankOpen(false)}
+                          className="p-1 rounded text-slate-500 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
+                          title="Collapse Block Bank to maximize canvas"
+                        >
+                          <PanelRightClose className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </h3>
+                    <p className="text-[9.5px] text-slate-300 leading-relaxed font-medium">
+                      Select a core logic block below, then choose an empty matching slot on the flowchart schematic to connect it.
+                    </p>
+                  </div>
 
                 {/* Blocks Palette List Area */}
                 <div className="grid grid-cols-2 gap-2 mt-0.5">
@@ -4202,6 +4374,20 @@ export default function FlowchartLab({ onBackToMain, onRewardCredits, currentCre
               </div>
 
             </aside>
+          ) : (
+            <div className="hidden xl:flex flex-col items-center py-4 px-2 bg-[#07090e] border-l border-slate-900 shrink-0 gap-3 z-20">
+              <button
+                onClick={() => setIsBlockBankOpen(true)}
+                className="p-2 rounded-xl bg-slate-900 border border-slate-800 hover:border-amber-500/50 text-slate-400 hover:text-amber-300 cursor-pointer transition-all flex flex-col items-center gap-1.5 group shadow-sm"
+                title="Expand Block Bank & Diagnostics Console"
+              >
+                <PanelRightOpen className="w-4 h-4 text-amber-400 group-hover:scale-110 transition-transform" />
+                <span className="text-[8px] font-mono font-bold uppercase [writing-mode:vertical-lr] tracking-widest text-slate-400 group-hover:text-amber-300">
+                  BLOCK BANK
+                </span>
+              </button>
+            </div>
+          )}
 
           </div>
         </main>
